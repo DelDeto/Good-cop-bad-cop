@@ -48,3 +48,29 @@ test('equipment target selection is dispatched as server validated command',()=>
  assert.equal(dispatched.type,'playEquipment');assert.equal(dispatched.target,1);
  assert.match(root.innerHTML,/Hộp Cấp Cứu/);
 });
+
+test('Bribe card-first flow sends investigation before own-card choice, including decline and reconnect',()=>{
+ const g=createRoom('BEE777','Player','owner');setBots(g,'owner',3);startGame(g,'owner');g.players[0].hand=['bribe'];
+ const {context,root}=appFixture();context.fixture=view(g,'owner');vm.runInContext('state=fixture;render();send=x=>lastSent=x;activateEquipment(0);handleCardClick(1,2);',context);
+ const sent=vm.runInContext('lastSent',context);assert.equal(sent.type,'playEquipment');assert.equal(sent.target,1);assert.equal(sent.slot,2);assert.equal(sent.ownSlot,undefined);
+ context.fixture.pending={kind:'bribe',owner:0,target:1,slot:2,decisionId:'choice',canSwap:true};context.fixture.known[`${g.players[1].id}:2`]={type:'honest'};
+ vm.runInContext('state=fixture;render();',context);assert.match(root.innerHTML,/declineBribe/);assert.match(root.innerHTML,/Tiền Bẩn: ĐIỆP VIÊN/);
+ assert.equal(vm.runInContext('interactionState()',context),'EQUIPMENT_SECOND_TARGET');
+ vm.runInContext('handleOwnCard(0);',context);const cb=vm.runInContext("document.querySelector('#modal')._callback",context);cb();
+ assert.equal(vm.runInContext('lastSent.type',context),'resolveBribe');assert.equal(vm.runInContext('lastSent.decisionId',context),'choice');
+});
+test('explicit interaction states recover selections on server change and keep optional equipment cancellation local',()=>{
+ const g=createRoom('BEE777','Player','owner');setBots(g,'owner',3);startGame(g,'owner');g.players[0].hand=['wiretap'];
+ const {context}=appFixture();context.fixture=view(g,'owner');vm.runInContext('state=fixture;render();activateEquipment(0);',context);assert.equal(vm.runInContext('interactionState()',context),'EQUIPMENT_TARGET');
+ vm.runInContext('handleCardClick(1,0);',context);assert.equal(vm.runInContext('interactionState()',context),'EQUIPMENT_SECOND_TARGET');
+ vm.runInContext('pick=null;render();',context);assert.equal(context.fixture.hand.length,1);assert.equal(vm.runInContext('interactionState()',context),'SELECT_CARD');
+ vm.runInContext('activateEquipment(0);state.phase="aim";render();',context);assert.equal(vm.runInContext('pick',context),null);assert.equal(vm.runInContext('interactionState()',context),'TURN_COMPLETE');
+ vm.runInContext('state.players[0].gun=true;',context);assert.equal(vm.runInContext('interactionState()',context),'CHOOSE_AIM');
+ vm.runInContext('busy=true;',context);assert.equal(vm.runInContext('interactionState()',context),'RESOLVING');
+});
+test('reaction table shows public shooter/victim, deadline and only viewer defensive equipment',()=>{
+ const g=createRoom('BEE777','Player','owner');setBots(g,'owner',3);startGame(g,'owner');g.players[0].hand=['vest'];g.pending={kind:'shot',shooter:1,victim:0,passes:[1],since:Date.now()};
+ const {context,root}=appFixture();context.fixture=view(g,'owner');vm.runInContext('state=fixture;render();',context);
+ assert.match(root.innerHTML,/reaction-table/);assert.match(root.innerHTML,/data-countdown/);assert.match(root.innerHTML,/reaction-ready/);assert.match(root.innerHTML,/shot-shooter/);assert.equal(vm.runInContext('interactionState()',context),'REACTION_WINDOW');
+ context.fixture.hand=[{id:'bribe',name:'Tiền Bẩn',category:'Thân phận',description:'Điều tra'}];vm.runInContext('render();',context);assert.doesNotMatch(root.innerHTML,/reaction-ready/);
+});

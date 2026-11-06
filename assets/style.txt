@@ -105,3 +105,13 @@ body{background:radial-gradient(ellipse at 50% 0%,#2b201d 0%,#0f131b 65%,#090e15
 .gear-illustration.photo-art{box-shadow:inset 0 0 18px #62412144;filter:saturate(.92)}
 .player .mini.face{background-image:radial-gradient(circle at 50% 50%,#ffffff33,transparent 65%)}
 @media(max-width:620px){.secret.physical-card .symbol.illustrated-role{height:60px}.gun-silhouette .pistol-svg{height:65px;width:70px}}
+
+/* Sprint 01: public reaction cues only; equipment highlights use the viewer's hand. */
+.reaction-table{background:#301b21;border:2px solid #e4b66c;border-radius:10px;padding:10px;margin:8px 0;color:#fff1d6;font-size:13px;line-height:1.6;position:relative;z-index:2}
+.shot-shooter{outline:3px solid #dc9c53;outline-offset:3px}
+.equipment.reaction-ready{outline:3px solid #8bdbac;box-shadow:0 0 20px #8bdbac66}
+[data-countdown]{font-variant-numeric:tabular-nums;font-weight:800}
+.playergrid-physical > .table-center{flex-direction:column;gap:8px}
+.table-center .reaction-table{width:100%;max-width:640px;flex-shrink:0}
+.table-center .reaction-table strong{display:inline;font:inherit;font-weight:800;letter-spacing:normal;text-transform:none;margin:0}
+.table-center .table-items{flex-shrink:0;width:100%;height:auto;min-height:155px}

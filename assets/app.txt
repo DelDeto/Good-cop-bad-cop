@@ -4,6 +4,34 @@ const label={honest:'ĐIỆP VIÊN',crooked:'MAFIA',agent:'ĐẶC VỤ',kingpin:
 const symbol={honest:'✦',crooked:'✘',agent:'★',kingpin:'♛'};
 const buttons=(text,fn,css='')=>`<button class="btn ${css}" data-act="${fn}">${text}</button>`;
 const icon={gun:'🔫',spy:'🔎',hand:'🎒',shot:'🎯'};
+const INTERACTION_STATES=Object.freeze(['IDLE','SELECT_CARD','SELECT_PLAYER','CHOOSE_AIM','CONFIRM_SHOT','EQUIPMENT_TARGET','EQUIPMENT_SECOND_TARGET','REACTION_WINDOW','RESOLVING','TURN_COMPLETE']);
+let confirmation=null,interactionContext=null;
+function interactionState(){
+ if(busy)return 'RESOLVING';
+ if(state?.status==='finished')return 'TURN_COMPLETE';
+ if(state?.pending?.kind==='shot')return 'REACTION_WINDOW';
+ if(state?.pending?.kind==='bribe')return state.pending.owner===state.me?'EQUIPMENT_SECOND_TARGET':'RESOLVING';
+ if(confirmation==='shot')return 'CONFIRM_SHOT';
+ if(pick?.kind==='equipment')return pick.selected===undefined?'EQUIPMENT_TARGET':'EQUIPMENT_SECOND_TARGET';
+ if(confirmation)return confirmation;
+ if(state?.pending?.kind==='serum'&&state.pending.target===state.me)return 'SELECT_CARD';
+ if(!state||state.status!=='playing'||state.turn!==state.me)return 'IDLE';
+ if(['reveal','discard','serum'].includes(state.pending?.kind))return 'SELECT_CARD';
+ if(state.phase==='aim')return state.players[state.me].gun?'CHOOSE_AIM':'TURN_COMPLETE';
+ return 'SELECT_CARD';
+}
+function validReaction(eq){
+ const p=state.pending;if(p?.kind!=='shot')return false;
+ if(eq.id==='vest')return p.victim===state.me;
+ if(eq.id==='shield')return aliveNeighbors(p.victim).length>0;
+ if(eq.id==='restrain')return state.players.some(q=>q.alive&&q.seat!==p.victim&&q.seat!==p.shooter);
+ if(eq.id==='k9')return state.players[p.shooter].gun;
+ return false;
+}
+function reactionBanner(){
+ const p=state.pending;if(p?.kind!=='shot')return '';
+ return `<div class="reaction-table" role="status"><b>🎯 ${esc(state.players[p.shooter].name)} → ${esc(state.players[p.victim].name)}</b><br>Phản ứng: ${state.hand.filter(validReaction).map(eq=>esc(eq.name)).join(' · ')||'Có thể bỏ qua / chờ người khác'}<br>${p.deadline?`Tự xử lý sau <strong data-countdown="${p.deadline}">${Math.max(0,Math.ceil((p.deadline-Date.now())/1000))}</strong> giây`:'Không có hạn tự động'} · Người bắn xác nhận sau <span data-countdown="${p.forceAt||p.since+15000}">${Math.max(0,Math.ceil(((p.forceAt||p.since+15000)-Date.now())/1000))}</span> giây</div>`;
+}
 let pick=null; let hoverTimer=null; let dragged=null;
 const physicalArt={vest:0,planted:1,smoke:2,coffee:3,camera:4,disguise:5,taser:6,k9:7,medkit:8,serum:9,shield:10,restrain:11,walkie:12,wiretap:13,polygraph:14,wire:15,blackmail:16,bribe:17,confiscation:18,evidence:19,database:20,defib:21,metal:22};
 
@@ -27,7 +55,7 @@ async function newRoom(kind){try{const name=$('#name')?.value.trim();if(!name)th
  session=result;localStorage.setItem('sd-'+result.code,result.token);history.replaceState(null,'',`?room=${result.code}`);connect();
  }catch(err){notif(err.message);}}
 
-async function send(command){if(!session||busy)return;busy=true;try{const r=await api('/api/command',{code:session.code,token:session.token,command});state=r.state;pick=null;render();}catch(err){notif(err.message);}finally{busy=false;}}
+async function send(command){if(!session||busy)return;busy=true;render();try{const r=await api('/api/command',{code:session.code,token:session.token,command});state=r.state;pick=null;render();}catch(err){pick=null;confirmation=null;notif(err.message);try{const fresh=await fetch(`/api/state?code=${encodeURIComponent(session.code)}&token=${encodeURIComponent(session.token)}`).then(r=>r.json());if(!fresh.error)state=fresh;}catch{notif('Mất kết nối. Đang chờ đồng bộ lại.');}}finally{busy=false;render();}}
 function seatBox(p,idx=0){
  const total=state.players.length,upper=Math.ceil(total/2),row=idx<upper?1:3,colIndex=idx<upper?idx:idx-upper;
  const count=row===1?upper:total-upper;
@@ -38,7 +66,7 @@ function seatBox(p,idx=0){
  return `<button type="button" data-pick-card="${p.seat}:${i}" aria-label="Ghế ${p.seat+1}, lá ${i+1}: ${esc(showed?(label[v]||'Danh tính đã biết'):'Chưa biết')}" title="${esc(own?'Bài của bạn':c.shown?'Đã công khai':known?'Bạn đã điều tra lá này':'Chạm để điều tra')}" class="mini physical-mini ${showed?'face':'card-back'} ${team} ${known&&!c.shown&&!own?'known':''} ${eligibleCard(p.seat,i)?'tappable':''}"><span class="mini-watermark">${showed?cardSeal(v):'◎'}</span><span class="mini-caption">${showed?esc(label[v]||'ĐÃ LẬT'):'MẬT'}</span></button>`;
  }).join('');
  const target=p.gun?state.players[p.aim]:null;
- return `<article style="--seat-col:${col};--seat-row:${row}" data-pick-seat="${p.seat}" role="group" class="player ${p.isYou?'you':''} ${p.seat===state.turn&&state.status==='playing'?'active':''} ${!p.alive?'dead':''} ${p.bot?'npc':''} ${eligibleSeat(p.seat)?'targetable':''} ${state.pending?.kind==='shot'&&state.pending.victim===p.seat?'shot-victim':''}">
+ return `<article style="--seat-col:${col};--seat-row:${row}" data-pick-seat="${p.seat}" role="group" class="player ${p.isYou?'you':''} ${p.seat===state.turn&&state.status==='playing'?'active':''} ${!p.alive?'dead':''} ${p.bot?'npc':''} ${eligibleSeat(p.seat)?'targetable':''} ${state.pending?.kind==='shot'&&state.pending.victim===p.seat?'shot-victim':''} ${state.pending?.kind==='shot'&&state.pending.shooter===p.seat?'shot-shooter':''}">
  <div class="playerhead"><span class="seat">GHẾ ${String(p.seat+1).padStart(2,'0')} ${p.isYou?'· BẠN':''}</span><span class="seat ${p.seat===state.turn?'playing':''}">${p.seat===state.turn?'● ĐANG ĐI':''}</span></div>
  <div class="player-inner"><div class="avatar" data-select-person="${p.seat}" role="button" tabindex="0" aria-label="Chọn ${esc(p.name)}">${agentAvatar(p)}${p.bot?'<span class="avatar-tag">BOT</span>':''}</div><div class="player-data"><div class="playername" data-select-person="${p.seat}" role="button" tabindex="0">${esc(p.name)}${p.bot?'<span class="botbadge">AI</span>':''}</div><div class="mini-cards">${cards}</div></div></div>
  <div class="armstrip">${p.gun?`<span class="armed" data-drag-gun="${p.seat}" draggable="${p.isYou}">⌖ SÚNG → ${esc(target?.name||'ĐANG NGẮM')}</span>`:''}${p.wounded?'<span class="injury">✚ BỊ THƯƠNG</span>':''}${!p.alive?'<span class="injury">☠ ĐÃ LOẠI</span>':''}${!p.gun&&!p.wounded&&p.alive?'<span class="on-watch">◉ ĐANG THEO DÕI</span>':''}</div></article>`;
@@ -46,9 +74,11 @@ function seatBox(p,idx=0){
 
 function lobby(){const spots=Array.from({length:8},(_,i)=>state.players[i]?`<div class="lobbyseat"><small>GHẾ ${String(i+1).padStart(2,'0')}</small><strong>${esc(state.players[i].name)} ${state.players[i].bot?'🤖':''}</strong><div class="my-info">${i===state.me?'✦ BẠN':state.players[i].bot?'BOT TỰ ĐỘNG':i===0?'CHỦ PHÒNG':'ĐÃ THAM GIA'}</div></div>`:`<div class="lobbyseat empty"><small>GHẾ ${String(i+1).padStart(2,'0')}</small><strong>Chưa có người</strong></div>`).join('');root.innerHTML=navbar('PHÒNG CHỜ')+`<main class="layout lobbycenter"><div class="banner"><div><div class="eyebrow">MẬT MÃ PHÒNG</div><div class="roomline"><strong class="roomcode">${esc(state.code)}</strong>${buttons('⧉ Sao chép mã','copy')}</div></div><div class="right"><span class="pill gold">${state.players.length}/8 người</span>${buttons('↗ Chia sẻ link','share','ghost')}</div></div><div class="panel"><div class="panelhead"><h3>DANH SÁCH MẬT VỤ</h3><span class="muted tiny">Cần tối thiểu 4 người</span></div><div class="panelbody"><div class="lobbyseats">${spots}</div><div class="joinhint">${state.isOwner?'Bạn là chủ phòng. Khi đủ 4 người, nhấn bắt đầu để chia bài bí mật.':'Đang chờ chủ phòng bắt đầu. Hãy chia sẻ mã để mời bạn bè.'}</div>${state.isOwner?`<div class="lobby-controls"><div class="botselects"><div class="field"><label>Thêm bot vào phòng</label><select id="lobbyBotCount">${Array.from({length:8-state.players.filter(p=>!p.bot).length},(_,i)=>`<option value="${i}" ${i===state.players.filter(p=>p.bot).length?'selected':''}>${i} bot</option>`).join('')}</select></div><div class="field"><label>Độ khó bot</label><select id="lobbyBotLevel"><option value="normal">Thường</option><option value="hard">Khó</option></select></div></div>${buttons('Cập nhật bot','setBots','wide')}${buttons('▶ BẮT ĐẦU ĐIỀU TRA','start','primary wide')}</div>`:''}</div></div></main>`;}
 function actions(){
+  if(busy)return '<div class="hint-panel">Đang gửi lệnh và chờ máy chủ xác nhận…</div>';
   const me=state.players[state.me], own=state.turn===state.me, pend=state.pending;
   if(!me.alive) return '<div class="hint-panel">Bạn đã bị loại. Có thể quan sát phần còn lại của ván.</div>';
   if(pend?.kind==='shot')return `<div class="hint-panel danger">🔫 ${esc(state.players[pend.shooter].name)} đang bắn ${esc(state.players[pend.victim].name)}. Chạm lá trang bị để phản ứng.</div>${!pend.passes.includes(state.me)?buttons('✓ Bỏ qua phản ứng','passShot','wide'):''}${own&&state.me===pend.shooter?buttons('Hoàn tất bắn (sau 15 giây)','forceShot','ghost wide'):''}`;
+  if(pend?.kind==='bribe')return pend.owner===state.me?`<div class="hint-panel gold">Tiền Bẩn: ${esc(label[state.known[`${state.players[pend.target].id}:${pend.slot}`]?.type])}. ${pend.canSwap?'Chạm lá của bạn để đổi, hoặc chỉ giữ kết quả.':'Lá thủ lĩnh: chỉ giữ kết quả điều tra.'}</div>${buttons('Chỉ điều tra / Không đổi','declineBribe','wide')}`:'<div class="hint-panel">Đang chờ chủ Tiền Bẩn quyết định.</div>';
   if(pend?.kind==='serum')return state.me===pend.target?'<div class="hint-panel gold">Chạm một trong ba lá danh tính của bạn để lật công khai.</div>':'<div class="hint-panel">Đang chờ mục tiêu lật bài vì Huyết Thanh Nói Thật.</div>';
   if(!own)return `<div class="hint-panel">Đang đến lượt <b>${esc(state.players[state.turn].name)}</b>. Bạn có thể sử dụng trang bị nếu luật cho phép.</div>`;
   if(pend?.kind==='discard')return '<div class="hint-panel gold">Chạm lá trang bị bạn muốn bỏ để giữ đúng một lá.</div>';
@@ -66,6 +96,7 @@ function aliveNeighbors(seat){
 function eligibleCard(seat,slot){
   if(!state||state.status!=='playing')return false;
   const p=state.players[seat],own=seat===state.me,c=p.cards[slot];
+  if(state.pending?.kind==='bribe')return own&&state.pending.owner===state.me&&state.pending.canSwap;
   if(own&&(state.pending?.kind==='reveal'||state.pending?.kind==='serum'&&state.pending.target===seat))return !c.shown;
   if(pick?.kind==='equipment'&&['wiretap','blackmail','bribe'].includes(pick.id))return eligibleSeat(seat)&&(!c.shown||pick.id==='blackmail');
   return state.turn===state.me&&!state.pending&&state.phase==='action'&&!own&&p.alive&&!p.effects.disguise&&!c.shown;
@@ -98,24 +129,29 @@ function eligibleSeat(seat){
   return false;
 }
 function interactionGuide(){
+  if(busy)return '<div class="pick-banner" role="status">Đang xử lý lệnh…</div>';
   if(pick?.kind==='equipment'){
     const eq=state.hand.find(e=>e.id===pick.id);
     const id=pick.id;
-    const message=pick.stage==='own'?'Chạm lá danh tính của chính bạn để hoán đổi hoặc nhấn “Chỉ điều tra”.':
-     (['wiretap','blackmail'].includes(id)?(pick.selected===undefined?'Chạm LÁ của người thứ nhất.':'Chạm LÁ của người thứ hai (khác người thứ nhất).'):
+    const message=(['wiretap','blackmail'].includes(id)?(pick.selected===undefined?'Chạm LÁ của người thứ nhất.':'Chạm LÁ của người thứ hai (khác người thứ nhất).'):
      id==='bribe'?'Chạm lá úp của mục tiêu để điều tra.':
      id==='confiscation'?(pick.selected===undefined?'Chạm người có súng.':'Chạm người chưa có súng để chuyển súng.'):
      'Chạm avatar của người chơi phù hợp để sử dụng trang bị.');
-    return `<div class="pick-banner"><span>🃏 ĐANG DÙNG: <b>${esc(eq?.name||id)}</b><br>${esc(message)}</span><div class="pick-actions">${pick.stage==='own'?buttons('Chỉ điều tra','skipSwap','ghost'):''}${buttons('Hủy','cancelPick','ghost')}</div></div>`;
+    return `<div class="pick-banner"><span>🃏 ĐANG DÙNG: <b>${esc(eq?.name||id)}</b><br>${esc(message)}</span><div class="pick-actions">${buttons('Hủy','cancelPick','ghost')}</div></div>`;
   }
   if(state?.pending?.kind==='shot')return `<div class="pick-banner warning"><span>⚠️ ĐANG CÓ PHÁT BẮN · Chạm trang bị phản ứng hoặc chọn “Bỏ qua”.</span></div>`;
   return `<div class="pick-banner"><span>♟ <b>CHƠI TRỰC TIẾP:</b> Chạm lá úp để điều tra · Chạm súng để lấy · Chạm trang bị để dùng · Chạm avatar để ngắm / bắn</span></div>`;
 }
-function renderGear(eq,i){const artIndex=physicalArt[eq.id];return `<button type="button" data-eqcard-index="${i}" draggable="true" class="equipment gear-card physical-gear ${(pick?.id===eq.id?'selected':'')}" aria-label="Dùng trang bị ${esc(eq.name)}" title="Chạm để dùng; nhấn giữ để đọc kỹ"><div class="gear-head"><span class="eyebrow">TRANG BỊ · ${esc(eq.category)}</span><span class="gear-number">#${String(i+1).padStart(2,'0')}</span></div><div class="gear-illustration ${artIndex!==undefined?'photo-art':''}" style="${artIndex!==undefined?'--art-position:'+artIndex:''}">${artIndex===undefined?(equipmentArt[eq.id]||'▣'):''}</div><strong>${esc(eq.name)}</strong><p>${esc(eq.description)}</p><span class="card-foot">CHẠM ĐỂ KÍCH HOẠT · GCB</span></button>`;}
+function renderGear(eq,i){const artIndex=physicalArt[eq.id];return `<button type="button" data-eqcard-index="${i}" draggable="true" class="equipment gear-card physical-gear ${(pick?.id===eq.id?'selected':'')} ${validReaction(eq)?'reaction-ready':''}" aria-label="Dùng trang bị ${esc(eq.name)}" title="Chạm để dùng; nhấn giữ để đọc kỹ"><div class="gear-head"><span class="eyebrow">TRANG BỊ · ${esc(eq.category)}</span><span class="gear-number">#${String(i+1).padStart(2,'0')}</span></div><div class="gear-illustration ${artIndex!==undefined?'photo-art':''}" style="${artIndex!==undefined?'--art-position:'+artIndex:''}">${artIndex===undefined?(equipmentArt[eq.id]||'▣'):''}</div><strong>${esc(eq.name)}</strong><p>${esc(eq.description)}</p><span class="card-foot">CHẠM ĐỂ KÍCH HOẠT · GCB</span></button>`;}
 
-function board(){let me=state.players[state.me];const cards=state.myCards.map((c,i)=>`<button type="button" data-own-card="${i}" class="secret physical-card ${c.type} ${eligibleCard(state.me,i)?'tappable':''}"><small>LÁ ${i+1} ${c.revealed?'· CÔNG KHAI':'· BÍ MẬT'}</small><div class="symbol illustrated-role">${roleArt(c.type)}</div><strong>${label[c.type]}</strong><span class="card-stamp">THẺ DANH TÍNH</span></button>`).join('');const hand=state.hand[0];const log=state.log.slice().reverse().map(x=>`<p>${esc(x.msg)}</p>`).join('');const priv=state.privateLog.slice().reverse().map(x=>`<p><strong>RIÊNG BẠN:</strong> ${esc(x)}</p>`).join('');const turnPlayer=state.players[state.turn];const wins=state.status==='finished';const bots=state.players.filter(p=>p.bot).length;root.innerHTML=navbar('CHIẾN DỊCH ĐIỀU TRA')+`<main class="layout"><div class="banner noir-banner"><div><div class="eyebrow">PHÒNG ${esc(state.code)} • LƯỢT ${state.round} ${bots?'• 🤖 '+bots+' BOT':''}</div><h2>${wins?'🏆 '+esc(state.winner):`ĐẾN LƯỢT: ${esc(turnPlayer.name)}`}</h2></div><div class="right"><span class="pill ${wins?'green':state.pending?.kind==='shot'?'red':'gold'}">${wins?'KẾT THÚC':state.pending?.kind==='shot'?'ĐANG XỬ LÝ BẮN':'ĐANG CHƠI'}</span>${buttons('⧉ Mã phòng','copy','ghost')}</div></div>${interactionGuide()}<div class="gamegrid"><section class="board-wrap"><div class="board physical-board"><div class="playergrid playergrid-physical">${state.players.map((p,i)=>seatBox(p,i)).join('')}<div class="table-center"><div class="center-label">HỒ SƠ MẬT • VÒNG ${state.round}</div><div class="table-items"><button type="button" data-board-item="equipment" draggable="true" aria-label="Rút trang bị từ chồng bài" class="item-stack interactive-stack"><div class="stack-back back3"></div><div class="stack-back back2"></div><div class="stack-top"><div class="equ-symbol">▤</div><strong>TRANG BỊ</strong><small>${state.equipmentCount} LÁ</small></div></button><div class="center-medallion"><span>✪</span><strong>TRUY TÌM<br>TRÙM MAFIA</strong><small>TRUST NO ONE</small></div><button type="button" data-board-item="gun" draggable="true" aria-label="Lấy súng ở giữa bàn" class="gun-item interactive-stack"><div class="gun-silhouette"><svg viewBox="0 0 180 120" class="pistol-svg" aria-hidden="true"><path d="M18 51H132Q146 52 145 65L134 72L107 69L92 110L59 109L69 73L44 74L25 63Z" fill="#5a5b5b" stroke="#d2c7a5" stroke-width="4"/><path d="M26 46h115l12 10-12 8H23z" fill="#777e80" stroke="#1c2022" stroke-width="6"/><circle cx="77" cy="60" r="16" fill="#283134" stroke="#a2a39d" stroke-width="6"/><path d="M143 49h32v11h-32" fill="#899194" stroke="#1d2429" stroke-width="4"/><path d="M86 73l-10 29 13-3 17-29" fill="#4f3327" stroke="#161616" stroke-width="3"/></svg></div><strong>SÚNG</strong><small>${state.gunsFree} CÒN LẠI</small></button></div><div class="table-caption">CHẠM VẬT THỂ ĐỂ THỰC HIỆN · GIỮ BÍ MẬT · TÌM ĐỒNG MINH</div></div></div></div><div class="footer">Luật thực thi trên máy chủ • Vai trò chưa công khai chỉ hiển thị cho chủ sở hữu • Bản thử nghiệm</div></section><aside class="side"><div class="panel"><div class="panelhead"><h3>THẺ DANH TÍNH CỦA BẠN</h3><span class="pill ${me.alive?'green':'red'}">${me.alive?'CÒN SỐNG':'ĐÃ LOẠI'}</span></div><div class="panelbody"><div class="secretcards">${cards}</div><div class="my-info">Phe của bạn: <strong>${state.myTeam==='honest'?'ĐIỆP VIÊN':state.myTeam==='crooked'?'MAFIA':'CHIẾN THẮNG ĐƠN ĐỘC'}</strong></div><div class="my-info">${me.wounded?'🩸 Bạn đang có 1 dấu bị thương.':'◉ Bạn chưa bị thương.'}</div></div></div><div class="panel"><div class="panelhead"><h3>HƯỚNG DẪN LƯỢT</h3><small class="muted">${state.phase==='action'?'CHỌN 1 HÀNH ĐỘNG':state.phase==='aim'?'NGẮM / KẾT THÚC':''}</small></div><div class="panelbody">${wins?`${state.isOwner?buttons('↻ CHƠI VÁN MỚI','restart','primary wide'):''}`:actions()}</div></div><div class="panel"><div class="panelhead"><h3>TRANG BỊ</h3><span class="pill">${state.hand.length}/1</span></div><div class="panelbody">${state.hand.length?`<div class="hand-tray">${state.hand.map((eq,i)=>renderGear(eq,i)).join('')}</div>`:'<div class="empty-equipment"><span>▤</span><p>Chưa có trang bị. Hãy dùng hành động “Lấy trang bị”.</p></div>'}</div></div><div class="panel last"><div class="panelhead"><h3>NHẬT KÝ VÁN CHƠI</h3><small class="muted">${state.direction===1?'↻ Thuận chiều':'↺ Ngược chiều'}</small></div><div class="panelbody"><div class="log">${priv}${log||'<p>Chưa có sự kiện.</p>'}</div><div class="chatline"><input maxlength="200" id="chat" placeholder="Trao đổi hoặc tung tin giả..."><button class="btn" data-act="chat">Gửi</button></div></div></div></aside></div></main>`;}
-function render(){if(!state){home();return;}if(state.status==='lobby')lobby();else board();}
-function modal(title,fields,submitText,callback,desc=''){const m=$('#modal');m.classList.remove('hide');m.innerHTML=`<section class="modal"><div class="eyebrow">LỆNH TÁC CHIẾN</div><h3>${esc(title)}</h3>${desc?`<p>${esc(desc)}</p>`:''}<div id="formfields">${fields}</div><div class="modalbuttons">${buttons('Huỷ','close','ghost')}${buttons(esc(submitText),'confirm','primary')}</div></section>`;m._callback=callback;}
+function board(){let me=state.players[state.me];const cards=state.myCards.map((c,i)=>`<button type="button" data-own-card="${i}" class="secret physical-card ${c.type} ${eligibleCard(state.me,i)?'tappable':''}"><small>LÁ ${i+1} ${c.revealed?'· CÔNG KHAI':'· BÍ MẬT'}</small><div class="symbol illustrated-role">${roleArt(c.type)}</div><strong>${label[c.type]}</strong><span class="card-stamp">THẺ DANH TÍNH</span></button>`).join('');const hand=state.hand[0];const log=state.log.slice().reverse().map(x=>`<p>${esc(x.msg)}</p>`).join('');const priv=state.privateLog.slice().reverse().map(x=>`<p><strong>RIÊNG BẠN:</strong> ${esc(x)}</p>`).join('');const turnPlayer=state.players[state.turn];const wins=state.status==='finished';const bots=state.players.filter(p=>p.bot).length;root.innerHTML=navbar('CHIẾN DỊCH ĐIỀU TRA')+`<main class="layout"><div class="banner noir-banner"><div><div class="eyebrow">PHÒNG ${esc(state.code)} • LƯỢT ${state.round} ${bots?'• 🤖 '+bots+' BOT':''}</div><h2>${wins?'🏆 '+esc(state.winner):`ĐẾN LƯỢT: ${esc(turnPlayer.name)}`}</h2></div><div class="right"><span class="pill ${wins?'green':state.pending?.kind==='shot'?'red':'gold'}">${wins?'KẾT THÚC':state.pending?.kind==='shot'?'ĐANG XỬ LÝ BẮN':'ĐANG CHƠI'}</span>${buttons('⧉ Mã phòng','copy','ghost')}</div></div>${interactionGuide()}<div class="gamegrid"><section class="board-wrap"><div class="board physical-board"><div class="playergrid playergrid-physical">${state.players.map((p,i)=>seatBox(p,i)).join('')}<div class="table-center">${reactionBanner()}<div class="center-label">HỒ SƠ MẬT • LƯỢT ${state.round}</div><div class="table-items"><button type="button" data-board-item="equipment" draggable="true" aria-label="Rút trang bị từ chồng bài" class="item-stack interactive-stack"><div class="stack-back back3"></div><div class="stack-back back2"></div><div class="stack-top"><div class="equ-symbol">▤</div><strong>TRANG BỊ</strong><small>${state.equipmentCount} LÁ</small></div></button><div class="center-medallion"><span>✪</span><strong>TRUY TÌM<br>TRÙM MAFIA</strong><small>TRUST NO ONE</small></div><button type="button" data-board-item="gun" draggable="true" aria-label="Lấy súng ở giữa bàn" class="gun-item interactive-stack"><div class="gun-silhouette"><svg viewBox="0 0 180 120" class="pistol-svg" aria-hidden="true"><path d="M18 51H132Q146 52 145 65L134 72L107 69L92 110L59 109L69 73L44 74L25 63Z" fill="#5a5b5b" stroke="#d2c7a5" stroke-width="4"/><path d="M26 46h115l12 10-12 8H23z" fill="#777e80" stroke="#1c2022" stroke-width="6"/><circle cx="77" cy="60" r="16" fill="#283134" stroke="#a2a39d" stroke-width="6"/><path d="M143 49h32v11h-32" fill="#899194" stroke="#1d2429" stroke-width="4"/><path d="M86 73l-10 29 13-3 17-29" fill="#4f3327" stroke="#161616" stroke-width="3"/></svg></div><strong>SÚNG</strong><small>${state.gunsFree} CÒN LẠI</small></button></div><div class="table-caption">CHẠM VẬT THỂ ĐỂ THỰC HIỆN · GIỮ BÍ MẬT · TÌM ĐỒNG MINH</div></div></div></div><div class="footer">Luật thực thi trên máy chủ • Vai trò chưa công khai chỉ hiển thị cho chủ sở hữu • Bản thử nghiệm</div></section><aside class="side"><div class="panel"><div class="panelhead"><h3>THẺ DANH TÍNH CỦA BẠN</h3><span class="pill ${me.alive?'green':'red'}">${me.alive?'CÒN SỐNG':'ĐÃ LOẠI'}</span></div><div class="panelbody"><div class="secretcards">${cards}</div><div class="my-info">Phe của bạn: <strong>${state.myTeam==='honest'?'ĐIỆP VIÊN':state.myTeam==='crooked'?'MAFIA':'CHIẾN THẮNG ĐƠN ĐỘC'}</strong></div><div class="my-info">${me.wounded?'🩸 Bạn đang có 1 dấu bị thương.':'◉ Bạn chưa bị thương.'}</div></div></div><div class="panel"><div class="panelhead"><h3>HƯỚNG DẪN LƯỢT</h3><small class="muted">${state.phase==='action'?'CHỌN 1 HÀNH ĐỘNG':state.phase==='aim'?'NGẮM / KẾT THÚC':''}</small></div><div class="panelbody">${wins?`${state.isOwner?buttons('↻ CHƠI VÁN MỚI','restart','primary wide'):''}`:actions()}</div></div><div class="panel"><div class="panelhead"><h3>TRANG BỊ</h3><span class="pill">${state.hand.length}/1</span></div><div class="panelbody">${state.hand.length?`<div class="hand-tray">${state.hand.map((eq,i)=>renderGear(eq,i)).join('')}</div>`:'<div class="empty-equipment"><span>▤</span><p>Chưa có trang bị. Hãy dùng hành động “Lấy trang bị”.</p></div>'}</div></div><div class="panel last"><div class="panelhead"><h3>NHẬT KÝ VÁN CHƠI</h3><small class="muted">${state.direction===1?'↻ Thuận chiều':'↺ Ngược chiều'}</small></div><div class="panelbody"><div class="log">${priv}${log||'<p>Chưa có sự kiện.</p>'}</div><div class="chatline"><input maxlength="200" id="chat" placeholder="Trao đổi hoặc tung tin giả..."><button class="btn" data-act="chat">Gửi</button></div></div></div></aside></div></main>`;}
+function render(){
+ const context=state?JSON.stringify([state.code,state.status,state.turn,state.phase,state.pending]):null;
+ if(context!==interactionContext){pick=null;confirmation=null;const m=$('#modal');m.classList.add('hide');m._callback=null;interactionContext=context;}
+ if(pick&&!state?.hand.some(eq=>eq.id===pick.id))pick=null;
+ if(state?.pending&&!['shot'].includes(state.pending.kind))pick=null;
+ if(!state){home();return;}if(state.status==='lobby')lobby();else board();root.dataset&&(root.dataset.interactionState=interactionState());}
+function modal(title,fields,submitText,callback,desc=''){confirmation=confirmation||'SELECT_PLAYER';const m=$('#modal');m.classList.remove('hide');m.innerHTML=`<section class="modal"><div class="eyebrow">LỆNH TÁC CHIẾN</div><h3>${esc(title)}</h3>${desc?`<p>${esc(desc)}</p>`:''}<div id="formfields">${fields}</div><div class="modalbuttons">${buttons('Huỷ','close','ghost')}${buttons(esc(submitText),'confirm','primary')}</div></section>`;m._callback=callback;if(root.dataset)root.dataset.interactionState=interactionState();}
 function field(labelText,key,opts,hasBlank=false){return `<div class="field"><label>${esc(labelText)}</label><select name="${esc(key)}">${hasBlank?'<option value="">Không đổi / không chọn</option>':''}${opts.map(({v,t})=>`<option value="${esc(v)}">${esc(t)}</option>`).join('')}</select></div>`;}
 const targetOptions=(filter=()=>true)=>state.players.filter(filter).map(p=>({v:p.seat,t:`Ghế ${p.seat+1} · ${p.name}${!p.alive?' (đã loại)':''}`}));
 const cardOptions=(idx,hiddenOnly=true)=>{const p=state.players[idx];if(!p)return[];return p.cards.map((c,i)=>({v:i,t:`Lá ${i+1}${c.shown?' · đã lật':' · đang úp'}`})).filter((x,i)=>!hiddenOnly||!p.cards[i].shown);};
@@ -127,7 +163,7 @@ function chooseTurn(type){const self=state.me;switch(type){
  case 'investigate':{const opts=targetOptions(p=>p.seat!==self&&p.alive&&!p.effects.disguise&&p.cards.some(c=>!c.shown));if(!opts.length)return notif('Không có mục tiêu hợp lệ.');return playerSlotPrompt('Điều tra một người',opts,v=>send({type:'actionInvestigate',...v}));}
  case 'arm':return send({type:'actionArm'});
  case 'equip':return send({type:'actionEquip'});
- case 'shoot':return send({type:'actionShoot'});
+ case 'shoot':return confirmPlay('Xác nhận nổ súng','Các trang bị phản ứng được xử lý trước phát bắn.',()=>send({type:'actionShoot'}));
  case 'chooseAim':return simpleTarget('Chọn mục tiêu ngắm',targetOptions(p=>p.seat!==self&&p.alive),v=>send({type:'chooseAim',target:v.target}));
  case 'chooseReveal':return promptSimple('Lật một lá của bạn',field('Lá phải công khai','slot',myCardOptions(true)),v=>send({type:'chooseReveal',slot:v.slot}));
  case 'serumReveal':return promptSimple('Huyết Thanh Nói Thật',field('Chọn lá để công khai','slot',myCardOptions(true)),v=>send({type:'serumReveal',slot:v.slot}));
@@ -146,17 +182,17 @@ function useEquipment(){const eq=state.hand[0];if(!eq)return;const id=eq.id;cons
   fields+=field('Mục tiêu 2','target2',second);if(id!=='confiscation')fields+=field('Lá của người thứ hai','slot2',cardOptions(Number(second[0].v),id==='wiretap'));
   return promptSimple(eq.name,fields,v=>send({type:'playEquipment',...v}),eq.description);
  }
- if(id==='bribe'){const opts=others.filter(x=>state.players[x.v].cards.some(c=>!c.shown));if(!opts.length)return notif('Không có mục tiêu hợp lệ.');return promptSimple(eq.name,field('Mục tiêu','target',opts)+field('Điều tra lá','slot',cardOptions(Number(opts[0].v)))+field('Nếu là bài thường, đổi với lá của bạn (tuỳ chọn)','ownSlot',myCardOptions(false),true),v=>send({type:'playEquipment',...v}),eq.description);}
+ if(id==='bribe'){pick={kind:'equipment',id,stage:'target'};render();return;}
  const targets=id==='k9'||id==='taser'?armed:id==='medkit'?wounded:id==='evidence'?targetOptions(p=>p.alive&&p.seat!==state.me&&p.handCount):id==='defib'?targetOptions(p=>!p.alive):id==='polygraph'||id==='serum'?others:all;
  return simpleTarget(eq.name,targets,v=>send({type:'playEquipment',target:v.target}));
 }
 
-function confirmPlay(title,summary,action){modal(title,'<div class="confirm-body">'+esc(summary)+'</div>','Xác nhận',action);}
+function confirmPlay(title,summary,action){confirmation=title==='Xác nhận nổ súng'?'shot':'SELECT_CARD';modal(title,'<div class="confirm-body">'+esc(summary)+'</div>','Xác nhận',action);}
 function handleOwnCard(slot){
   const p=state.players[state.me];if(!state.myCards[slot])return;
+  if(state.pending?.kind==='bribe'&&state.pending.owner===state.me&&state.pending.canSwap)return confirmPlay('Đổi Tiền Bẩn',`Đổi lá của bạn số ${slot+1}?`,()=>send({type:'resolveBribe',decisionId:state.pending.decisionId,swap:true,ownSlot:slot}));
   if(state.pending?.kind==='reveal'&&state.turn===state.me&&!state.myCards[slot].revealed)return confirmPlay('Công khai danh tính',`Lật lá số ${slot+1} (${label[state.myCards[slot].type]}) cho tất cả người chơi?`,()=>send({type:'chooseReveal',slot}));
   if(state.pending?.kind==='serum'&&state.pending.target===state.me&&!state.myCards[slot].revealed)return confirmPlay('Huyết Thanh Nói Thật',`Lật công khai lá số ${slot+1}?`,()=>send({type:'serumReveal',slot}));
-  if(pick?.kind==='equipment'&&pick.id==='bribe'&&pick.stage==='own')return finishEquipment({target:pick.selected,slot:pick.slot,ownSlot:slot});
   showCardDetail(label[state.myCards[slot].type],`Lá số ${slot+1} · ${state.myCards[slot].revealed?'Đã công khai':'Bí mật chỉ bạn biết'}`,cardSeal(state.myCards[slot].type));
 }
 function showCardDetail(title,desc,art){const m=$('#modal');m.classList.remove('hide');m.innerHTML=`<section class="modal card-inspect"><div class="eyebrow">HỒ SƠ CHI TIẾT</div><div class="inspector-art">${esc(art||'✦')}</div><h3>${esc(title)}</h3><p>${esc(desc)}</p><div class="modalbuttons">${buttons('Đóng','close','primary')}</div></section>`;}
@@ -166,7 +202,7 @@ function handleCardClick(seat,slot){
   const p=state.players[seat],c=p?.cards[slot];if(!p||!c)return;
   if(pick?.kind==='equipment'){
     if(!eligibleCard(seat,slot))return notif('Lá này không hợp lệ với trang bị đang chọn.');
-    if(pick.id==='bribe'){pick.selected=seat;pick.slot=slot;pick.stage='own';render();return;}
+    if(pick.id==='bribe')return finishEquipment({target:seat,slot});
     if(['wiretap','blackmail'].includes(pick.id)){
       if(pick.selected===undefined){pick.selected=seat;pick.slot=slot;render();return;}
       return finishEquipment({target:pick.selected,slot:pick.slot,target2:seat,slot2:slot});
@@ -199,6 +235,7 @@ function handleSeatClick(seat){
 function activateEquipment(index=0){
   if(!state?.hand?.[index])return;
   if(state.pending?.kind==='discard'&&state.turn===state.me){return confirmPlay('Bỏ trang bị',`Bỏ ${state.hand[index].name} và giữ lại lá khác?`,()=>send({type:'discardHand',index}));}
+  if(state.pending&&state.pending.kind!=='shot')return notif('Hãy hoàn tất lựa chọn đang chờ.');
   const eq=state.hand[index];if(state.hand.length!==1)return notif('Trước tiên hãy bỏ bớt trang bị để chỉ giữ một lá.');
   if(['vest','smoke','coffee','camera','database','metal'].includes(eq.id))return confirmPlay(`Dùng ${eq.name}`,eq.description,()=>send({type:'playEquipment'}));
   pick={kind:'equipment',id:eq.id,stage:'target'};render();
@@ -235,7 +272,8 @@ root.addEventListener('drop',e=>{e.preventDefault();const seatEl=e.target.closes
   if(drag.kind==='gear'){activateEquipment(Number(drag.value));if(!state.hand[Number(drag.value)])return;if(cardEl){const [seat,slot]=cardEl.dataset.pickCard.split(':').map(Number);return handleCardClick(seat,slot);}if(seatEl)return handleSeatClick(Number(seatEl.dataset.pickSeat??seatEl.dataset.selectPerson));}
 });
 root.addEventListener('click',async e=>{const button=e.target.closest('[data-act]');if(!button)return;const action=button.dataset.act;
- if(action==='cancelPick'){pick=null;render();return;}if(action==='skipSwap'&&pick?.id==='bribe')return finishEquipment({target:pick.selected,slot:pick.slot});
+ if(action==='declineBribe')return send({type:'resolveBribe',decisionId:state.pending?.decisionId,swap:false});
+ if(action==='cancelPick'){pick=null;confirmation=null;render();return;}
  if(action==='create'||action==='join'||action==='solo')return newRoom(action);
  if(action==='copy'){await navigator.clipboard?.writeText(state.code);return notif('Đã sao chép mã phòng: '+state.code);}
  if(action==='share'){await navigator.clipboard?.writeText(location.href);return notif('Đã sao chép đường dẫn mời.');}
@@ -244,6 +282,9 @@ root.addEventListener('click',async e=>{const button=e.target.closest('[data-act
  if(action==='chat'){const input=$('#chat');if(!input?.value.trim())return;const message=input.value;input.value='';return send({type:'chat',message});}
  if(action==='useEquipment')return activateEquipment();return chooseTurn(action);
 });
-$('#modal').addEventListener('click',e=>{const action=e.target.closest('[data-act]')?.dataset.act;if(action==='close'||e.target===$('#modal'))$('#modal').classList.add('hide');if(action==='confirm'){const cb=$('#modal')._callback;$('#modal').classList.add('hide');cb?.();}});
+$('#modal').addEventListener('click',e=>{const action=e.target.closest('[data-act]')?.dataset.act;if(action==='close'||e.target===$('#modal')){confirmation=null;$('#modal').classList.add('hide');}if(action==='confirm'){const cb=$('#modal')._callback;$('#modal').classList.add('hide');cb?.();}});
 // Keep rendering separate from modals: action response arrives through SSE after server validation.
 const code=codeFromURL();if(code&&localStorage.getItem('sd-'+code)){session={code,token:localStorage.getItem('sd-'+code)};connect();}else home();
+
+// Update text only: never replace focused controls while a deadline ticks.
+if(typeof setInterval==='function')setInterval(()=>{if(typeof document.querySelectorAll==='function')for(const el of document.querySelectorAll('[data-countdown]'))el.textContent=String(Math.max(0,Math.ceil((Number(el.dataset.countdown)-Date.now())/1000)));},250);

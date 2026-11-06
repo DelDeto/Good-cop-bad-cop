@@ -70,3 +70,21 @@ test('Cloudflare Durable Object schedules bot turns and alarm advances the room'
  assert.equal(after.players[1].bot,true);
  assert.ok(after.players[1].cards.every(x=>x.type===null));
 });
+
+test('Durable Object Bribe persists private pending across re-instantiation; duplicate commands cannot swap twice',async()=>{
+ const {GameRoom}=await loadWorker();let saved;
+ const storage={get:async()=>saved?structuredClone(saved):undefined,put:async(k,v)=>{saved=structuredClone(v);},setAlarm:async()=>{}};
+ let room=new GameRoom({storage},{});
+ const req=(op,d)=>new Request('https://game.internal/'+op,{method:'POST',body:JSON.stringify(d)});
+ const first=await (await room.fetch(req('create',{name:'Owner',code:'ABC123'}))).json();const users=[first];
+ for(const name of ['B','C','D'])users.push(await (await room.fetch(req('join',{name}))).json());
+ await room.fetch(req('command',{token:first.token,command:{type:'start'}}));
+ saved.players[0].hand=['bribe'];saved.players[1].cards[2].type='honest';
+ const response=await room.fetch(req('command',{token:first.token,command:{type:'playEquipment',target:1,slot:2}}));assert.equal(response.status,200);const own=(await response.json()).state;assert.ok(own.pending.canSwap);assert.ok(own.known[`${saved.players[1].id}:2`]);
+ room=new GameRoom({storage},{});
+ const state=async token=>(await (await room.fetch(new Request(`https://game.internal/state?token=${token}`))).json());
+ assert.deepEqual((await state(first.token)).pending,own.pending);assert.deepEqual((await state(users[2].token)).pending,{kind:'bribe',owner:0});assert.deepEqual((await state(users[2].token)).known,{});
+ const cmd={type:'resolveBribe',decisionId:own.pending.decisionId,swap:true,ownSlot:0};
+ assert.equal((await room.fetch(req('command',{token:first.token,command:cmd}))).status,200);const after=structuredClone(saved);
+ assert.equal((await room.fetch(req('command',{token:first.token,command:cmd}))).status,400);assert.deepEqual(saved,after);
+});
