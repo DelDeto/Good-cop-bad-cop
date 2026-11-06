@@ -3,6 +3,7 @@
 const rand = (n)=>{if(n<=1)return 0;const limit=Math.floor(0x100000000/n)*n;const a=new Uint32Array(1);do{crypto.getRandomValues(a);}while(a[0]>=limit);return a[0]%n;};
 const uid = ()=>crypto.randomUUID();
 const shuffle = (a)=>{a=[...a];for(let i=a.length-1;i>0;i--){const j=rand(i+1);[a[i],a[j]]=[a[j],a[i]];}return a;};
+export const BRIBE_DECISION_MS=60_000;
 const labels = {honest:'Điệp viên',crooked:'Mafia',agent:'Đặc vụ',kingpin:'Trùm Mafia'};
 export const EQUIPMENT = [
  ['vest','Áo Chống Đạn','Phòng thủ','Phản ứng khi bạn bị bắn: chặn phát bắn nhắm vào mình.'],
@@ -108,7 +109,7 @@ function playCard(g,p,cmd){assert(p.hand.length===1,'Bạn cần giữ đúng m�
  case 'polygraph':for(let i=0;i<3;i++){if(!a.cards[i].revealed)remember(g,p,a,i);if(!p.cards[i].revealed)remember(g,a,p,i);}break;
  case 'wire':a.effects.wire=p.id;break;
  case 'blackmail':{const i=Number(slot),j=Number(cmd.slot2);[a.cards[i],b.cards[j]]=[b.cards[j],a.cards[i]];clearKnowledge(g,a,b);checkWin(g);break;}
- case 'bribe':{investigate(g,p,a,slot,'equip');g.pending={kind:'bribe',owner:self,target:g.players.indexOf(a),slot:Number(slot),cardId:c.id,decisionId:uid()};break;}
+ case 'bribe':{investigate(g,p,a,slot,'equip');g.pending={kind:'bribe',owner:self,target:g.players.indexOf(a),slot:Number(slot),cardId:c.id,decisionId:uid(),deadline:Date.now()+BRIBE_DECISION_MS};break;}
  case 'confiscation':a.gun=false;a.aim=null;b.gun=true;b.aim=null;b.gunFresh=true;if(shot&&g.pending.shooter===g.players.indexOf(a))cancelShot(g);break;
  case 'evidence':p.hand.push(a.hand.shift());break;
  case 'database':for(const q of g.players.filter(q=>q.alive&&!q.cards.some(c=>c.revealed)&&q!==p&&!q.effects.disguise)){const h=hidden(q);if(h.length)investigate(g,p,q,h[0],'equip');}break;
@@ -143,7 +144,7 @@ export function startGame(g,token){assert(token===g.ownerToken,'Chỉ chủ phò
  for(let i=0;i<n;i++){const p=g.players[i];p.cards=shuffle(roles[i]).map(type=>({id:uid(),type,revealed:false}));p.alive=true;p.gun=false;p.aim=null;p.gunFresh=false;p.known={};p.privateLog=[];p.wounded=false;p.effects={};p.hand=[deck.pop()];}
  g.deck=deck;pushLog(g,`🎬 Ván đấu bắt đầu (${n} người). Đến lượt ${g.players[0].name}.`);
 }
-export function command(g,token,cmd){const actor=g.players.find(p=>p.token===token);assert(actor&&!actor.bot,'Người chơi không hợp lệ.');return executeCommand(g,token,cmd);}
+export function command(g,token,cmd){const actor=g.players.find(p=>p.token===token);assert(actor&&!actor.bot,'Người chơi không hợp lệ.');resolveTimedBribe(g);return executeCommand(g,token,cmd);}
 function executeCommand(g,token,cmd){const p=g.players.find(p=>p.token===token);assert(p,'Không tìm thấy người chơi.');assert(cmd&&typeof cmd.type==='string','Lệnh không hợp lệ.');if(cmd.type==='setBots'){setBots(g,token,Number(cmd.count),cmd.level||'normal');return;}
  if(g.pending?.kind==='bribe'&& !['resolveBribe','chat'].includes(cmd.type))throw Error('Vui lòng hoàn tất Tiền Bẩn.');
  if(cmd.type==='start'||cmd.type==='restart'){startGame(g,token);return;}
@@ -196,7 +197,7 @@ function allegiance(p){
 }
 function pendingView(g,seat){
  const p=g.pending;if(!p)return null;
- if(p.kind==='bribe')return {kind:p.kind,owner:p.owner,...(p.owner===seat?{target:p.target,slot:p.slot,decisionId:p.decisionId,canSwap:['honest','crooked'].includes(g.players[p.target].cards[p.slot].type)}:{})};
+ if(p.kind==='bribe')return {kind:p.kind,owner:p.owner,...(p.owner===seat?{target:p.target,slot:p.slot,decisionId:p.decisionId,deadline:bribeDeadline(g),canSwap:['honest','crooked'].includes(g.players[p.target].cards[p.slot].type)}:{})};
  if(p.kind==='shot')return {kind:p.kind,shooter:p.shooter,victim:p.victim,passes:[...p.passes],since:p.since,deadline:shotDeadline(g),forceAt:p.since+15000};
  return {kind:p.kind,...(p.target!==undefined?{target:p.target}:{})};
 }
@@ -281,7 +282,7 @@ export function needsBotStep(g){if(g.status!=='playing'||!g.players.some(p=>p.bo
  if(g.pending?.kind==='serum')return !!g.players[g.pending.target]?.bot;
  return !!g.players[g.turn]?.bot;
 }
-export function botStep(g){if(!needsBotStep(g))return false;
+export function botStep(g){if(resolveTimedBribe(g))return true;if(!needsBotStep(g))return false;
  let bot,move;
  if(g.pending?.kind==='shot'){
   bot=g.players.find((p,i)=>p.bot&&p.alive&&!g.pending.passes.includes(i));move=botShotReaction(g,bot);
@@ -335,3 +336,15 @@ export function botStep(g){if(!needsBotStep(g))return false;
 // Solo/bot rooms automatically close a shot reaction window after 20 seconds.
 export function shotDeadline(g){return g.status==='playing'&&g.players.some(p=>p.bot)&&g.pending?.kind==='shot'?g.pending.since+20000:null;}
 export function resolveTimedShot(g){const until=shotDeadline(g);if(until===null||Date.now()<until)return false;resolveShot(g);return true;}
+
+// Decisions expire even with no client online. Legacy pending records without a
+// timestamp decline immediately on first recovery; reconnect never extends time.
+export function bribeDeadline(g){return g.status==='playing'&&g.pending?.kind==='bribe'?(g.pending.deadline??0):null;}
+export function resolveTimedBribe(g){
+ const deadline=bribeDeadline(g);if(deadline===null||Date.now()<deadline)return false;
+ const owner=g.players[g.pending.owner];g.pending=null;
+ pushLog(g,`💵 ${owner.name}: hết thời gian Tiền Bẩn, không hoán đổi.`);
+ return true;
+}
+export function pendingDeadline(g){return bribeDeadline(g)??shotDeadline(g);}
+export function resolveTimedPending(g){return resolveTimedBribe(g)||resolveTimedShot(g);}

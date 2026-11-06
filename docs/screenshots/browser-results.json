@@ -7,6 +7,7 @@
     "Bribe investigate then swap",
     "Bribe pending survives reload",
     "Bribe leader decline consumes",
+    "Bribe timeout reload declines without swap or refund",
     "reaction reload and vest defence",
     "desktop and mobile rendering"
   ],

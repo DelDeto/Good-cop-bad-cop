@@ -1,0 +1,338 @@
+TAP version 13
+# Subtest: singleplayer bot room configured from 3 to 7 bots with levels
+ok 1 - singleplayer bot room configured from 3 to 7 bots with levels
+  ---
+  duration_ms: 9.229079
+  type: 'test'
+  ...
+# Subtest: cannot spoof bot action or change bots after start
+ok 2 - cannot spoof bot action or change bots after start
+  ---
+  duration_ms: 0.830581
+  type: 'test'
+  ...
+# Subtest: bots continue and finish a full game without client-side hidden data
+ok 3 - bots continue and finish a full game without client-side hidden data
+  ---
+  duration_ms: 42.954342
+  type: 'test'
+  ...
+# Subtest: bots automatically pass or defend during shots, not before
+ok 4 - bots automatically pass or defend during shots, not before
+  ---
+  duration_ms: 0.554262
+  type: 'test'
+  ...
+# (node:5491) ExperimentalWarning: The MockTimers API is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Bribe timeout boundary auto-declines once, preserves private investigation and spent card
+ok 5 - Bribe timeout boundary auto-declines once, preserves private investigation and spent card
+  ---
+  duration_ms: 9.179705
+  type: 'test'
+  ...
+# Subtest: late owner command cannot race deadline to exchange; early decision cancels expiration
+ok 6 - late owner command cannot race deadline to exchange; early decision cancels expiration
+  ---
+  duration_ms: 2.875852
+  type: 'test'
+  ...
+# Subtest: legacy pending without timestamp declines safely on recovery with no private log in public output
+ok 7 - legacy pending without timestamp declines safely on recovery with no private log in public output
+  ---
+  duration_ms: 0.68152
+  type: 'test'
+  ...
+# Subtest: pending Bribe blocks card-moving equipment and ignores client deadline/target overrides
+ok 8 - pending Bribe blocks card-moving equipment and ignores client deadline/target overrides
+  ---
+  duration_ms: 1.049416
+  type: 'test'
+  ...
+# Subtest: Cloudflare Worker: homepage, create, join, play and player privacy
+ok 9 - Cloudflare Worker: homepage, create, join, play and player privacy
+  ---
+  duration_ms: 62.878317
+  type: 'test'
+  ...
+# Subtest: Cloudflare Durable Object schedules bot turns and alarm advances the room
+ok 10 - Cloudflare Durable Object schedules bot turns and alarm advances the room
+  ---
+  duration_ms: 13.468512
+  type: 'test'
+  ...
+# Subtest: Durable Object Bribe persists private pending across re-instantiation; duplicate commands cannot swap twice
+ok 11 - Durable Object Bribe persists private pending across re-instantiation; duplicate commands cannot swap twice
+  ---
+  duration_ms: 16.151969
+  type: 'test'
+  ...
+# Subtest: đủ 23 trang bị riêng biệt
+ok 12 - đủ 23 trang bị riêng biệt
+  ---
+  duration_ms: 1.330792
+  type: 'test'
+  ...
+# Subtest: chưa đủ 4 người thì không bắt đầu
+ok 13 - chưa đủ 4 người thì không bắt đầu
+  ---
+  duration_ms: 2.639532
+  type: 'test'
+  ...
+# Subtest: chia 3 lá bí mật/người và chỉ một thủ lĩnh mỗi phe
+ok 14 - chia 3 lá bí mật/người và chỉ một thủ lĩnh mỗi phe
+  ---
+  duration_ms: 4.469494
+  type: 'test'
+  ...
+# Subtest: trạng thái gửi cho người khác không lộ bài bí mật
+ok 15 - trạng thái gửi cho người khác không lộ bài bí mật
+  ---
+  duration_ms: 1.005189
+  type: 'test'
+  ...
+# Subtest: không thể hành động sai lượt
+ok 16 - không thể hành động sai lượt
+  ---
+  duration_ms: 1.219507
+  type: 'test'
+  ...
+# Subtest: điều tra trả kết quả riêng, không công khai cho người khác
+ok 17 - điều tra trả kết quả riêng, không công khai cho người khác
+  ---
+  duration_ms: 0.981705
+  type: 'test'
+  ...
+# Subtest: lấy súng yêu cầu lật bài và chọn ngắm trước khi kết thúc lượt
+ok 18 - lấy súng yêu cầu lật bài và chọn ngắm trước khi kết thúc lượt
+  ---
+  duration_ms: 0.755279
+  type: 'test'
+  ...
+# Subtest: bắt đầu cửa sổ bắn, mọi người bỏ qua thì xử lý
+ok 19 - bắt đầu cửa sổ bắn, mọi người bỏ qua thì xử lý
+  ---
+  duration_ms: 0.977619
+  type: 'test'
+  ...
+# Subtest: bị Áo Chống Đạn: huỷ phát bắn và trả súng
+ok 20 - bị Áo Chống Đạn: huỷ phát bắn và trả súng
+  ---
+  duration_ms: 1.264504
+  type: 'test'
+  ...
+# Subtest: cà phê không được dùng lượt mình, được dùng lượt khác
+ok 21 - cà phê không được dùng lượt mình, được dùng lượt khác
+  ---
+  duration_ms: 1.648043
+  type: 'test'
+  ...
+# Subtest: hộp cấp cứu chữa thương cho người khác
+ok 22 - hộp cấp cứu chữa thương cho người khác
+  ---
+  duration_ms: 2.51629
+  type: 'test'
+  ...
+# Subtest: người bị loại không xem được bài úp của người khác
+ok 23 - người bị loại không xem được bài úp của người khác
+  ---
+  duration_ms: 0.47245
+  type: 'test'
+  ...
+# Subtest: local: Bribe hidden information is private in command, GET, live SSE, reconnect, and invalid errors
+ok 24 - local: Bribe hidden information is private in command, GET, live SSE, reconnect, and invalid errors
+  ---
+  duration_ms: 71.51339
+  type: 'test'
+  ...
+# Subtest: local: Wire private result reaches only authorized owner/investigator over HTTP and SSE
+ok 25 - local: Wire private result reaches only authorized owner/investigator over HTTP and SSE
+  ---
+  duration_ms: 11.42307
+  type: 'test'
+  ...
+# Subtest: local: expired disconnected Bribe resumes before reconnect and rejects stale swap without refund
+# (node:5519) ExperimentalWarning: The MockTimers API is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+ok 26 - local: expired disconnected Bribe resumes before reconnect and rejects stale swap without refund
+  ---
+  duration_ms: 8.96052
+  type: 'test'
+  ...
+# Subtest: worker: Bribe hidden information is private in command, GET, live SSE, reconnect, and invalid errors
+ok 27 - worker: Bribe hidden information is private in command, GET, live SSE, reconnect, and invalid errors
+  ---
+  duration_ms: 33.892792
+  type: 'test'
+  ...
+# Subtest: worker: Wire private result reaches only authorized owner/investigator over HTTP and SSE
+ok 28 - worker: Wire private result reaches only authorized owner/investigator over HTTP and SSE
+  ---
+  duration_ms: 7.205559
+  type: 'test'
+  ...
+# Subtest: worker: expired disconnected Bribe resumes before reconnect and rejects stale swap without refund
+ok 29 - worker: expired disconnected Bribe resumes before reconnect and rejects stale swap without refund
+  ---
+  duration_ms: 8.809066
+  type: 'test'
+  ...
+# Subtest: Worker restart keeps original deadline; alarm expires disconnected human and persists before rejection
+ok 30 - Worker restart keeps original deadline; alarm expires disconnected human and persists before rejection
+  ---
+  duration_ms: 8.566256
+  type: 'test'
+  ...
+# Subtest: Worker duplicate concurrent Bribe decisions and an alarm cannot apply a stale swap twice
+ok 31 - Worker duplicate concurrent Bribe decisions and an alarm cannot apply a stale swap twice
+  ---
+  duration_ms: 6.237855
+  type: 'test'
+  ...
+# Subtest: local timer resolves abandoned Bribe with zero clients and zero incoming requests
+ok 32 - local timer resolves abandoned Bribe with zero clients and zero incoming requests
+  ---
+  duration_ms: 1502.545409
+  type: 'test'
+  ...
+# Subtest: local: ordinary/leader target cannot be probed through legacy errors or unrelated observers
+ok 33 - local: ordinary/leader target cannot be probed through legacy errors or unrelated observers
+  ---
+  duration_ms: 18.720781
+  type: 'test'
+  ...
+# Subtest: worker: ordinary/leader target cannot be probed through legacy errors or unrelated observers
+ok 34 - worker: ordinary/leader target cannot be probed through legacy errors or unrelated observers
+  ---
+  duration_ms: 14.084254
+  type: 'test'
+  ...
+# Subtest: Wire owner receives exact nonfirst investigation; all other secrets remain private
+ok 35 - Wire owner receives exact nonfirst investigation; all other secrets remain private
+  ---
+  duration_ms: 6.575866
+  type: 'test'
+  ...
+# Subtest: Wire does not trigger on unrelated players, invalid investigations or dead owner
+ok 36 - Wire does not trigger on unrelated players, invalid investigations or dead owner
+  ---
+  duration_ms: 1.672759
+  type: 'test'
+  ...
+# Subtest: Wire supports multiple owners watching distinct players and equipment investigations
+ok 37 - Wire supports multiple owners watching distinct players and equipment investigations
+  ---
+  duration_ms: 0.936748
+  type: 'test'
+  ...
+# Subtest: Bribe ordinary: consume before decision, private result, locked pending, swap clears stale knowledge
+ok 38 - Bribe ordinary: consume before decision, private result, locked pending, swap clears stale knowledge
+  ---
+  duration_ms: 1.814539
+  type: 'test'
+  ...
+# Subtest: Bribe leader is legitimately investigated and consumed, swap forbidden, decline allowed
+ok 39 - Bribe leader is legitimately investigated and consumed, swap forbidden, decline allowed
+  ---
+  duration_ms: 1.395568
+  type: 'test'
+  ...
+# Subtest: Bribe declined on ordinary card keeps identities and private knowledge
+ok 40 - Bribe declined on ordinary card keeps identities and private knowledge
+  ---
+  duration_ms: 1.013933
+  type: 'test'
+  ...
+# Subtest: Bribe invalid first-stage ownSlot requests are identical for leader and ordinary with no mutation
+ok 41 - Bribe invalid first-stage ownSlot requests are identical for leader and ordinary with no mutation
+  ---
+  duration_ms: 1.729413
+  type: 'test'
+  ...
+# Subtest: Bribe invalid targets and decisions do not reveal or mutate; stale decision rejected
+ok 42 - Bribe invalid targets and decisions do not reveal or mutate; stale decision rejected
+  ---
+  duration_ms: 2.744938
+  type: 'test'
+  ...
+# Subtest: BOT watched investigation uses normal Wire privacy; BOT Bribe resolves out of turn without stuck main turn
+ok 43 - BOT watched investigation uses normal Wire privacy; BOT Bribe resolves out of turn without stuck main turn
+  ---
+  duration_ms: 2.413977
+  type: 'test'
+  ...
+# Subtest: shoot reactions redirect before defence, reset passes and deadline, reconnect restores public state
+ok 44 - shoot reactions redirect before defence, reset passes and deadline, reconnect restores public state
+  ---
+  duration_ms: 1.323412
+  type: 'test'
+  ...
+# Subtest: shot pass/force/timed order and invalid reaction leave private state intact
+ok 45 - shot pass/force/timed order and invalid reaction leave private state intact
+  ---
+  duration_ms: 1.181892
+  type: 'test'
+  ...
+# Subtest: Cloudflare assets generated exactly from public source
+ok 46 - Cloudflare assets generated exactly from public source
+  ---
+  duration_ms: 1.199258
+  type: 'test'
+  ...
+# Subtest: Wire owner may be a BOT and Bribe investigation shares only the watched result
+ok 47 - Wire owner may be a BOT and Bribe investigation shares only the watched result
+  ---
+  duration_ms: 0.511568
+  type: 'test'
+  ...
+# Subtest: board first UI offers all clickable pieces, 3 role cards and item art
+ok 48 - board first UI offers all clickable pieces, 3 role cards and item art
+  ---
+  duration_ms: 25.509166
+  type: 'test'
+  ...
+# Subtest: reveal pending highlights own card, aim phase allows target click
+ok 49 - reveal pending highlights own card, aim phase allows target click
+  ---
+  duration_ms: 1.629755
+  type: 'test'
+  ...
+# Subtest: clicking an opponent card opens an investigate confirmation
+ok 50 - clicking an opponent card opens an investigate confirmation
+  ---
+  duration_ms: 1.668674
+  type: 'test'
+  ...
+# Subtest: equipment target selection is dispatched as server validated command
+ok 51 - equipment target selection is dispatched as server validated command
+  ---
+  duration_ms: 2.150918
+  type: 'test'
+  ...
+# Subtest: Bribe card-first flow sends investigation before own-card choice, including decline and reconnect
+ok 52 - Bribe card-first flow sends investigation before own-card choice, including decline and reconnect
+  ---
+  duration_ms: 3.280452
+  type: 'test'
+  ...
+# Subtest: explicit interaction states recover selections on server change and keep optional equipment cancellation local
+ok 53 - explicit interaction states recover selections on server change and keep optional equipment cancellation local
+  ---
+  duration_ms: 2.069407
+  type: 'test'
+  ...
+# Subtest: reaction table shows public shooter/victim, deadline and only viewer defensive equipment
+ok 54 - reaction table shows public shooter/victim, deadline and only viewer defensive equipment
+  ---
+  duration_ms: 2.014355
+  type: 'test'
+  ...
+1..54
+# tests 54
+# suites 0
+# pass 54
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1912.613636

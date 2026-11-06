@@ -1,0 +1,39 @@
+name: Sprint 01 release gates
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main, feature/v1.6-sprint-01]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: sprint01-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  regression:
+    name: Node ${{ matrix.node }} / regression and privacy
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    strategy:
+      fail-fast: false
+      matrix:
+        node: [20, 22, 24]
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: ${{ matrix.node }}
+      # No external runtime dependencies and no lockfile: npm install is unnecessary.
+      - name: Full regressions including privacy and HTTP SSE
+        run: npm test
+      - name: Verify generated Cloudflare assets
+        run: npm run assets:check
+      - name: Actual server entrypoint smoke
+        run: node scripts/local-smoke.mjs
