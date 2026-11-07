@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {bundle,policy,hash,validateTag} from '../scripts/release/package.mjs';
 import {Cloudflare,smoke} from '../scripts/release/cloudflare.mjs';
-const sha='a'.repeat(40),binding={name:'GAME_ROOMS',type:'durable_object_namespace',class_name:'GameRoom',namespace_id:'b'.repeat(32)},runtime={compatibility_date:'2025-01-01',compatibility_flags:[],migration_tag:'v1',usage_model:'standard'};
+const sha='a'.repeat(40),binding={name:'GAME_ROOMS',type:'durable_object_namespace',class_name:'GameRoom',namespace_id:policy.expectedNamespace},runtime={compatibility_date:'2025-01-01',compatibility_flags:[],migration_tag:'v1',usage_model:'standard'};
 function fake(){
  let current='old',settings={bindings:[binding]},version={resources:{script_runtime:runtime,bindings:[binding]}};const calls=[];
  const request=async(url,opts={})=>{
@@ -59,7 +59,7 @@ test('release: failed smoke rolls back only our deployment with unchanged config
 });
 test('release: concurrent deployment and namespace drift prohibit unsafe rollback',async()=>{
  const f=fake(),baseline=await f.cf.inspect();f.setCurrent('someone-else');await assert.rejects(f.cf.rollback({baseline,candidate:'new'}),/Concurrent/);
- f.setCurrent('new');f.setSettings({bindings:[{...binding,namespace_id:'different'}]});await assert.rejects(f.cf.rollback({baseline,candidate:'new'}),/Configuration/);
+ f.setCurrent('new');f.setSettings({bindings:[{...binding,namespace_id:'different'}]});await assert.rejects(f.cf.rollback({baseline,candidate:'new'}),/Configuration|namespace mismatch/);
  assert.ok(!f.calls.some(c=>c.p==='/deployments'&&c.method==='POST'));
 });
 test('release: Cloudflare errors redact response bodies and token',async()=>{
@@ -72,4 +72,19 @@ test('release: production smoke validates version, commit and exact frontend ass
  const result=await smoke(p,{request});assert.equal(result.resources.length,6);
  await assert.rejects(smoke({...p,sha:'b'.repeat(40)},{request}));
  await assert.rejects(smoke({...p,assets:[{path:'/app.js',sha256:'wrong'}]},{request}),/Asset integrity/);
+});
+test('release: packaged Worker serves exact frontend bytes and build identity',async()=>{
+ const p=bundle(sha);let src=p.modules.find(m=>m.name==='worker.mjs').body;
+ for(const m of p.modules.filter(m=>m.name!=='worker.mjs')){
+  const pattern=new RegExp("import (\\w+) from '\\./"+m.name.replaceAll('.','\\.')+"';");
+  if(m.type==='text/plain')src=src.replace(pattern,(_,id)=>`const ${id}=${JSON.stringify(m.body.toString())};`);
+  else src=src.replace("from './"+m.name+"'",`from 'data:text/javascript;base64,${Buffer.from(m.body).toString('base64')}'`);
+ }
+ const worker=(await import('data:text/javascript;base64,'+Buffer.from(src).toString('base64'))).default;
+ const result=await smoke(p,{request:url=>worker.fetch(new Request(url),{})});
+ assert.equal(result.health.commit,sha);assert.equal(result.resources.length,6);
+});
+test('release: split production traffic is never overwritten',async()=>{
+ const cf=new Cloudflare({account:'c'.repeat(32),token:'redacted',request:async()=>Response.json({success:true,result:{deployments:[{versions:[{version_id:'one',percentage:50},{version_id:'two',percentage:50}]}]}})});
+ await assert.rejects(cf.active(),/split rollout/);
 });

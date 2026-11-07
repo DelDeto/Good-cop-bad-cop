@@ -40,6 +40,14 @@ jobs:
         run: npm run assets:check
       - name: Actual server entrypoint smoke
         run: node scripts/local-smoke.mjs
+      - name: Preserve repeated regression evidence
+        if: always()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7
+        with:
+          name: node-${{ matrix.node }}-regression-evidence
+          path: /tmp/gcbc-ci-repeat/
+          if-no-files-found: warn
+          retention-days: 90
 
   browser:
     name: Chromium / viewport and gameplay

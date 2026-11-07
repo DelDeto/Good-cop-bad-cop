@@ -22,9 +22,9 @@ export class Cloudflare {
   const bindings=settings.bindings;
   if(!Array.isArray(bindings)||bindings.length!==1)throw Error('Review required: expected only existing GAME_ROOMS binding; additional bindings are never silently discarded');
   const b=bindings[0];
-  if(b.name!=='GAME_ROOMS'||b.type!=='durable_object_namespace'||b.class_name!=='GameRoom'||!b.namespace_id||b.script_name&&b.script_name!==policy.worker)throw Error('Existing GAME_ROOMS / GameRoom namespace mismatch');
+  if(b.name!=='GAME_ROOMS'||b.type!=='durable_object_namespace'||b.class_name!=='GameRoom'||b.namespace_id!==policy.expectedNamespace||b.script_name&&b.script_name!==policy.worker)throw Error('Existing GAME_ROOMS / GameRoom namespace mismatch');
   const runtime=v.resources?.script_runtime;
-  if(!runtime?.compatibility_date||!runtime.migration_tag)throw Error('Cannot verify existing compatibility date / migration tag');
+  if(!runtime?.compatibility_date||runtime.migration_tag!==policy.migrationTag)throw Error('Cannot verify existing compatibility date / migration tag');
   // Preserve all runtime fields supported by version upload. Refuse future settings we cannot preserve.
   if(runtime.exports||runtime.limits)throw Error('Runtime exports/limits require explicit deployment compatibility review');
   const shape={binding:{name:b.name,type:b.type,class_name:b.class_name,namespace_id:b.namespace_id,...(b.script_name?{script_name:b.script_name}:{})},runtime:{compatibility_date:runtime.compatibility_date,compatibility_flags:runtime.compatibility_flags||[],usage_model:runtime.usage_model,migration_tag:runtime.migration_tag}};

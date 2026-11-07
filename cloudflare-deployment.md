@@ -19,6 +19,8 @@ Pushing `feature/v1.8-premium-release` runs `.github/workflows/release.yml`:
 2. Chromium desktop/mobile layout and gameplay, actual multiplayer and BOT server.
 3. Read existing Worker settings, active 100% version and its runtime settings.
 4. Require existing `GAME_ROOMS` → `GameRoom` namespace; do not guess a namespace.
+   The namespace ID and migration tag verified on initial setup are pinned in
+   `scripts/release/policy.json`; future UI runs refuse namespace/migration drift.
 5. Check current production health and all six frontend resources.
 6. Build all eight ES/text modules, compile using pinned official Wrangler
    `deploy --dry-run`. This command never uploads. Preserve the existing migration;

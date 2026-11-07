@@ -6,5 +6,7 @@
   "engineSha256": "8b1746fd6316a2aee384abe56e721585223b65ed70281dd6a20ac03ca1827e68",
   "gameRoomSha256": "d12f9cf92ec11e68f7f71ada5979a84631f7d4bcfd1310ee35fa12c04c49aa3b",
   "apiSha256": "1536263e81203c4ff594a1d154ecc23f501939858117a851b0cd655763763dfe",
-  "serverSha256": "eed7e9b3b5c5705878aced13d4b493939ac7fefad138ae6eddbe8bca9d0a0431"
+  "serverSha256": "eed7e9b3b5c5705878aced13d4b493939ac7fefad138ae6eddbe8bca9d0a0431",
+  "expectedNamespace": "1c05e1f7d23844ff8bacc1371847dbff",
+  "migrationTag": "v1"
 }
