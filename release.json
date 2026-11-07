@@ -1,24 +1,22 @@
 {
-  "version": "1.8.3",
+  "version": "1.8.4",
   "status": "complete",
   "scope": "ui",
   "sourceBranch": "feature/v1.8-premium-release",
   "evidence": {
-    "implementationCI": "https://github.com/DelDeto/Good-cop-bad-cop/actions/runs/42374645878",
-    "implementationCommit": "80952a158477b4fee8e06c87c002f3bdd1f90f28",
-    "tests": 159,
-    "layoutCases": 94,
-    "identicalBeforeAfterStates": 14,
-    "visualGoldens": 4,
-    "originalCharacterPortraits": 8,
-    "identityFaces": 4,
-    "equipmentIllustrations": 23,
-    "allEquipmentNamesVerified": 23,
-    "engineAndSchema": "unchanged",
-    "priorProductionRelease": "https://github.com/DelDeto/Good-cop-bad-cop/releases/tag/v1.8.2",
-    "audit": "docs/v182/UX_AUDIT.md",
-    "limitations": "docs/v182/TEST_REPORT.md",
-    "hotfix": "P2 portrait/status footer overlap: one CSS rule, negative browser proof, zero-overlap gate in all fixture and production screenshots",
-    "hotfixReport": "docs/v182/PRODUCTION_RELEASE.md"
+    "implemented": [
+      "Four illustrated role identity cards with tap-to-view modal on homepage",
+      "Noir detective favicon SVG",
+      "1200x630 original social sharing JPEG and Open Graph/Twitter metadata",
+      "Server Worker routes social JPEG and preserves Durable Object and game engine",
+      "Regression, Chromium and local production rehearsal"
+    ],
+    "ci": "https://github.com/DelDeto/Good-cop-bad-cop/actions/runs/42381281260",
+    "releasePreflight": "https://github.com/DelDeto/Good-cop-bad-cop/actions/runs/42381281259",
+    "sourceCommit": "f54040af589431a7a12d43b37d589a9c9fbf4633",
+    "artAssets": "original artwork and four existing identity illustrations",
+    "gameplay": "unchanged",
+    "productionBeforeRelease": "1.8.3",
+    "limits": "Social preview display depends on platform crawler caches; use canonical URL for share"
   }
 }
