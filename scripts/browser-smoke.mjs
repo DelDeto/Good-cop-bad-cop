@@ -33,6 +33,17 @@ try{
  await page.locator('.reaction-table').waitFor();await page.locator('.reaction-ready').waitFor();await page.screenshot({path:new URL('reaction-desktop.png',output).pathname,fullPage:true});
  await page.setViewportSize({width:390,height:844});await page.reload();await page.locator('.reaction-table').waitFor();await page.screenshot({path:new URL('reaction-mobile.png',output).pathname,fullPage:true});
  await page.locator('[data-eqcard-index="0"]').click();await page.locator('#modal [data-act="confirm"]').click();await page.waitForFunction(()=>!document.querySelector('[data-act=declineBribe], .reaction-table'));assert.ok(game.players[0].alive);
- assert.deepEqual(errors,[]);writeFileSync(new URL('browser-results.json',output),JSON.stringify({status:'PASS',mode:'engine-backed browser fixtures; HTTP APIs intercepted, not Cloudflare deployment',checks:['equipment cancel sends no command','Wire exact private result','Bribe investigate then swap','Bribe pending survives reload','Bribe leader decline consumes','Bribe timeout reload declines without swap or refund','reaction reload and vest defence','desktop and mobile rendering'],pageErrors:errors},null,2)+'\n');
- console.log('PASS: browser fixture flows and five screenshots');
+ fixture();game.players.forEach((p,i)=>p.cards.forEach((c,j)=>c.type=i===2&&j===0?'agent':i===3&&j===0?'kingpin':'honest'));
+ game.players[0].gun=true;game.players[0].aim=1;game.players[2].gun=true;game.players[2].aim=1;game.turn=2;
+ command(game,'t2',{type:'actionShoot'});for(const i of [0,1,3])command(game,'t'+i,{type:'passShot'});
+ assert.equal(game.players[1].alive,false);assert.equal(game.players[0].aim,null);
+ command(game,'t2',{type:'endTurn'});command(game,'t3',{type:'actionInvestigate',target:0,slot:0});command(game,'t3',{type:'endTurn'});
+ await page.setViewportSize({width:1440,height:1080});await show();assert.match(await page.locator('.player.you .armed').innerText(),/ĐANG NGẮM/);
+ assert.equal(await page.locator('[data-act="shoot"]').count(),0);await page.locator('[data-select-person="1"]').first().click();assert.ok(await page.locator('#modal').evaluate(el=>el.classList.contains('hide')));
+ await page.locator('[data-pick-card="2:1"]').click();await page.locator('#modal [data-act="confirm"]').click();await page.locator('[data-act="endTurn"]').waitFor();
+ await page.locator('[data-select-person="2"]').first().click();await page.waitForFunction(()=>document.querySelector('.player.you .armed')?.textContent.includes('Chi'));
+ assert.equal(game.players[0].aim,2);await page.screenshot({path:new URL('stale-aim-recovered.png',output).pathname,fullPage:true});
+ await page.locator('[data-act="endTurn"]').click();await page.waitForFunction(()=>document.querySelector('.noir-banner h2')?.textContent.includes('Chi'));assert.ok(game.players[game.turn].alive);
+ assert.deepEqual(errors,[]);writeFileSync(new URL('browser-results.json',output),JSON.stringify({status:'PASS',mode:'engine-backed browser fixtures; HTTP APIs intercepted, not Cloudflare deployment',checks:['equipment cancel sends no command','Wire exact private result','Bribe investigate then swap','Bribe pending survives reload','Bribe leader decline consumes','Bribe timeout reload declines without swap or refund','reaction reload and vest defence','desktop and mobile rendering','eliminated aim clears, dead seat cannot shoot, live retarget progresses'],pageErrors:errors},null,2)+'\n');
+ console.log('PASS: browser fixture flows and six screenshots');
 }finally{await browser?.close();await new Promise(r=>app.close(r));}

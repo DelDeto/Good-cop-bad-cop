@@ -1,5 +1,7 @@
 # V1.6.1 audit fixes — report and reproduction
 
+Latest PR review follow-up: [stale aim, Node 22 seed reproduction, 126-test repeated matrix and CI](stale-aim-review-report.md).
+
 Source: `feature/v1.6-sprint-01` at `7df5323` (latest V1.6 release/version changes preserved). Update the existing PR #1 on that branch. Production Worker `diep-vien-so-dach-online` is not contacted, modified or deployed.
 
 ## Result

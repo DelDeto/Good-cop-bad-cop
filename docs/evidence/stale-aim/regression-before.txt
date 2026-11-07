@@ -1,0 +1,138 @@
+✖ elimination invalidates every surviving gun aimed at victim; re-aim progresses (4, human) (7.461581ms)
+✖ elimination invalidates every surviving gun aimed at victim; re-aim progresses (4, BOT) (0.453864ms)
+✖ elimination invalidates every surviving gun aimed at victim; re-aim progresses (8, human) (0.53879ms)
+✖ elimination invalidates every surviving gun aimed at victim; re-aim progresses (8, BOT) (0.501404ms)
+✔ a wounded living target or cancelled shot keeps other gun holders aim unchanged (1.118509ms)
+✖ stale saved aim is cleaned without replacing pending metadata or selecting a new target (4.242054ms)
+✖ malformed/stale shot cannot hit a dead player; endTurn requires a living aim (1.316624ms)
+ℹ tests 7
+ℹ suites 0
+ℹ pass 1
+ℹ fail 6
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 29.820947
+
+✖ failing tests:
+
+test at tests/stale-aim.test.mjs:5:53
+✖ elimination invalidates every surviving gun aimed at victim; re-aim progresses (4, human) (7.461581ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  1 !== null
+  
+      at TestContext.<anonymous> (file:///workspace/Good-cop-bad-cop/tests/stale-aim.test.mjs:8:58)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.start (node:internal/test_runner/test:1262:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:387:17) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 1,
+    expected: null,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at tests/stale-aim.test.mjs:5:53
+✖ elimination invalidates every surviving gun aimed at victim; re-aim progresses (4, BOT) (0.453864ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  1 !== null
+  
+      at TestContext.<anonymous> (file:///workspace/Good-cop-bad-cop/tests/stale-aim.test.mjs:8:58)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 1,
+    expected: null,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at tests/stale-aim.test.mjs:5:53
+✖ elimination invalidates every surviving gun aimed at victim; re-aim progresses (8, human) (0.53879ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  1 !== null
+  
+      at TestContext.<anonymous> (file:///workspace/Good-cop-bad-cop/tests/stale-aim.test.mjs:8:58)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 1,
+    expected: null,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at tests/stale-aim.test.mjs:5:53
+✖ elimination invalidates every surviving gun aimed at victim; re-aim progresses (8, BOT) (0.501404ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  1 !== null
+  
+      at TestContext.<anonymous> (file:///workspace/Good-cop-bad-cop/tests/stale-aim.test.mjs:8:58)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 1,
+    expected: null,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at tests/stale-aim.test.mjs:20:1
+✖ stale saved aim is cleaned without replacing pending metadata or selecting a new target (4.242054ms)
+  AssertionError [ERR_ASSERTION]: The expression evaluated to a falsy value:
+  
+    assert.ok(resolveTimedPending(g))
+  
+      at TestContext.<anonymous> (file:///workspace/Good-cop-bad-cop/tests/stale-aim.test.mjs:22:9)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }
+
+test at tests/stale-aim.test.mjs:24:1
+✖ malformed/stale shot cannot hit a dead player; endTurn requires a living aim (1.316624ms)
+  AssertionError [ERR_ASSERTION]: Missing expected exception.
+      at TestContext.<anonymous> (file:///workspace/Good-cop-bad-cop/tests/stale-aim.test.mjs:27:23)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: undefined,
+    operator: 'throws',
+    diff: 'simple'
+  }

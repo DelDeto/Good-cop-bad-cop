@@ -27,3 +27,11 @@ No production deployment, team/win-rule changes, or new artwork. Existing V1.5 b
 - Add 57 regressions/audit cases: 4/8-player tables, humans/BOTs, both directions, Coffee survival/elimination, leader wins, pending reconnect and DO alarm recovery.
 - Confirm Serum can still wait indefinitely for an offline human; retain its target-controlled reveal rule pending policy approval.
 - Bump package, Worker health, UI and asset cache keys to V1.6.1. No production deployment or merge.
+
+## V1.6.1 PR review — stale aim and flaky BOT simulation
+
+- Clear every aim reference to an eliminated player without assigning a replacement or removing surviving guns. Recover stale references on load/alarm; require a living aim at turn completion.
+- Hide/guard shooting controls when the target is dead or missing; keep the normal main-action/aim phases for choosing a new target.
+- Reproduce the Node 22 full-game failure with seed 1558 (5 BOTs, normal). Retain unseeded full games, add five seeded replays and public-state liveness checks after each move. Production RNG is unchanged.
+- Expand to 126 tests and add a fail-on-any-error repeat runner. CI executes the entire suite five additional times per Node 20/22/24 job.
+- Twenty local runs per Node version passed: 60 complete suites, 7,560 test executions, zero failed/skipped/cancelled. V1.6.1 shot/Coffee/Bribe fixes remain covered; the previously documented offline-human Serum policy gate remains open.

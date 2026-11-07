@@ -1,0 +1,9 @@
+{
+  "seed": 1558,
+  "status": "FAIL",
+  "context": {
+    "n": 5,
+    "level": "normal"
+  },
+  "error": "Mục tiêu không hợp lệ hoặc đã bị loại."
+}

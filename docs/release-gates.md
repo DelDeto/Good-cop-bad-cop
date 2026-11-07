@@ -1,5 +1,7 @@
 # Draft PR #1 — Sprint 01 release gates
 
+Latest: [stale-aim review fixes and repeated Node 20/22/24 evidence](stale-aim-review-report.md).
+
 V1.6.1 follow-up: [turn-stall fix report, reproductions and remaining Serum P1](v161-fix-report.md). The following table records the earlier V1.6 Sprint 01 gate run.
 
 Source: review findings in [Draft PR #1](https://github.com/DelDeto/Good-cop-bad-cop/pull/1), read from GitHub before this follow-up. The branch remains `feature/v1.6-sprint-01`; no merge, production deploy or Sprint 02 work is included.
