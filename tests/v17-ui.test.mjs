@@ -24,7 +24,7 @@ test('renderer never consumes opponent tokens or unrevealed role values from out
 test('sending chat does not clear a valid two-target equipment selection',async()=>{
  const g=fixture();g.players[0].hand=['wiretap'];const {c}=app();c.fixture=view(g,g.ownerToken);c.fetch=async()=>({ok:true,json:async()=>({state:c.fixture})});vm.runInContext('state=fixture;session={code:state.code,token:"test"};render();activateEquipment(0);handleCardClick(1,0);',c);await vm.runInContext('send({type:"chat",message:"hello"})',c);assert.equal(vm.runInContext('pick.selected',c),1);
 });
-test('V1.7 release version and generated assets agree with Worker health metadata',async()=>{
+test('Release version and generated assets agree with Worker health metadata',async()=>{
  const {loadWorker}=await import('./helpers/worker.mjs');const {default:worker}=await loadWorker();const r=await worker.fetch(new Request('https://test.local/api/health'),{});const health=await r.json();const pkg=JSON.parse(fs.readFileSync(new URL('../package.json',import.meta.url),'utf8'));assert.ok(health.version.startsWith(pkg.version));assert.match(fs.readFileSync(new URL('../public/index.html',import.meta.url),'utf8'),new RegExp('v='+pkg.version.replaceAll('.','\\.')));
  for(const [source,target] of [['app.js','app.txt'],['style.css','style.txt'],['index.html','index.txt']])assert.equal(fs.readFileSync(new URL('../public/'+source,import.meta.url),'utf8'),fs.readFileSync(new URL('../assets/'+target,import.meta.url),'utf8'));
 });

@@ -1,0 +1,16 @@
+{
+  "version": "1.8.0",
+  "status": "complete",
+  "scope": "ui",
+  "sourceBranch": "feature/v1.8-premium-release",
+  "evidence": {
+    "implementationCI": "https://github.com/DelDeto/Good-cop-bad-cop/actions/runs/42365338740",
+    "tests": 152,
+    "layoutCases": 92,
+    "visualGoldens": 4,
+    "originalCharacterPortraits": 8,
+    "identityFaces": 4,
+    "equipmentIllustrations": 23,
+    "engineAndSchema": "unchanged"
+  }
+}

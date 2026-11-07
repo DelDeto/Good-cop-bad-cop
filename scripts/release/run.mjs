@@ -43,9 +43,9 @@ try{
   console.log('PASS: production version, commit SHA and all frontend asset hashes');
  }else if(mode==='finalize'){
   if(!isRelease)throw Error('Finalization requires a release tag');
-  const report=load(),ui=JSON.parse(readFileSync(dir+'/production/results.json'));
-  if(report.status!=='VERIFYING_UI'||ui.status!=='PASS'||ui.sha!==sha||ui.version!==report.version||await cf().active()!==report.candidate)throw Error('Production browser verification incomplete or deployment changed');
-  report.uiSmoke=ui;report.status='PASS';report.completedAt=new Date().toISOString();save(report);
+  const report=load(),ui=JSON.parse(readFileSync(dir+'/production/results.json')),current=await cf().inspect();
+  if(report.status!=='VERIFYING_UI'||ui.status!=='PASS'||ui.sha!==sha||ui.version!==report.version||current.id!==report.candidate||current.fingerprint!==report.baseline.fingerprint)throw Error('Production browser verification incomplete or deployment/configuration changed');
+  report.verifiedProduction=current;report.uiSmoke=ui;report.status='PASS';report.completedAt=new Date().toISOString();save(report);
  }else if(mode==='recover'){
   const report=load();if(report.deployed&&report.status==='PASS')process.exit(0);
   report.status='FAIL';

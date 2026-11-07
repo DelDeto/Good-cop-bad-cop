@@ -1,7 +1,7 @@
 [
   {
     "name": "pc-4",
-    "meanChannelError": 0,
+    "meanChannelError": 0.003580729166666669,
     "changedBlockRatio": 0,
     "status": "PASS",
     "limits": {
@@ -11,7 +11,7 @@
   },
   {
     "name": "pc-8",
-    "meanChannelError": 0.026502821180555608,
+    "meanChannelError": 0,
     "changedBlockRatio": 0,
     "status": "PASS",
     "limits": {
@@ -21,7 +21,7 @@
   },
   {
     "name": "mobile-4",
-    "meanChannelError": 0,
+    "meanChannelError": 0.06632486979166664,
     "changedBlockRatio": 0,
     "status": "PASS",
     "limits": {
@@ -31,7 +31,7 @@
   },
   {
     "name": "mobile-8",
-    "meanChannelError": 0,
+    "meanChannelError": 0.08319769965277755,
     "changedBlockRatio": 0,
     "status": "PASS",
     "limits": {

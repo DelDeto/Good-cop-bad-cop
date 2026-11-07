@@ -27,7 +27,7 @@ test('release: malformed tags, version mismatch and stale main cannot deploy',()
  const p=bundle(sha);assert.throws(()=>validateTag('v1.8.0-beta',sha),/tag/);
  assert.throws(()=>validateTag('v99.0.0',sha),/tag/);
  assert.throws(()=>validateTag('v'+p.version,sha,()=> 'old-main'),/current release source/);
- // No completed release.json exists during development: a version number alone cannot authorize deployment.
+ // A version number alone cannot authorize deployment when the completion declaration is still a draft.
  assert.throws(()=>validateTag('v'+p.version,sha,()=>sha,()=>({status:'draft'})),/completed/);
  assert.equal(validateTag('v'+p.version,sha,()=>sha,()=>({version:p.version,status:'complete',scope:'ui',sourceBranch:policy.sourceBranch})).sha,sha);
 });

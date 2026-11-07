@@ -11,8 +11,9 @@ Implementation gates before version promotion:
 | Exact post-deployment browser verifier rehearsal | PASS locally: four humans, private investigation, aim/shoot/reactions/reconnect, eight-player hard BOT alarm |
 | Protected engine / GameRoom / API / server hashes | PASS: unchanged |
 | Asset synchronization and original artwork inventory | PASS; five required art files, 8 portraits, 4 identities and 23 equipment |
-| Compiler dry-run | PASS before final card-back addition; repeated in hosted Actions for the final package |
-| Final hosted CI and Cloudflare dry-run | Required before version promotion/tag; see Actions |
+| Compiler dry-run | PASS in hosted Actions with all 16 modules, 14 frontend resources and final art/fonts |
+| Hosted implementation CI and Cloudflare dry-run | PASS on `154c739`: https://github.com/DelDeto/Good-cop-bad-cop/actions/runs/42365338740 |
+| Version promotion | UI/artwork complete; package/health/cache keys 1.8.0 and UI release declaration added only after implementation CI PASS; final-commit CI required before tag |
 | Actual production release / browser smoke | Pending tagged release; do not infer deployment from local rehearsal |
 
 `evidence/` retains local geometry, visual comparisons, asset audit and repeated
