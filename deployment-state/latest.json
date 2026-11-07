@@ -1,16 +1,16 @@
 {
   "status": "PASS",
-  "mode": "release",
+  "mode": "setup",
   "worker": "diep-vien-so-dach-online",
   "url": "https://diep-vien-so-dach-online.duc-nguyen-ndd127.workers.dev",
-  "sha": "ff2d6bca56174b04f056625fe4f54a503d9a5927",
+  "sha": "3c22289e3920a57d9181b75b4a29e43e6ce603ae",
   "version": "1.8.1",
-  "runUrl": "https://github.com/DelDeto/Good-cop-bad-cop/actions/runs/42366896911",
+  "runUrl": "https://github.com/DelDeto/Good-cop-bad-cop/actions/runs/42374462905",
   "tests": "PASS",
   "dryRun": "PASS",
-  "startedAt": "2026-11-07T11:10:01.644Z",
+  "startedAt": "2026-11-07T12:55:21.039Z",
   "baseline": {
-    "id": "0ded55db-bc01-4e97-a097-76e87529ed01",
+    "id": "0d60d534-9a78-436e-bffe-7517ecd05279",
     "shape": {
       "binding": {
         "name": "GAME_ROOMS",
@@ -28,85 +28,6 @@
     "fingerprint": "35460802a7d849bb5a22d7da5139a23da84095998e49af56d8f304da5630e2f4"
   },
   "baselineSmoke": {
-    "health": {
-      "ok": true,
-      "version": "1.8.0",
-      "commit": "17e3243962a647c4aa51076cc8971a9e06a5d136",
-      "service": "diep-vien-so-dach-online"
-    },
-    "resources": [
-      {
-        "path": "/",
-        "sha256": "6daed6ed0fe5c452acd30e2d71c41dce62594bec8d4e671d9f280950ac56dca1"
-      },
-      {
-        "path": "/app.js",
-        "sha256": "6a89a7fa1cf2823eefa54d9366dce3a842493b4b5c3fa6d7affc5483939069f9"
-      },
-      {
-        "path": "/style.css",
-        "sha256": "e4d609688a8636d1bc03117528e7dfa96cadbce5c5fe2482cec879a3e344312f"
-      },
-      {
-        "path": "/favicon.svg",
-        "sha256": "29704f49d7b6a96a3ec952279f28733a19e499ed87b78984dd3fd1198f9bc7ee"
-      },
-      {
-        "path": "/board-texture.webp",
-        "sha256": "a61eb74d49456c052b9d0ef5ce8aa1a60ddc3b8ef75a583471da9f3da0d2eecf"
-      },
-      {
-        "path": "/item-art.webp",
-        "sha256": "f1dc5534dd15b10fd2fa3cc023a2ca16fdf28a0611ab277d663a2f4438672208"
-      },
-      {
-        "path": "/portraits.webp",
-        "sha256": "bf8bc9703caf358334fa22b235759b840453b8ecab50545c1d1e671bf628d2fd"
-      },
-      {
-        "path": "/roles.webp",
-        "sha256": "c216f3fde89d02136171bfb6f2e8e1406ba9e94bf4a58e54b84ee2d57a2ce366"
-      },
-      {
-        "path": "/card-back.webp",
-        "sha256": "cb5e50deec353e8b65c3a021e98f62b0109a1e70180c06567bce24a7f07f9fe5"
-      },
-      {
-        "path": "/detective-sans-regular.woff2",
-        "sha256": "d63e00d37185b17a382152ebf87c450368dd00c4ab0b8f9cfd2aded0a47bf0cd"
-      },
-      {
-        "path": "/detective-sans-bold.woff2",
-        "sha256": "6495f5f60b5c26c051fc1ca2c7d9bf3a801ae0ae5da209881685d9d7918fa350"
-      },
-      {
-        "path": "/detective-serif-regular.woff2",
-        "sha256": "e5f9e468107f11087397c1fb469e7e0d477a2389aebe7fb3f318e1565715466b"
-      },
-      {
-        "path": "/detective-serif-bold.woff2",
-        "sha256": "69a7f472bd4c55aa6fb2f58d230cbcc67bcb357353e53cdc11f398af8823b721"
-      },
-      {
-        "path": "/detective-symbols.woff2",
-        "status": 404
-      },
-      {
-        "path": "/detective-symbols-two.woff2",
-        "status": 404
-      },
-      {
-        "path": "/art-manifest.json",
-        "sha256": "c93e807ee88d63f124cb24a97507a5f7fd1e273d03d64390482e1b0147d334dd"
-      }
-    ]
-  },
-  "completedAt": "2026-11-07T11:10:30.260Z",
-  "candidate": "0d60d534-9a78-436e-bffe-7517ecd05279",
-  "deployment": {
-    "id": "07d0a252-028c-4a54-b877-efcfcdca78f9"
-  },
-  "smoke": {
     "health": {
       "ok": true,
       "version": "1.8.1",
@@ -180,49 +101,5 @@
       }
     ]
   },
-  "deployed": true,
-  "verifiedProduction": {
-    "id": "0d60d534-9a78-436e-bffe-7517ecd05279",
-    "shape": {
-      "binding": {
-        "name": "GAME_ROOMS",
-        "type": "durable_object_namespace",
-        "class_name": "GameRoom",
-        "namespace_id": "1c05e1f7d23844ff8bacc1371847dbff"
-      },
-      "runtime": {
-        "compatibility_date": "2026-11-06",
-        "compatibility_flags": [],
-        "usage_model": "standard",
-        "migration_tag": "v1"
-      }
-    },
-    "fingerprint": "35460802a7d849bb5a22d7da5139a23da84095998e49af56d8f304da5630e2f4"
-  },
-  "uiSmoke": {
-    "status": "PASS",
-    "version": "1.8.1",
-    "sha": "ff2d6bca56174b04f056625fe4f54a503d9a5927",
-    "health": {
-      "ok": true,
-      "version": "1.8.1",
-      "commit": "ff2d6bca56174b04f056625fe4f54a503d9a5927",
-      "service": "diep-vien-so-dach-online"
-    },
-    "checks": [
-      "Four-human room and private investigation isolated from another player",
-      "Actual Durable Object arm, reveal, aim, shoot, reactions and pending reconnect",
-      "Eight-player board and real hard BOT alarm advances on Cloudflare"
-    ],
-    "screenshots": [
-      "production-pc-4.png",
-      "production-mobile-4.png",
-      "production-aim.png",
-      "production-reaction.png",
-      "production-reaction-mobile.png",
-      "production-pc-8.png",
-      "production-mobile-8.png"
-    ],
-    "privacy": "Only fresh QA rooms; no user room inspected; no credentials, tokens, state payload or request URLs saved"
-  }
+  "completedAt": "2026-11-07T12:55:28.800Z"
 }
