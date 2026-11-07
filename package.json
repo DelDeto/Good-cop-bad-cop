@@ -8,7 +8,8 @@
     "start": "node server.mjs",
     "test": "node --test tests/*.test.mjs",
     "assets": "node scripts/sync-assets.mjs",
-    "assets:check": "node scripts/sync-assets.mjs --check"
+    "assets:check": "node scripts/sync-assets.mjs --check",
+    "art:check": "node scripts/check-art.mjs"
   },
   "engines": {
     "node": ">=20"

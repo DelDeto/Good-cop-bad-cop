@@ -21,8 +21,8 @@ Pushing `feature/v1.8-premium-release` runs `.github/workflows/release.yml`:
 4. Require existing `GAME_ROOMS` → `GameRoom` namespace; do not guess a namespace.
    The namespace ID and migration tag verified on initial setup are pinned in
    `scripts/release/policy.json`; future UI runs refuse namespace/migration drift.
-5. Check current production health and all six frontend resources.
-6. Build all eight ES/text modules, compile using pinned official Wrangler
+5. Check current production health and all ten frontend resources.
+6. Build all twelve ES/text modules, compile using pinned official Wrangler
    `deploy --dry-run`. This command never uploads. Preserve the existing migration;
    a compiler warning asking to declare exports is **not** permission to recreate it.
 7. Save sanitized evidence in Actions artifacts/summary and branch
@@ -71,8 +71,8 @@ before activation. The baseline is the currently active version whose health and
 frontend were verified before deployment; a split rollout is refused.
 
 Before changing traffic, upload an immutable recovery checkpoint to Actions.
-Activate 100%, then verify health/version/SHA and SHA-256 of HTML, JS, CSS, favicon
-and both image assets. Retry propagation checks for at most six attempts. Record
+Activate 100%, then verify health/version/SHA and SHA-256 of HTML, JS, CSS, favicon, artwork manifest
+and all five image assets. Retry propagation checks for at most six attempts. Record
 candidate version, deployment ID, commit, URL, baseline and smoke result.
 
 On failure restore the baseline only if this run still owns the active version
@@ -82,6 +82,12 @@ pre-release baseline. A separate recovery job handles release job failure/timeou
 using the checkpoint. Complete workflow cancellation or GitHub/Cloudflare outages
 can prevent recovery; the checkpoint remains for safe operator recovery after
 service restoration. Do not claim an unavailable rollback succeeded.
+
+A release is finalized only after the real production Chromium verifier passes:
+fresh four-human/eight-player QA rooms, private investigation, shooting reactions,
+reconnect and a BOT alarm. No existing user room is joined or modified. Screenshots
+contain only QA rooms, never user room state or authentication tokens. Failed browser
+verification triggers the same guarded rollback.
 
 Successful releases write a GitHub Release and `deployment-state/last-success.json`.
 Every run records `latest.json` and an immutable run-ID report. GitHub reports

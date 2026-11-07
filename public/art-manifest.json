@@ -1,0 +1,112 @@
+{
+  "style": "Original premium noir detective / mahogany / antique brass",
+  "generator": "OpenAI image_gen, original images generated for this project",
+  "reference": "User-supplied noir PC/mobile mockup attached in the V1.8 UI implementation request",
+  "copyright": "Original fictional characters and objects; no physical-game artwork copied",
+  "portraitAssignment": "public seat index only; independent of hidden identity",
+  "backDesign": "Original generated engraved cognac leather card back with antique brass reticle",
+  "images": [
+    {
+      "file": "portraits.webp",
+      "width": 1774,
+      "height": 887,
+      "bytes": 238612,
+      "sha256": "bf8bc9703caf358334fa22b235759b840453b8ecab50545c1d1e671bf628d2fd",
+      "grid": [
+        4,
+        2
+      ],
+      "items": [
+        "0",
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7"
+      ]
+    },
+    {
+      "file": "roles.webp",
+      "width": 1261,
+      "height": 1247,
+      "bytes": 410764,
+      "sha256": "c216f3fde89d02136171bfb6f2e8e1406ba9e94bf4a58e54b84ee2d57a2ce366",
+      "grid": [
+        2,
+        2
+      ],
+      "items": [
+        "honest",
+        "crooked",
+        "agent",
+        "kingpin"
+      ]
+    },
+    {
+      "file": "item-art.webp",
+      "width": 1536,
+      "height": 1024,
+      "bytes": 515036,
+      "sha256": "f1dc5534dd15b10fd2fa3cc023a2ca16fdf28a0611ab277d663a2f4438672208",
+      "grid": [
+        6,
+        4
+      ],
+      "items": [
+        "vest",
+        "planted",
+        "smoke",
+        "coffee",
+        "camera",
+        "disguise",
+        "taser",
+        "k9",
+        "medkit",
+        "serum",
+        "shield",
+        "restrain",
+        "walkie",
+        "wiretap",
+        "polygraph",
+        "wire",
+        "blackmail",
+        "bribe",
+        "confiscation",
+        "evidence",
+        "database",
+        "defib",
+        "metal"
+      ]
+    },
+    {
+      "file": "board-texture.webp",
+      "width": 1536,
+      "height": 1024,
+      "bytes": 186816,
+      "sha256": "a61eb74d49456c052b9d0ef5ce8aa1a60ddc3b8ef75a583471da9f3da0d2eecf",
+      "grid": [
+        1,
+        1
+      ],
+      "items": [
+        "table"
+      ]
+    },
+    {
+      "file": "card-back.webp",
+      "width": 800,
+      "height": 1200,
+      "bytes": 274102,
+      "sha256": "cb5e50deec353e8b65c3a021e98f62b0109a1e70180c06567bce24a7f07f9fe5",
+      "grid": [
+        1,
+        1
+      ],
+      "items": [
+        "dossier-back"
+      ]
+    }
+  ]
+}

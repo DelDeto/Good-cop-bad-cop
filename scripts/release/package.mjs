@@ -1,5 +1,6 @@
 import {readFileSync,writeFileSync,mkdirSync} from 'node:fs';
 import {createHash} from 'node:crypto';
+import {assetFiles} from '../asset-map.mjs';
 import {execFileSync} from 'node:child_process';
 export const hash=data=>createHash('sha256').update(data).digest('hex');
 export const policy=JSON.parse(readFileSync(new URL('./policy.json',import.meta.url)));
@@ -17,8 +18,8 @@ export function bundle(sha){
  if([...source.matchAll(health)].length!==1)throw Error('Health metadata injection must match exactly once');
  const modules=[{name:'worker.mjs',type:'application/javascript+module',body:source.replace(health,replacement)},{name:'src/engine.mjs',type:'application/javascript+module',body:engine}];
  for(const m of source.matchAll(/from '(\.\/assets\/[^']+\.txt)'/g))modules.push({name:m[1].slice(2),type:'text/plain',body:read(m[1].slice(2))});
- if(modules.length!==8)throw Error('Review packaging for changed module imports');
- const assets=['index.html','app.js','style.css','favicon.svg','board-texture.webp','item-art.webp'].map(name=>({path:name==='index.html'?'/':'/'+name,sha256:hash(read('public/'+name))}));
+ if(modules.length!==assetFiles.length+2)throw Error('Review packaging for changed module imports');
+ const assets=assetFiles.map(([name])=>({path:name==='index.html'?'/':'/'+name,sha256:hash(read('public/'+name))}));
  return {version,sha,modules,assets};
 }
 export function validateTag(tag,sha,git=(...args)=>execFileSync('git',args,{encoding:'utf8'}).trim(),readManifest=()=>JSON.parse(read('release.json'))){

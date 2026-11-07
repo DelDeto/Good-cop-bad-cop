@@ -16,7 +16,7 @@ test('board first UI offers all clickable pieces, 3 role cards and item art',()=
  const g=createRoom('D10A22','Người chơi','owner');setBots(g,'owner',3,'hard');startGame(g,'owner');
  const {context,root}=appFixture();context.fixture=view(g,'owner');
  vm.runInContext('state=fixture;render();',context);
- assert.match(root.innerHTML,/ONLINE V1\.7/);
+ assert.match(root.innerHTML,/ONLINE V1\.8/);
  assert.equal((root.innerHTML.match(/data-pick-card="/g)||[]).length,12);
  assert.equal((root.innerHTML.match(/data-own-card="/g)||[]).length,3);
  assert.equal((root.innerHTML.match(/data-board-item="/g)||[]).length,2);

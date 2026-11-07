@@ -70,6 +70,21 @@ jobs:
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
         run: node scripts/release/run.mjs activate
+      - name: Install isolated production browser verifier
+        if: github.ref_type == 'tag'
+        run: npm install --prefix "$RUNNER_TEMP/gcbc-production-browser" --no-package-lock --no-save playwright-core@1.57.0
+      - name: Chromium production multiplayer, privacy, BOT, reconnect and screenshots
+        if: github.ref_type == 'tag'
+        env:
+          PLAYWRIGHT_MODULE: ${{ runner.temp }}/gcbc-production-browser/node_modules/playwright-core/index.mjs
+          CHROMIUM_PATH: /usr/bin/google-chrome
+        run: node scripts/production-ui-smoke.mjs
+      - name: Finalize only after real production browser checks pass
+        if: github.ref_type == 'tag'
+        env:
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+        run: node scripts/release/run.mjs finalize
       - name: Recover previous verified version after any deployment failure
         if: failure() && github.ref_type == 'tag'
         env:

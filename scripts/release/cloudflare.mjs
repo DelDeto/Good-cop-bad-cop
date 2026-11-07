@@ -58,10 +58,10 @@ export class Cloudflare {
  }
 }
 export async function smoke(pkg,{request=fetch,baseline=false}={}){
- const get=async path=>{const r=await request(policy.url+path+(path.includes('?')?'&':'?')+'release-smoke='+Date.now(),{cache:'no-store',signal:AbortSignal.timeout(15000)});assert.equal(r.status,200,`HTTP ${path}`);return r;};
+ const get=async path=>{const r=await request(policy.url+path+(path.includes('?')?'&':'?')+'release-smoke='+Date.now(),{cache:'no-store',signal:AbortSignal.timeout(15000)});if(baseline&&['/portraits.webp','/roles.webp','/card-back.webp','/art-manifest.json'].includes(path)&&r.status===404)return r;assert.equal(r.status,200,`HTTP ${path}`);return r;};
  const health=await (await get('/api/health')).json();assert.equal(health.ok,true);assert.equal(health.service,policy.worker);
  if(!baseline){assert.equal(health.version,pkg.version);assert.equal(health.commit,pkg.sha);}
  const resources=[];
- for(const a of pkg.assets){const r=await get(a.path);const digest=hash(Buffer.from(await r.arrayBuffer()));if(!baseline)assert.equal(digest,a.sha256,`Asset integrity ${a.path}`);resources.push({path:a.path,sha256:digest});}
+ for(const a of pkg.assets){const r=await get(a.path);if(r.status===404){resources.push({path:a.path,status:404});continue;}const digest=hash(Buffer.from(await r.arrayBuffer()));if(!baseline)assert.equal(digest,a.sha256,`Asset integrity ${a.path}`);resources.push({path:a.path,sha256:digest});}
  return {health,resources};
 }

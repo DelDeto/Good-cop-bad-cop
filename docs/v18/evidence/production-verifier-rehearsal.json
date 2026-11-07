@@ -1,0 +1,26 @@
+{
+  "status": "PASS",
+  "version": "1.7.0",
+  "sha": null,
+  "health": {
+    "ok": true,
+    "service": "diep-vien-so-dach-online",
+    "version": "1.7.0",
+    "commit": null
+  },
+  "checks": [
+    "Four-human room and private investigation isolated from another player",
+    "Actual Durable Object arm, reveal, aim, shoot, reactions and pending reconnect",
+    "Eight-player board and real hard BOT alarm advances on Cloudflare"
+  ],
+  "screenshots": [
+    "production-pc-4.png",
+    "production-mobile-4.png",
+    "production-aim.png",
+    "production-reaction.png",
+    "production-reaction-mobile.png",
+    "production-pc-8.png",
+    "production-mobile-8.png"
+  ],
+  "privacy": "Only fresh QA rooms; no user room inspected; no credentials, tokens, state payload or request URLs saved"
+}

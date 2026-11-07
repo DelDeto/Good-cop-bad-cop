@@ -1,0 +1,41 @@
+{
+  "commit": "e1a01b69c27932b7739159aae883f41105abc179",
+  "node": "v20.20.2",
+  "repetitions": 3,
+  "testsPerRun": 152,
+  "totalTests": 456,
+  "status": "PASS",
+  "results": [
+    {
+      "run": 1,
+      "exitCode": 0,
+      "tests": 152,
+      "passed": 152,
+      "failed": 0,
+      "skipped": 0,
+      "cancelled": 0,
+      "ok": true
+    },
+    {
+      "run": 2,
+      "exitCode": 0,
+      "tests": 152,
+      "passed": 152,
+      "failed": 0,
+      "skipped": 0,
+      "cancelled": 0,
+      "ok": true
+    },
+    {
+      "run": 3,
+      "exitCode": 0,
+      "tests": 152,
+      "passed": 152,
+      "failed": 0,
+      "skipped": 0,
+      "cancelled": 0,
+      "ok": true
+    }
+  ],
+  "sourceDescription": "Local V1.8 working tree before implementation commit; commit field identifies checkout base, not uncommitted tree"
+}

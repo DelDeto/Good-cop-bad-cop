@@ -2,9 +2,11 @@ import {createServer} from 'node:http';
 import {readFileSync,mkdirSync,writeFileSync,existsSync} from 'node:fs';
 import {fileURLToPath} from 'node:url';
 import assert from 'node:assert/strict';
+import {waitForArtwork,compareGolden} from './visual-audit.mjs';
 import {createRoom,joinRoom,startGame,command,view,setBots,botStep,resolveTimedPending} from '../src/engine.mjs';
 const {chromium}=await import(process.env.PLAYWRIGHT_MODULE||'playwright');
 const baseline=process.argv.includes('--baseline'),out=new URL(process.env.QA_OUTPUT_DIR||'../docs/v17/after/',import.meta.url);mkdirSync(out,{recursive:true});
+let artAudit;const visualResults=[];
 let game,viewer=0;const clients=new Set(),commands=[],errors=[],geometry=[];
 function fixture(n=4,me=0){game=createRoom('ABC123','Mật vụ 1 · Nguyễn An','t0');for(let i=1;i<n;i++)joinRoom(game,`Mật vụ ${i+1} · Minh Khánh`,'t'+i);startGame(game,'t0');game.players.forEach((p,i)=>{p.hand=[];p.cards.forEach((c,j)=>c.type=i===n-2&&j===0?'agent':i===n-1&&j===0?'kingpin':'honest');});game.players[me].hand=['wiretap'];game.turn=me;viewer=me;return game;}
 function broadcast(){for(const c of clients){try{c.res.write(`data: ${JSON.stringify(view(game,c.token))}\n\n`);}catch{clients.delete(c);}}}
@@ -17,24 +19,24 @@ const app=createServer(async(req,res)=>{try{if(game)resolveTimedPending(game);co
 await new Promise(r=>app.listen(0,'127.0.0.1',r));const base=`http://127.0.0.1:${app.address().port}`;let browser;
 try{
  browser=await chromium.launch({executablePath:process.env.CHROMIUM_PATH||'/usr/bin/chromium',headless:true,args:['--no-sandbox']});const page=await browser.newPage();page.on('pageerror',e=>errors.push(e.message));page.setDefaultTimeout(8000);
- async function show(n=4,me=0){fixture(n,me);await page.goto(base);await page.evaluate(token=>{localStorage.setItem('sd-ABC123',token);history.replaceState(null,'','?room=ABC123');},'t'+me);await page.reload();await page.locator('[data-pick-card]').first().waitFor();}
- async function shot(name){await page.screenshot({path:fileURLToPath(new URL(name+'.png',out)),fullPage:true});}
+ async function show(n=4,me=0){fixture(n,me);await page.goto(base);await page.evaluate(token=>{localStorage.setItem('sd-ABC123',token);history.replaceState(null,'','?room=ABC123');},'t'+me);await page.reload();await page.locator('[data-pick-card]').first().waitFor();if(!baseline)artAudit=await waitForArtwork(page);}
+ async function shot(name){const png=await page.screenshot({path:fileURLToPath(new URL(name+'.png',out)),fullPage:true});if(!baseline){const r=await compareGolden(page,name,png,out);if(r)visualResults.push(r);}}
  async function measure(width,height,n,me){const result=await page.evaluate(()=>{const rect=el=>{const r=el.getBoundingClientRect();return{x:r.x,y:r.y,w:r.width,h:r.height,right:r.right,bottom:r.bottom};};return{viewport:[innerWidth,innerHeight],scroll:[document.documentElement.scrollWidth,document.documentElement.scrollHeight],seats:[...document.querySelectorAll('.player[data-pick-seat]')].map(el=>({seat:Number(el.dataset.pickSeat),own:el.classList.contains('you'),...rect(el),display:getComputedStyle(el).display})),cards:[...document.querySelectorAll('[data-pick-card]')].map(el=>({...rect(el),font:parseFloat(getComputedStyle(el.querySelector('.mini-caption')).fontSize)})),touch:[...document.querySelectorAll('[data-own-card],#my-gear [data-eqcard-index]')].map(rect),hub:document.querySelector('#table-hub')?rect(document.querySelector('#table-hub')):null,personal:document.querySelector('.personal-dock')?rect(document.querySelector('.personal-dock')):null};});geometry.push({width,height,n,me,...result});
  if(baseline)return;
  assert.equal(result.seats.length,n);assert.equal(result.cards.length,n*3);assert.ok(result.scroll[0]<=width+1&&result.scroll[1]<=height+1,`overflow ${width}x${height}/${n}: ${result.scroll}`);
  for(const r of [...result.seats,...result.cards,result.hub,result.personal]){assert.ok(r&&r.w>0&&r.h>0);assert.ok(r.x>=-1&&r.y>=-1&&r.right<=width+1&&r.bottom<=height+1,`outside viewport ${JSON.stringify(r)} at ${width}/${height}/${n}`);}
  for(let i=0;i<result.seats.length;i++)for(let j=i+1;j<result.seats.length;j++){const a=result.seats[i],b=result.seats[j];assert.ok(Math.min(a.right,b.right)-Math.max(a.x,b.x)<=1||Math.min(a.bottom,b.bottom)-Math.max(a.y,b.y)<=1,`seats overlap ${i}/${j} at ${width}/${height}/${n}`);}
  for(const r of result.touch)assert.ok(r.w>=44&&r.h>=44,`personal touch target too small ${JSON.stringify(r)}`);
- for(const r of result.seats.filter(r=>!r.own)){const h=result.hub;assert.ok(Math.min(r.right,h.right)-Math.max(r.x,h.x)<=2||Math.min(r.bottom,h.bottom)-Math.max(r.y,h.y)<=2,'hub overlaps seat');}
- const own=result.seats.find(r=>r.own);assert.equal(own.seat,me);assert.ok(result.seats.filter(r=>!r.own).every(r=>r.bottom<=own.y+1),'viewer must be at bottom');assert.ok(result.cards.every(r=>r.font>=11));
+ for(const r of result.seats.filter(r=>!r.own)){const h=result.hub;assert.ok(Math.min(r.right,h.right)-Math.max(r.x,h.x)<=2||Math.min(r.bottom,h.bottom)-Math.max(r.y,h.y)<=2,`hub overlaps seat at ${width}x${height}/${n}: ${JSON.stringify({seat:r,hub:h})}`);}
+ const own=result.seats.find(r=>r.own);assert.equal(own.seat,me);if(width>700&&height<=550)assert.ok(result.seats.filter(r=>!r.own).every(r=>r.right<=own.x+1),'landscape viewer must be in personal area to the right');else assert.ok(result.seats.filter(r=>!r.own).every(r=>r.bottom<=own.y+1),'viewer must be at bottom');assert.ok(result.cards.every(r=>r.font>=11));
  }
- for(const [width,height] of [[1366,768],[1440,900],[1920,1080],[375,667],[390,844],[430,932],[360,800]])for(const n of [4,6,8])for(const me of (baseline?[0]:[0,n-1])){
+ for(const [width,height] of [[1366,768],[1440,900],[1920,1080],[375,667],[390,844],[430,932],[360,800],[844,390],[768,360]])for(const n of (baseline?[4,6,8]:[4,5,6,7,8]))for(const me of (baseline?[0]:[0,n-1])){
   await page.setViewportSize({width,height});await show(n,me);await measure(width,height,n,me);
   if(me===0&&((width===1366||width===375)&&(n===4||n===8)))await shot(`${width<700?'mobile':'pc'}-${n}`);
  }
- if(!baseline){for(const n of [5,7])for(const [width,height] of [[1366,768],[375,667]]){await page.setViewportSize({width,height});await show(n,n-1);await measure(width,height,n,n-1);}}
+
  if(!baseline){for(const [width,height] of [[1366,768],[375,667]]){await page.setViewportSize({width,height});await show(8,7);game.players[7].effects={wire:game.players[0].id,planted:true,disguise:true};game.players[7].wounded=true;game.players[7].gun=true;game.players[7].aim=1;game.players[7].hand=['vest'];game.pending={kind:'shot',shooter:1,victim:7,since:Date.now(),passes:[1]};broadcast();await page.locator('.reaction-table').waitFor();await measure(width,height,8,7);}}
- writeFileSync(new URL('geometry.json',out),JSON.stringify(geometry,null,2));
+ writeFileSync(new URL('geometry.json',out),JSON.stringify(geometry,null,2));if(!baseline){writeFileSync(new URL('art-audit.json',out),JSON.stringify(artAudit,null,2));writeFileSync(new URL('visual-results.json',out),JSON.stringify(visualResults,null,2));}
  if(baseline){console.log('Captured baseline geometry/screenshots');}
  else{
   const scenarios=[];page.setDefaultTimeout(8000);

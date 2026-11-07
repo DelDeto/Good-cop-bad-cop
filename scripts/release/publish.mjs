@@ -17,8 +17,9 @@ await put('deployment-state/runs/'+process.env.GITHUB_RUN_ID+'.json',JSON.string
 if(report.mode==='setup'&&report.status==='PASS')await put('deployment-state/setup.json',JSON.stringify(report,null,2)+'\n');
 if(report.deployed&&report.status==='PASS'){
  await put('deployment-state/last-success.json',JSON.stringify(report,null,2)+'\n');
+ for(const name of report.uiSmoke?.screenshots||[]){if(!/^production-[a-z0-9-]+\.png$/.test(name))throw Error('Invalid screenshot filename');await put(`deployment-state/screenshots/${report.version}/${name}`,readFileSync(dir+'/production/'+name));}
  const tag=process.env.GITHUB_REF_NAME;let release;try{release=await api('releases/tags/'+tag);}catch{}
- const body=readFileSync(dir+'/report.md','utf8');
+ const body=readFileSync(dir+'/report.md','utf8')+'\n\n'+['production-pc-4.png','production-mobile-4.png'].map(name=>`![${name}](https://raw.githubusercontent.com/${repo}/automation/deployment-state/deployment-state/screenshots/${report.version}/${name})`).join('\n');
  if(release)await api('releases/'+release.id,'PATCH',{body});else await api('releases','POST',{tag_name:tag,target_commitish:report.sha,name:tag,body,draft:false,prerelease:false});
 }
 console.log('Published sanitized deployment evidence to '+branch);
