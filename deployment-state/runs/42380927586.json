@@ -1,0 +1,13 @@
+{
+  "status": "FAIL",
+  "mode": "setup",
+  "worker": "diep-vien-so-dach-online",
+  "url": "https://diep-vien-so-dach-online.duc-nguyen-ndd127.workers.dev",
+  "sha": "4c061030c9bae516aaed720d62657b667406b341",
+  "version": "1.8.4",
+  "runUrl": "https://github.com/DelDeto/Good-cop-bad-cop/actions/runs/42380927586",
+  "tests": "PASS",
+  "dryRun": "PENDING",
+  "startedAt": "2026-11-07T14:20:25.252Z",
+  "error": "HTTP /social-preview.jpg\n\n404 !== 200\n"
+}
