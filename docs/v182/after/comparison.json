@@ -64,14 +64,14 @@
       "state": "identical",
       "portraitAreaIncreasePercent": 76,
       "meanIdentityAspect": 0.6588322829131652,
-      "minimumTextLayerContrast": 8.595426121017603
+      "minimumTextLayerContrast": 6.5762350147055235
     },
     {
       "name": "equipment-detail",
       "state": "identical",
       "portraitAreaIncreasePercent": 76,
       "meanIdentityAspect": 0.6588322829131652,
-      "minimumTextLayerContrast": 8.595426121017603
+      "minimumTextLayerContrast": 6.5762350147055235
     },
     {
       "name": "equipment-use",
