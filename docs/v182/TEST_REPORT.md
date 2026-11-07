@@ -18,7 +18,8 @@ Implementation validation before version promotion:
 | Live knowledge invalidation in inspector | PASS: real Blackmail exchange removes stale known face while modal stays open |
 | Reaction drawers | PASS: warning and defensive equipment remain unobstructed; nonmodal keyboard behavior |
 | Assets/fonts, synchronization, protected-source hashes | PASS; no backend/game-rule/schema changes |
-| Hosted CI / actual V1.8.2 production | Must PASS on final commit/tag; authoritative report locations below |
+| Hosted implementation CI + existing Cloudflare dry-run | PASS on `80952a1`: [Actions](https://github.com/DelDeto/Good-cop-bad-cop/actions/runs/42374645878); all Node/browser jobs successful |
+| Final metadata commit / actual V1.8.2 production | Final-commit and tagged-release gates still required; authoritative report locations below |
 
 Local result summaries are captured in `evidence/`; full TAP logs remain in the local QA output directories. They record checkout base
 `ff2d6bc` while testing the uncommitted implementation; they are not represented
@@ -28,8 +29,8 @@ also runs all geometry, four strict golden comparisons, the new 14-state visual
 audit, real integration and the exact production-verifier rehearsal. CI artifacts
 provide exact-commit TAP, JSON and screenshot evidence.
 
-Only promote package, health/cache version and complete UI release declaration
-after implementation CI passes. Then require final-commit CI and existing
+Implementation CI passed before promoting package, health/cache version and the
+complete UI release declaration to 1.8.2. Require final-commit CI and existing
 Cloudflare preflight/dry-run before tagging that exact canonical branch tip.
 No intermediate development push deploys production; no main merge is required.
 The existing guarded rollback retains the verified active V1.8.1 Worker version,

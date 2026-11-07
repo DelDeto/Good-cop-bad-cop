@@ -1,18 +1,22 @@
 {
-  "version": "1.8.1",
+  "version": "1.8.2",
   "status": "complete",
   "scope": "ui",
   "sourceBranch": "feature/v1.8-premium-release",
   "evidence": {
-    "implementationCI": "https://github.com/DelDeto/Good-cop-bad-cop/actions/runs/42365338740",
-    "tests": 152,
-    "layoutCases": 92,
+    "implementationCI": "https://github.com/DelDeto/Good-cop-bad-cop/actions/runs/42374645878",
+    "implementationCommit": "80952a158477b4fee8e06c87c002f3bdd1f90f28",
+    "tests": 159,
+    "layoutCases": 94,
+    "identicalBeforeAfterStates": 14,
     "visualGoldens": 4,
     "originalCharacterPortraits": 8,
     "identityFaces": 4,
     "equipmentIllustrations": 23,
+    "allEquipmentNamesVerified": 23,
     "engineAndSchema": "unchanged",
-    "priorProductionRelease": "https://github.com/DelDeto/Good-cop-bad-cop/releases/tag/v1.8.0",
-    "patch": "P2 missing HUD symbols: bundled OFL fallback fonts with critical glyph coverage"
+    "priorProductionRelease": "https://github.com/DelDeto/Good-cop-bad-cop/releases/tag/v1.8.1",
+    "audit": "docs/v182/UX_AUDIT.md",
+    "limitations": "docs/v182/TEST_REPORT.md"
   }
 }
