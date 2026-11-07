@@ -1,0 +1,96 @@
+{
+  "status": "PASS",
+  "mode": "setup",
+  "worker": "diep-vien-so-dach-online",
+  "url": "https://diep-vien-so-dach-online.duc-nguyen-ndd127.workers.dev",
+  "sha": "154c739f48db0775d72ffc5efee57d798161501d",
+  "version": "1.7.0",
+  "runUrl": "https://github.com/DelDeto/Good-cop-bad-cop/actions/runs/42365338740",
+  "tests": "PASS",
+  "dryRun": "PASS",
+  "startedAt": "2026-11-07T10:47:38.992Z",
+  "baseline": {
+    "id": "d9359700-591f-4197-8663-307df471ff67",
+    "shape": {
+      "binding": {
+        "name": "GAME_ROOMS",
+        "type": "durable_object_namespace",
+        "class_name": "GameRoom",
+        "namespace_id": "1c05e1f7d23844ff8bacc1371847dbff"
+      },
+      "runtime": {
+        "compatibility_date": "2026-11-06",
+        "compatibility_flags": [],
+        "usage_model": "standard",
+        "migration_tag": "v1"
+      }
+    },
+    "fingerprint": "35460802a7d849bb5a22d7da5139a23da84095998e49af56d8f304da5630e2f4"
+  },
+  "baselineSmoke": {
+    "health": {
+      "ok": true,
+      "version": "1.6.1-sprint01",
+      "service": "diep-vien-so-dach-online"
+    },
+    "resources": [
+      {
+        "path": "/",
+        "sha256": "13c604b36d1b9535f98e8698ef59b688c0199e077c7376e26f9e1e6e28eeeb51"
+      },
+      {
+        "path": "/app.js",
+        "sha256": "73c040044170adebf7f949452879a8b53c377b63ab6147ca0444d94e023ecdc5"
+      },
+      {
+        "path": "/style.css",
+        "sha256": "13fbfbf10966fffbf8f9f302b865ac79acbf1d5b7a18281b4d3e0f57edfc1410"
+      },
+      {
+        "path": "/favicon.svg",
+        "sha256": "29704f49d7b6a96a3ec952279f28733a19e499ed87b78984dd3fd1198f9bc7ee"
+      },
+      {
+        "path": "/board-texture.webp",
+        "sha256": "06179924ab1a886b0e2781abff50bb8d9a3c7f869dd9f1d42409de23a35ff82d"
+      },
+      {
+        "path": "/item-art.webp",
+        "sha256": "0ac4b7f4fc9f1f371ad1912f8605aae3d1f169b05f8619ce513eab1fed08467f"
+      },
+      {
+        "path": "/portraits.webp",
+        "status": 404
+      },
+      {
+        "path": "/roles.webp",
+        "status": 404
+      },
+      {
+        "path": "/card-back.webp",
+        "status": 404
+      },
+      {
+        "path": "/detective-sans-regular.woff2",
+        "status": 404
+      },
+      {
+        "path": "/detective-sans-bold.woff2",
+        "status": 404
+      },
+      {
+        "path": "/detective-serif-regular.woff2",
+        "status": 404
+      },
+      {
+        "path": "/detective-serif-bold.woff2",
+        "status": 404
+      },
+      {
+        "path": "/art-manifest.json",
+        "status": 404
+      }
+    ]
+  },
+  "completedAt": "2026-11-07T10:47:46.756Z"
+}
