@@ -201,3 +201,5 @@ html:has(.game-root),body:has(.game-root){height:100%;overflow:hidden;margin:0}
 @media(min-width:701px){.game-shell .seat-card{height:clamp(118px,14.5vh,156px)}}
 @media(max-width:700px){.game-shell .seat-card{top:var(--seat-my)}}
 .game-shell .reaction-table>strong,.game-shell .reaction-table>span{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:inherit;line-height:1.2}.game-shell .reaction-table b{font-size:inherit;display:inline}
+.game-shell{padding-top:max(10px,env(safe-area-inset-top));padding-bottom:max(10px,env(safe-area-inset-bottom));padding-left:max(14px,env(safe-area-inset-left));padding-right:max(14px,env(safe-area-inset-right))}
+@media(max-width:700px){.game-shell{padding-top:max(6px,env(safe-area-inset-top));padding-bottom:max(6px,env(safe-area-inset-bottom));padding-left:max(6px,env(safe-area-inset-left));padding-right:max(6px,env(safe-area-inset-right))}}
