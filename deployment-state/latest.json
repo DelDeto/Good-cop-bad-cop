@@ -3,12 +3,12 @@
   "mode": "setup",
   "worker": "diep-vien-so-dach-online",
   "url": "https://diep-vien-so-dach-online.duc-nguyen-ndd127.workers.dev",
-  "sha": "154c739f48db0775d72ffc5efee57d798161501d",
-  "version": "1.7.0",
-  "runUrl": "https://github.com/DelDeto/Good-cop-bad-cop/actions/runs/42365338740",
+  "sha": "17e3243962a647c4aa51076cc8971a9e06a5d136",
+  "version": "1.8.0",
+  "runUrl": "https://github.com/DelDeto/Good-cop-bad-cop/actions/runs/42365643901",
   "tests": "PASS",
   "dryRun": "PASS",
-  "startedAt": "2026-11-07T10:47:38.992Z",
+  "startedAt": "2026-11-07T10:52:09.301Z",
   "baseline": {
     "id": "d9359700-591f-4197-8663-307df471ff67",
     "shape": {
@@ -92,5 +92,5 @@
       }
     ]
   },
-  "completedAt": "2026-11-07T10:47:46.756Z"
+  "completedAt": "2026-11-07T10:52:18.073Z"
 }
