@@ -1,6 +1,6 @@
 import {readFileSync,writeFileSync,mkdirSync} from 'node:fs';
 import assert from 'node:assert/strict';
-const golden=new URL('../docs/v18/golden/',import.meta.url);
+const golden=new URL('../docs/v182/golden/',import.meta.url);
 export async function waitForArtwork(page){
  return page.evaluate(async()=>{await document.fonts.ready;for(const family of ['Detective Sans','Detective Serif','Detective Symbols','Detective Symbols Two'])for(const weight of ['400','700']){await document.fonts.load(`${weight} 14px "${family}"`);if(![...document.fonts].some(f=>f.family.replaceAll('"','').replaceAll("'",'')===family&&f.status==='loaded'))throw Error('Bundled font not loaded: '+family); }const files=['portraits.webp','roles.webp','item-art.webp','board-texture.webp','card-back.webp'];const results=[];
   for(const file of files){const img=new Image();img.src='/'+file+'?v=1.8.0';await img.decode();const cols=file==='portraits.webp'?4:file==='roles.webp'?2:file==='item-art.webp'?6:1,rows=file==='portraits.webp'||file==='roles.webp'?2:file==='item-art.webp'?4:1,count=file==='item-art.webp'?23:cols*rows;

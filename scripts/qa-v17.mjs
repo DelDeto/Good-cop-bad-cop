@@ -36,6 +36,7 @@ try{
  }
 
  if(!baseline){for(const [width,height] of [[1366,768],[375,667]]){await page.setViewportSize({width,height});await show(8,7);game.players[7].effects={wire:game.players[0].id,planted:true,disguise:true};game.players[7].wounded=true;game.players[7].gun=true;game.players[7].aim=1;game.players[7].hand=['vest'];game.pending={kind:'shot',shooter:1,victim:7,since:Date.now(),passes:[1]};broadcast();await page.locator('.reaction-table').waitFor();await measure(width,height,8,7);}}
+ if(!baseline){for(const n of [6,8]){await page.setViewportSize({width:375,height:667});await show(n,0);await page.addStyleTag({content:'#game-shell{--safe-top:44px;--safe-bottom:34px}'});await measure(375,667,n,0);}}
  writeFileSync(new URL('geometry.json',out),JSON.stringify(geometry,null,2));if(!baseline){writeFileSync(new URL('art-audit.json',out),JSON.stringify(artAudit,null,2));writeFileSync(new URL('visual-results.json',out),JSON.stringify(visualResults,null,2));}
  if(baseline){console.log('Captured baseline geometry/screenshots');}
  else{

@@ -1,0 +1,40 @@
+{
+  "commit": "ff2d6bca56174b04f056625fe4f54a503d9a5927",
+  "node": "v24.22.1",
+  "repetitions": 3,
+  "testsPerRun": 159,
+  "totalTests": 477,
+  "status": "PASS",
+  "results": [
+    {
+      "run": 1,
+      "exitCode": 0,
+      "tests": 159,
+      "passed": 159,
+      "failed": 0,
+      "skipped": 0,
+      "cancelled": 0,
+      "ok": true
+    },
+    {
+      "run": 2,
+      "exitCode": 0,
+      "tests": 159,
+      "passed": 159,
+      "failed": 0,
+      "skipped": 0,
+      "cancelled": 0,
+      "ok": true
+    },
+    {
+      "run": 3,
+      "exitCode": 0,
+      "tests": 159,
+      "passed": 159,
+      "failed": 0,
+      "skipped": 0,
+      "cancelled": 0,
+      "ok": true
+    }
+  ]
+}

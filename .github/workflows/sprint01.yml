@@ -70,6 +70,14 @@ jobs:
           CHROMIUM_PATH: /usr/bin/google-chrome
           QA_OUTPUT_DIR: file://${{ runner.temp }}/gcbc-ui-evidence/
         run: node scripts/ci-run.mjs node scripts/qa-v17.mjs
+      - name: V1.8.2 fixed-state visual hierarchy, privacy, contrast and equipment audit
+        env:
+          PLAYWRIGHT_MODULE: ${{ runner.temp }}/gcbc-browser/node_modules/playwright-core/index.mjs
+          CHROMIUM_PATH: /usr/bin/google-chrome
+          V182_OUTPUT_DIR: ${{ runner.temp }}/gcbc-ui-evidence/v182
+        run: |
+          node scripts/ci-run.mjs node scripts/qa-v182.mjs
+          node scripts/compare-v182.mjs "$V182_OUTPUT_DIR/results.json"
       - name: Actual multiplayer and solo server integration
         env:
           PLAYWRIGHT_MODULE: ${{ runner.temp }}/gcbc-browser/node_modules/playwright-core/index.mjs

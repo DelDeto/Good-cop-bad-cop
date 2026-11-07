@@ -1,0 +1,32 @@
+[
+  {
+    "file": "portraits.webp",
+    "width": 1774,
+    "height": 887,
+    "distinctIllustrations": 8
+  },
+  {
+    "file": "roles.webp",
+    "width": 1261,
+    "height": 1247,
+    "distinctIllustrations": 4
+  },
+  {
+    "file": "item-art.webp",
+    "width": 1536,
+    "height": 1024,
+    "distinctIllustrations": 23
+  },
+  {
+    "file": "board-texture.webp",
+    "width": 1536,
+    "height": 1024,
+    "distinctIllustrations": 1
+  },
+  {
+    "file": "card-back.webp",
+    "width": 800,
+    "height": 1200,
+    "distinctIllustrations": 1
+  }
+]

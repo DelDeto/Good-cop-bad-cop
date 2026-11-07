@@ -1,0 +1,105 @@
+{
+  "status": "PASS",
+  "reference": "V1.8.1 fixed fixtures; V2.0 mockup file unavailable, art direction from written brief",
+  "improvementGate": "Portrait area +35% minimum; PC identity aspect ≤0.85; contrast ≥4.5; no clipping; 44px important controls",
+  "comparisons": [
+    {
+      "name": "pc-4",
+      "state": "identical",
+      "portraitAreaIncreasePercent": 76,
+      "meanIdentityAspect": 0.6588322829131652,
+      "minimumTextLayerContrast": 8.595426121017603
+    },
+    {
+      "name": "pc-8",
+      "state": "identical",
+      "portraitAreaIncreasePercent": 52,
+      "meanIdentityAspect": 0.7933076484018263,
+      "minimumTextLayerContrast": 8.595426121017603
+    },
+    {
+      "name": "mobile-4",
+      "state": "identical",
+      "portraitAreaIncreasePercent": 43,
+      "meanIdentityAspect": 0.464102564102564,
+      "minimumTextLayerContrast": 8.595426121017603
+    },
+    {
+      "name": "mobile-8",
+      "state": "identical",
+      "portraitAreaIncreasePercent": 56,
+      "meanIdentityAspect": 1.0987654320987654,
+      "minimumTextLayerContrast": 8.595426121017603
+    },
+    {
+      "name": "investigation",
+      "state": "identical",
+      "portraitAreaIncreasePercent": 76,
+      "meanIdentityAspect": 0.6588322829131652,
+      "minimumTextLayerContrast": 6.6906997815025315
+    },
+    {
+      "name": "aiming",
+      "state": "identical",
+      "portraitAreaIncreasePercent": 76,
+      "meanIdentityAspect": 0.6588322829131652,
+      "minimumTextLayerContrast": 6.6906997815025315
+    },
+    {
+      "name": "reaction",
+      "state": "identical",
+      "portraitAreaIncreasePercent": 77,
+      "meanIdentityAspect": 0.6588322829131652,
+      "minimumTextLayerContrast": 6.6906997815025315
+    },
+    {
+      "name": "reaction-mobile",
+      "state": "identical",
+      "portraitAreaIncreasePercent": 44,
+      "meanIdentityAspect": 0.464102564102564,
+      "minimumTextLayerContrast": 6.6906997815025315
+    },
+    {
+      "name": "equipment-selected",
+      "state": "identical",
+      "portraitAreaIncreasePercent": 76,
+      "meanIdentityAspect": 0.6588322829131652,
+      "minimumTextLayerContrast": 8.595426121017603
+    },
+    {
+      "name": "equipment-detail",
+      "state": "identical",
+      "portraitAreaIncreasePercent": 76,
+      "meanIdentityAspect": 0.6588322829131652,
+      "minimumTextLayerContrast": 8.595426121017603
+    },
+    {
+      "name": "equipment-use",
+      "state": "identical",
+      "portraitAreaIncreasePercent": 76,
+      "meanIdentityAspect": 0.6588322829131652,
+      "minimumTextLayerContrast": 8.595426121017603
+    },
+    {
+      "name": "wounded",
+      "state": "identical",
+      "portraitAreaIncreasePercent": 76,
+      "meanIdentityAspect": 0.6588322829131652,
+      "minimumTextLayerContrast": 8.595426121017603
+    },
+    {
+      "name": "eliminated",
+      "state": "identical",
+      "portraitAreaIncreasePercent": 76,
+      "meanIdentityAspect": 0.6588322829131652,
+      "minimumTextLayerContrast": 7.94695462039525
+    },
+    {
+      "name": "mobile-character-detail",
+      "state": "identical",
+      "portraitAreaIncreasePercent": 56,
+      "meanIdentityAspect": 1.0987654320987654,
+      "minimumTextLayerContrast": 8.595426121017603
+    }
+  ]
+}
