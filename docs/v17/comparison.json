@@ -1,0 +1,401 @@
+[
+  {
+    "viewport": [
+      1366,
+      768
+    ],
+    "players": 4,
+    "beforeDocument": [
+      1366,
+      1337
+    ],
+    "afterDocument": [
+      1366,
+      768
+    ],
+    "afterSeats": 4,
+    "afterOwnCards": 3,
+    "beforeMinCardFont": 6,
+    "afterMinCardFont": 11
+  },
+  {
+    "viewport": [
+      1366,
+      768
+    ],
+    "players": 6,
+    "beforeDocument": [
+      1366,
+      1337
+    ],
+    "afterDocument": [
+      1366,
+      768
+    ],
+    "afterSeats": 6,
+    "afterOwnCards": 3,
+    "beforeMinCardFont": 6,
+    "afterMinCardFont": 11
+  },
+  {
+    "viewport": [
+      1366,
+      768
+    ],
+    "players": 8,
+    "beforeDocument": [
+      1366,
+      1337
+    ],
+    "afterDocument": [
+      1366,
+      768
+    ],
+    "afterSeats": 8,
+    "afterOwnCards": 3,
+    "beforeMinCardFont": 6,
+    "afterMinCardFont": 11
+  },
+  {
+    "viewport": [
+      1440,
+      900
+    ],
+    "players": 4,
+    "beforeDocument": [
+      1440,
+      1337
+    ],
+    "afterDocument": [
+      1440,
+      900
+    ],
+    "afterSeats": 4,
+    "afterOwnCards": 3,
+    "beforeMinCardFont": 6,
+    "afterMinCardFont": 11
+  },
+  {
+    "viewport": [
+      1440,
+      900
+    ],
+    "players": 6,
+    "beforeDocument": [
+      1440,
+      1337
+    ],
+    "afterDocument": [
+      1440,
+      900
+    ],
+    "afterSeats": 6,
+    "afterOwnCards": 3,
+    "beforeMinCardFont": 6,
+    "afterMinCardFont": 11
+  },
+  {
+    "viewport": [
+      1440,
+      900
+    ],
+    "players": 8,
+    "beforeDocument": [
+      1440,
+      1337
+    ],
+    "afterDocument": [
+      1440,
+      900
+    ],
+    "afterSeats": 8,
+    "afterOwnCards": 3,
+    "beforeMinCardFont": 6,
+    "afterMinCardFont": 11
+  },
+  {
+    "viewport": [
+      1920,
+      1080
+    ],
+    "players": 4,
+    "beforeDocument": [
+      1920,
+      1337
+    ],
+    "afterDocument": [
+      1920,
+      1080
+    ],
+    "afterSeats": 4,
+    "afterOwnCards": 3,
+    "beforeMinCardFont": 6,
+    "afterMinCardFont": 11
+  },
+  {
+    "viewport": [
+      1920,
+      1080
+    ],
+    "players": 6,
+    "beforeDocument": [
+      1920,
+      1337
+    ],
+    "afterDocument": [
+      1920,
+      1080
+    ],
+    "afterSeats": 6,
+    "afterOwnCards": 3,
+    "beforeMinCardFont": 6,
+    "afterMinCardFont": 11
+  },
+  {
+    "viewport": [
+      1920,
+      1080
+    ],
+    "players": 8,
+    "beforeDocument": [
+      1920,
+      1337
+    ],
+    "afterDocument": [
+      1920,
+      1080
+    ],
+    "afterSeats": 8,
+    "afterOwnCards": 3,
+    "beforeMinCardFont": 6,
+    "afterMinCardFont": 11
+  },
+  {
+    "viewport": [
+      375,
+      667
+    ],
+    "players": 4,
+    "beforeDocument": [
+      375,
+      1849
+    ],
+    "afterDocument": [
+      375,
+      667
+    ],
+    "afterSeats": 4,
+    "afterOwnCards": 3,
+    "beforeMinCardFont": 5,
+    "afterMinCardFont": 11
+  },
+  {
+    "viewport": [
+      375,
+      667
+    ],
+    "players": 6,
+    "beforeDocument": [
+      375,
+      1966
+    ],
+    "afterDocument": [
+      375,
+      667
+    ],
+    "afterSeats": 6,
+    "afterOwnCards": 3,
+    "beforeMinCardFont": 5,
+    "afterMinCardFont": 11
+  },
+  {
+    "viewport": [
+      375,
+      667
+    ],
+    "players": 8,
+    "beforeDocument": [
+      375,
+      2083
+    ],
+    "afterDocument": [
+      375,
+      667
+    ],
+    "afterSeats": 8,
+    "afterOwnCards": 3,
+    "beforeMinCardFont": 5,
+    "afterMinCardFont": 11
+  },
+  {
+    "viewport": [
+      390,
+      844
+    ],
+    "players": 4,
+    "beforeDocument": [
+      390,
+      1835
+    ],
+    "afterDocument": [
+      390,
+      844
+    ],
+    "afterSeats": 4,
+    "afterOwnCards": 3,
+    "beforeMinCardFont": 5,
+    "afterMinCardFont": 11
+  },
+  {
+    "viewport": [
+      390,
+      844
+    ],
+    "players": 6,
+    "beforeDocument": [
+      390,
+      1952
+    ],
+    "afterDocument": [
+      390,
+      844
+    ],
+    "afterSeats": 6,
+    "afterOwnCards": 3,
+    "beforeMinCardFont": 5,
+    "afterMinCardFont": 11
+  },
+  {
+    "viewport": [
+      390,
+      844
+    ],
+    "players": 8,
+    "beforeDocument": [
+      390,
+      2069
+    ],
+    "afterDocument": [
+      390,
+      844
+    ],
+    "afterSeats": 8,
+    "afterOwnCards": 3,
+    "beforeMinCardFont": 5,
+    "afterMinCardFont": 11
+  },
+  {
+    "viewport": [
+      430,
+      932
+    ],
+    "players": 4,
+    "beforeDocument": [
+      430,
+      1816
+    ],
+    "afterDocument": [
+      430,
+      932
+    ],
+    "afterSeats": 4,
+    "afterOwnCards": 3,
+    "beforeMinCardFont": 5,
+    "afterMinCardFont": 11
+  },
+  {
+    "viewport": [
+      430,
+      932
+    ],
+    "players": 6,
+    "beforeDocument": [
+      430,
+      1933
+    ],
+    "afterDocument": [
+      430,
+      932
+    ],
+    "afterSeats": 6,
+    "afterOwnCards": 3,
+    "beforeMinCardFont": 5,
+    "afterMinCardFont": 11
+  },
+  {
+    "viewport": [
+      430,
+      932
+    ],
+    "players": 8,
+    "beforeDocument": [
+      430,
+      2050
+    ],
+    "afterDocument": [
+      430,
+      932
+    ],
+    "afterSeats": 8,
+    "afterOwnCards": 3,
+    "beforeMinCardFont": 5,
+    "afterMinCardFont": 11
+  },
+  {
+    "viewport": [
+      360,
+      800
+    ],
+    "players": 4,
+    "beforeDocument": [
+      360,
+      1866
+    ],
+    "afterDocument": [
+      360,
+      800
+    ],
+    "afterSeats": 4,
+    "afterOwnCards": 3,
+    "beforeMinCardFont": 5,
+    "afterMinCardFont": 11
+  },
+  {
+    "viewport": [
+      360,
+      800
+    ],
+    "players": 6,
+    "beforeDocument": [
+      360,
+      1983
+    ],
+    "afterDocument": [
+      360,
+      800
+    ],
+    "afterSeats": 6,
+    "afterOwnCards": 3,
+    "beforeMinCardFont": 5,
+    "afterMinCardFont": 11
+  },
+  {
+    "viewport": [
+      360,
+      800
+    ],
+    "players": 8,
+    "beforeDocument": [
+      360,
+      2100
+    ],
+    "afterDocument": [
+      360,
+      800
+    ],
+    "afterSeats": 8,
+    "afterOwnCards": 3,
+    "beforeMinCardFont": 5,
+    "afterMinCardFont": 11
+  }
+]

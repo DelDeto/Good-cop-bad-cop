@@ -1,0 +1,19 @@
+{
+  "status": "PASS",
+  "geometryCases": 48,
+  "scenarios": [
+    "investigate confirmed private result; unrelated viewer remains blind",
+    "draw equipment, discard and reveal own card",
+    "arm, reveal, aim/retarget arrows, cancel shot, shoot, reconnect and private vest reaction",
+    "two-target equipment survives unrelated SSE; swap invalidates memory without guessing",
+    "SSE preserves chat node, focus and draft; drawer retains draft",
+    "long press opens detail and suppresses release-click action",
+    "redirected shot arrow, offline/reload retains pending, wound, elimination, win and restart",
+    "Wire owner receives exact private investigation through live SSE",
+    "Bribe investigate then swap after reload, leader decline and consumption",
+    "elimination clears stale aim and its visual arrow",
+    "native Chromium touch investigate and endTurn send once each"
+  ],
+  "pageErrors": [],
+  "mode": "real browser + test-only HTTP/SSE fixture server + unchanged engine"
+}
