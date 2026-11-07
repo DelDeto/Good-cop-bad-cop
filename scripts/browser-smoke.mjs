@@ -4,7 +4,7 @@ import {readFileSync,mkdirSync,writeFileSync} from 'node:fs';
 import assert from 'node:assert/strict';
 import {createRoom,joinRoom,startGame,command,view,resolveTimedBribe} from '../src/engine.mjs';
 const {chromium}=await import(process.env.PLAYWRIGHT_MODULE||'playwright');
-const output=new URL('../docs/screenshots/',import.meta.url);mkdirSync(output,{recursive:true});
+const output=new URL(process.env.BROWSER_OUTPUT_DIR||'../docs/screenshots/',import.meta.url);mkdirSync(output,{recursive:true});
 let game;
 function fixture(){game=createRoom('ABC123','An','t0');for(let i=1;i<4;i++)joinRoom(game,['','Bình','Chi','Dũng'][i],'t'+i);startGame(game,'t0');for(const p of game.players)p.hand=[];return game;}
 const app=createServer((req,res)=>{const path=new URL(req.url,'http://fixture').pathname;const file=path==='/'?'index.html':path.slice(1);try{const body=readFileSync(new URL('../public/'+file,import.meta.url));res.setHeader('Content-Type',file.endsWith('.js')?'text/javascript':file.endsWith('.css')?'text/css':file.endsWith('.webp')?'image/webp':'text/html');res.end(body);}catch{res.writeHead(404);res.end();}});

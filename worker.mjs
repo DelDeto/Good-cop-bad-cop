@@ -103,7 +103,7 @@ export default {
       if(path==='/favicon.svg')return asset(favicon,'image/svg+xml');
       if(path==='/item-art.webp')return new Response(Uint8Array.from(atob(itemArtB64),c=>c.charCodeAt(0)),{headers:{'Content-Type':'image/webp','Cache-Control':'public,max-age=604800,immutable'}});
       if(path==='/board-texture.webp')return new Response(Uint8Array.from(atob(tableB64),c=>c.charCodeAt(0)),{headers:{'Content-Type':'image/webp','Cache-Control':'public,max-age=604800,immutable'}});
-      if(path==='/api/health')return response({ok:true,version:'1.6.0-sprint01',service:'diep-vien-so-dach-online'});
+      if(path==='/api/health')return response({ok:true,version:'1.6.1-sprint01',service:'diep-vien-so-dach-online'});
     }
     if(!path.startsWith('/api/'))return err('Not found.',404);
     let c,op,body=null;

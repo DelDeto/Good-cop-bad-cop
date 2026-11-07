@@ -18,3 +18,12 @@ No production deployment, team/win-rule changes, or new artwork. Existing V1.5 b
 - Add GitHub Actions on PR/push with a Node 20/22/24 matrix: regressions, private HTTP/SSE transport checks, asset synchronization and actual server smoke. Read-only permissions, immutable action pins, no deployment.
 - Expand to 54 tests, including no-client timer expiry, cross-restart deadline preservation, concurrent commands, invalid token/stolen-decision attacks, private live SSE/reconnect and ordinary/leader response noninterference.
 - Add browser timeout recovery evidence. Staging and physical-rule approval remain open release gates.
+
+## V1.6.1 — turn recovery fixes
+
+- Advance to a living player when a redirected shot eliminates the active shooter. A first leader wound retains the aim phase; terminal wins still take priority.
+- Recover already-stalled persisted dead turns on the next read/alarm without disturbing pending choices.
+- Clear a Coffee reservation when its player dies and validate it again at turn handoff. Normal and forced turn completion share a living-player successor path and preserve direction.
+- Add 57 regressions/audit cases: 4/8-player tables, humans/BOTs, both directions, Coffee survival/elimination, leader wins, pending reconnect and DO alarm recovery.
+- Confirm Serum can still wait indefinitely for an offline human; retain its target-controlled reveal rule pending policy approval.
+- Bump package, Worker health, UI and asset cache keys to V1.6.1. No production deployment or merge.

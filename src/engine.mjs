@@ -34,6 +34,21 @@ const eqMap = Object.fromEntries(EQUIPMENT.map(x=>[x.id,x]));
 const assert=(ok,msg)=>{if(!ok)throw Error(msg);};
 function pushLog(g,msg){g.log.push({at:Date.now(),msg});g.log=g.log.slice(-65);}
 function nextAlive(g,i){const n=g.players.length;for(let d=1;d<=n;d++){let j=(i+d*g.direction+n*n)%n;if(g.players[j]?.alive)return j;}return i;}
+// Both ordinary endTurn and elimination of the active player use this path.
+// A dead/stale Coffee recipient never supersedes the normal living successor.
+function advanceTurn(g,from){
+ const coffee=g.coffeeNext;
+ const next=Number.isInteger(coffee)&&g.players[coffee]?.alive?coffee:nextAlive(g,from);
+ assert(g.players[next]?.alive,'Không còn người sống để nhận lượt.');
+ g.coffeeNext=null;g.turn=next;g.phase='action';g.round++;g.lastInvestigate=null;
+ pushLog(g,`➡️ Đến lượt ${g.players[next].name}.`);
+}
+// Repair an already-stalled persisted room on its next read/alarm. Never
+// interrupt a pending choice or advance a completed game's archival turn.
+function recoverDeadTurn(g){
+ if(g.status!=='playing'||g.pending||!g.players[g.turn]||g.players[g.turn].alive)return false;
+ checkWin(g);if(g.status==='playing')advanceTurn(g,g.turn);return true;
+}
 function leftRightAlive(g,i){const n=g.players.length;const nearest=(d)=>{for(let k=1;k<n;k++){let j=(i+d*k+n*n)%n;if(g.players[j].alive)return j;}return null;};return [...new Set([nearest(-1),nearest(1)])].filter(x=>x!==null);}
 function target(g,index){const p=g.players[Number(index)];assert(Number.isInteger(Number(index)) && p && p.alive,'Mục tiêu không hợp lệ hoặc đã bị loại.');return p;}
 function slotCard(p,slot,requireHidden=false){const idx=Number(slot);assert(slot!==null&&slot!==''&&typeof slot!=='boolean','Vị trí lá bài không hợp lệ.');assert(Number.isInteger(idx)&&idx>=0&&idx<3,'Vị trí lá bài không hợp lệ.');const c=p.cards[idx];assert(c,'Không tìm thấy lá bài.');if(requireHidden)assert(!c.revealed,'Lá bài này đã lật.');return c;}
@@ -118,7 +133,28 @@ function playCard(g,p,cmd){assert(p.hand.length===1,'Bạn cần giữ đúng m�
  }
 }
 function cancelShot(g){const shooter=g.players[g.pending.shooter];g.pending=null;g.phase='aim';pushLog(g,`✋ Phát bắn của ${shooter.name} bị ngăn vì không còn súng.`);}
-function resolveShot(g){const pend=g.pending;assert(pend?.kind==='shot','Không có phát bắn đang chờ.');const shooter=g.players[pend.shooter],victim=g.players[pend.victim];shooter.gun=false;shooter.aim=null;g.pending=null;g.phase='aim';if(pend.cancelled){pushLog(g,`🛡️ ${victim.name} được Áo Chống Đạn cứu.`);return;}victim.cards.forEach(c=>c.revealed=true);if(victim.cards.some(c=>['agent','kingpin'].includes(c.type))&&!victim.wounded){victim.wounded=true;equipDraw(g,victim);if(victim.hand.length>1){const first=victim.hand.shift();g.discard.push(first);}pushLog(g,`💥 ${victim.name} bị thương lần đầu và rút trang bị.`);}else{victim.alive=false;victim.gun=false;victim.aim=null;victim.hand.splice(0).forEach(c=>g.discard.push(c));pushLog(g,`☠️ ${victim.name} đã bị loại khỏi ván.`);checkWin(g);}}
+function resolveShot(g){
+ const pend=g.pending;assert(pend?.kind==='shot','Không có phát bắn đang chờ.');
+ const shooter=g.players[pend.shooter],victim=g.players[pend.victim];
+ shooter.gun=false;shooter.aim=null;g.pending=null;g.phase='aim';
+ if(pend.cancelled){pushLog(g,`🛡️ ${victim.name} được Áo Chống Đạn cứu.`);return;}
+ victim.cards.forEach(c=>c.revealed=true);
+ if(victim.cards.some(c=>['agent','kingpin'].includes(c.type))&&!victim.wounded){
+  victim.wounded=true;equipDraw(g,victim);
+  if(victim.hand.length>1){const first=victim.hand.shift();g.discard.push(first);}
+  pushLog(g,`💥 ${victim.name} bị thương lần đầu và rút trang bị.`);
+ }else{
+  victim.alive=false;
+  if(g.coffeeNext===pend.victim)g.coffeeNext=null;
+  victim.gun=false;victim.aim=null;
+  victim.hand.splice(0).forEach(c=>g.discard.push(c));
+  pushLog(g,`☠️ ${victim.name} đã bị loại khỏi ván.`);
+  // Preserve terminal win handling before selecting another active player.
+  checkWin(g);
+  if(g.status==='playing'&&!g.players[g.turn].alive)advanceTurn(g,g.turn);
+ }
+}
+
 export function createRoom(code,ownerName,token){return {code,createdAt:Date.now(),ownerToken:token,status:'lobby',players:[blankPlayer(ownerName,token)],log:[],privateLogs:{},deck:[],discard:[],activeCards:[],turn:0,phase:'lobby',direction:1,gunTotal:0,coffeeNext:null,pending:null,lastInvestigate:null,round:0,winner:null};}
 function blankPlayer(name,token){return {id:uid(),name:name.slice(0,24),token,bot:false,botLevel:'normal',alive:true,gun:false,aim:null,gunFresh:false,cards:[],hand:[],known:{},privateLog:[],wounded:false,effects:{}};}
 export function joinRoom(g,name,token){const old=g.players.find(p=>p.token===token);if(old)return old;assert(g.status==='lobby','Ván đã bắt đầu. Chỉ người chơi cũ được vào lại.');assert(g.players.length<8,'Phòng đã đủ 8 người.');assert(name&&typeof name==='string','Vui lòng nhập tên.');const p=blankPlayer(name,token);g.players.push(p);pushLog(g,`👤 ${p.name} tham gia phòng.`);return p;}
@@ -185,7 +221,7 @@ function executeCommand(g,token,cmd){const p=g.players.find(p=>p.token===token);
  }
  if(g.phase==='aim'){
   if(cmd.type==='chooseAim'){assert(p.gun,'Bạn chưa có súng.');const q=target(g,cmd.target);assert(q!==p,'Không được tự ngắm chính mình.');p.aim=g.players.indexOf(q);pushLog(g,`🎯 ${p.name} đang ngắm ${q.name}.`);return;}
-  if(cmd.type==='endTurn'){assert(!p.gun||p.aim!==null,'Bạn cần ngắm mục tiêu trước khi kết thúc lượt.');p.gunFresh=false;const next=g.coffeeNext!==null?g.coffeeNext:nextAlive(g,seat);g.coffeeNext=null;g.turn=next;g.phase='action';g.round++;g.lastInvestigate=null;pushLog(g,`➡️ Đến lượt ${g.players[next].name}.`);return;}
+  if(cmd.type==='endTurn'){assert(!p.gun||p.aim!==null,'Bạn cần ngắm mục tiêu trước khi kết thúc lượt.');p.gunFresh=false;advanceTurn(g,seat);return;}
  }
  throw Error('Hành động không hợp lệ ở giai đoạn hiện tại.');
 }
@@ -282,7 +318,7 @@ export function needsBotStep(g){if(g.status!=='playing'||!g.players.some(p=>p.bo
  if(g.pending?.kind==='serum')return !!g.players[g.pending.target]?.bot;
  return !!g.players[g.turn]?.bot;
 }
-export function botStep(g){if(resolveTimedBribe(g))return true;if(!needsBotStep(g))return false;
+export function botStep(g){if(resolveTimedBribe(g)||recoverDeadTurn(g))return true;if(!needsBotStep(g))return false;
  let bot,move;
  if(g.pending?.kind==='shot'){
   bot=g.players.find((p,i)=>p.bot&&p.alive&&!g.pending.passes.includes(i));move=botShotReaction(g,bot);
@@ -347,4 +383,4 @@ export function resolveTimedBribe(g){
  return true;
 }
 export function pendingDeadline(g){return bribeDeadline(g)??shotDeadline(g);}
-export function resolveTimedPending(g){return resolveTimedBribe(g)||resolveTimedShot(g);}
+export function resolveTimedPending(g){return resolveTimedBribe(g)||resolveTimedShot(g)||recoverDeadTurn(g);}

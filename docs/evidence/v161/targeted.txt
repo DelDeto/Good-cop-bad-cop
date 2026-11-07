@@ -1,0 +1,116 @@
+✖ local: redirect shot reconnect preserves pending and transitions safely (4) (10.391571ms)
+✖ local: coffee shot reconnect preserves pending and transitions safely (4) (1.561367ms)
+✔ worker: redirect shot reconnect preserves pending and transitions safely (4) (26.942593ms)
+✔ worker: coffee shot reconnect preserves pending and transitions safely (4) (6.711089ms)
+✖ local: redirect shot reconnect preserves pending and transitions safely (8) (0.578018ms)
+✖ local: coffee shot reconnect preserves pending and transitions safely (8) (0.517358ms)
+✔ worker: redirect shot reconnect preserves pending and transitions safely (8) (8.435128ms)
+✔ worker: coffee shot reconnect preserves pending and transitions safely (8) (7.015321ms)
+✔ Worker alarm resolves redirected shot killing BOT shooter and schedules a living BOT next (5.338342ms)
+✔ Serum pending survives Worker restart without exposure or unexpected reveal; target can resume (4.698493ms)
+✔ FIX-01: redirected ordinary shooter eliminated advances exactly once (4 players, direction 1, human) (1.59095ms)
+✔ FIX-01: redirected leader shooter wounded retains aim turn (4 players, direction 1, human) (0.644367ms)
+✔ FIX-02: Coffee eliminated recipient (4 players, direction 1, human) (0.484719ms)
+✔ FIX-02: Coffee living recipient (4 players, direction 1, human) (0.361406ms)
+✔ FIX-01: redirected ordinary shooter eliminated advances exactly once (4 players, direction 1, BOT) (1.709226ms)
+✔ FIX-01: redirected leader shooter wounded retains aim turn (4 players, direction 1, BOT) (0.955708ms)
+✔ FIX-02: Coffee eliminated recipient (4 players, direction 1, BOT) (0.719418ms)
+✔ FIX-02: Coffee living recipient (4 players, direction 1, BOT) (1.325506ms)
+✔ FIX-01: redirected ordinary shooter eliminated advances exactly once (4 players, direction -1, human) (0.403739ms)
+✔ FIX-01: redirected leader shooter wounded retains aim turn (4 players, direction -1, human) (0.468706ms)
+✔ FIX-02: Coffee eliminated recipient (4 players, direction -1, human) (0.501845ms)
+✔ FIX-02: Coffee living recipient (4 players, direction -1, human) (0.447444ms)
+✔ FIX-01: redirected ordinary shooter eliminated advances exactly once (4 players, direction -1, BOT) (0.616655ms)
+✔ FIX-01: redirected leader shooter wounded retains aim turn (4 players, direction -1, BOT) (0.342588ms)
+✔ FIX-02: Coffee eliminated recipient (4 players, direction -1, BOT) (0.460694ms)
+✔ FIX-02: Coffee living recipient (4 players, direction -1, BOT) (0.349639ms)
+✔ FIX-01: redirected ordinary shooter eliminated advances exactly once (8 players, direction 1, human) (1.080583ms)
+✔ FIX-01: redirected leader shooter wounded retains aim turn (8 players, direction 1, human) (0.963831ms)
+✔ FIX-02: Coffee eliminated recipient (8 players, direction 1, human) (0.983229ms)
+✔ FIX-02: Coffee living recipient (8 players, direction 1, human) (1.545003ms)
+✔ FIX-01: redirected ordinary shooter eliminated advances exactly once (8 players, direction 1, BOT) (1.036327ms)
+✔ FIX-01: redirected leader shooter wounded retains aim turn (8 players, direction 1, BOT) (0.978853ms)
+✔ FIX-02: Coffee eliminated recipient (8 players, direction 1, BOT) (1.03092ms)
+✔ FIX-02: Coffee living recipient (8 players, direction 1, BOT) (0.913065ms)
+✔ FIX-01: redirected ordinary shooter eliminated advances exactly once (8 players, direction -1, human) (0.987035ms)
+✔ FIX-01: redirected leader shooter wounded retains aim turn (8 players, direction -1, human) (0.938132ms)
+✔ FIX-02: Coffee eliminated recipient (8 players, direction -1, human) (0.987626ms)
+✔ FIX-02: Coffee living recipient (8 players, direction -1, human) (0.951492ms)
+✔ FIX-01: redirected ordinary shooter eliminated advances exactly once (8 players, direction -1, BOT) (1.202024ms)
+✔ FIX-01: redirected leader shooter wounded retains aim turn (8 players, direction -1, BOT) (1.077369ms)
+✔ FIX-02: Coffee eliminated recipient (8 players, direction -1, BOT) (1.292027ms)
+✔ FIX-02: Coffee living recipient (8 players, direction -1, BOT) (1.086362ms)
+✔ wounded agent shooter eliminated ends game before another turn (4, human) (1.182255ms)
+✔ wounded agent shooter eliminated ends game before another turn (4, BOT) (0.638498ms)
+✔ wounded kingpin shooter eliminated ends game before another turn (4, human) (0.332403ms)
+✔ wounded kingpin shooter eliminated ends game before another turn (4, BOT) (0.581152ms)
+✔ wounded agent shooter eliminated ends game before another turn (8, human) (2.672696ms)
+✔ wounded agent shooter eliminated ends game before another turn (8, BOT) (0.962288ms)
+✔ wounded kingpin shooter eliminated ends game before another turn (8, human) (1.754543ms)
+✔ wounded kingpin shooter eliminated ends game before another turn (8, BOT) (1.075736ms)
+✔ Coffee dead stale pointer in restored state is skipped; normal order skips several eliminated seats (0.27ms)
+✔ Coffee remains honored when the shooter dies and direction reverses before resolution (0.983951ms)
+✔ Coffee victim leader dies: existing winning check takes priority over a future extra turn (0.40423ms)
+✔ Serum audit: offline human choice has no deadline; reconnect is lossless but does not unblock it (0.810292ms)
+ℹ tests 54
+ℹ suites 0
+ℹ pass 50
+ℹ fail 4
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 157.700666
+
+✖ failing tests:
+
+test at tests/v161-reconnect.test.mjs:8:103
+✖ local: redirect shot reconnect preserves pending and transitions safely (4) (10.391571ms)
+  Error: listen EPERM: operation not permitted 127.0.0.1
+      at Server.setupListenHandle [as _listen2] (node:net:2368:21)
+      at listenInCluster (node:net:2499:12)
+      at node:net:2728:7
+      at process.processTicksAndRejections (node:internal/process/task_queues:90:21) {
+    code: 'EPERM',
+    errno: -1,
+    syscall: 'listen',
+    address: '127.0.0.1'
+  }
+
+test at tests/v161-reconnect.test.mjs:8:103
+✖ local: coffee shot reconnect preserves pending and transitions safely (4) (1.561367ms)
+  Error: listen EPERM: operation not permitted 127.0.0.1
+      at Server.setupListenHandle [as _listen2] (node:net:2368:21)
+      at listenInCluster (node:net:2499:12)
+      at node:net:2728:7
+      at process.processTicksAndRejections (node:internal/process/task_queues:90:21) {
+    code: 'EPERM',
+    errno: -1,
+    syscall: 'listen',
+    address: '127.0.0.1'
+  }
+
+test at tests/v161-reconnect.test.mjs:8:103
+✖ local: redirect shot reconnect preserves pending and transitions safely (8) (0.578018ms)
+  Error: listen EPERM: operation not permitted 127.0.0.1
+      at Server.setupListenHandle [as _listen2] (node:net:2368:21)
+      at listenInCluster (node:net:2499:12)
+      at node:net:2728:7
+      at process.processTicksAndRejections (node:internal/process/task_queues:90:21) {
+    code: 'EPERM',
+    errno: -1,
+    syscall: 'listen',
+    address: '127.0.0.1'
+  }
+
+test at tests/v161-reconnect.test.mjs:8:103
+✖ local: coffee shot reconnect preserves pending and transitions safely (8) (0.517358ms)
+  Error: listen EPERM: operation not permitted 127.0.0.1
+      at Server.setupListenHandle [as _listen2] (node:net:2368:21)
+      at listenInCluster (node:net:2499:12)
+      at node:net:2728:7
+      at process.processTicksAndRejections (node:internal/process/task_queues:90:21) {
+    code: 'EPERM',
+    errno: -1,
+    syscall: 'listen',
+    address: '127.0.0.1'
+  }

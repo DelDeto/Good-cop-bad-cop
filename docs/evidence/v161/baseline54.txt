@@ -1,0 +1,66 @@
+
+> diep-vien-so-dach-online@1.6.0 test
+> node --test tests/*.test.mjs
+
+✔ singleplayer bot room configured from 3 to 7 bots with levels (10.018997ms)
+✔ cannot spoof bot action or change bots after start (0.792107ms)
+✔ bots continue and finish a full game without client-side hidden data (25.414173ms)
+✔ bots automatically pass or defend during shots, not before (0.494735ms)
+✔ Bribe timeout boundary auto-declines once, preserves private investigation and spent card (12.538269ms)
+✔ late owner command cannot race deadline to exchange; early decision cancels expiration (1.790443ms)
+✔ legacy pending without timestamp declines safely on recovery with no private log in public output (0.804985ms)
+✔ pending Bribe blocks card-moving equipment and ignores client deadline/target overrides (0.672028ms)
+✔ Cloudflare Worker: homepage, create, join, play and player privacy (71.617746ms)
+✔ Cloudflare Durable Object schedules bot turns and alarm advances the room (12.148139ms)
+✔ Durable Object Bribe persists private pending across re-instantiation; duplicate commands cannot swap twice (11.385927ms)
+✔ đủ 23 trang bị riêng biệt (1.090159ms)
+✔ chưa đủ 4 người thì không bắt đầu (4.322999ms)
+✔ chia 3 lá bí mật/người và chỉ một thủ lĩnh mỗi phe (2.426223ms)
+✔ trạng thái gửi cho người khác không lộ bài bí mật (0.74126ms)
+✔ không thể hành động sai lượt (0.578138ms)
+✔ điều tra trả kết quả riêng, không công khai cho người khác (0.595844ms)
+✔ lấy súng yêu cầu lật bài và chọn ngắm trước khi kết thúc lượt (0.698036ms)
+✔ bắt đầu cửa sổ bắn, mọi người bỏ qua thì xử lý (0.463729ms)
+✔ bị Áo Chống Đạn: huỷ phát bắn và trả súng (1.216998ms)
+✔ cà phê không được dùng lượt mình, được dùng lượt khác (0.432723ms)
+✔ hộp cấp cứu chữa thương cho người khác (0.324302ms)
+✔ người bị loại không xem được bài úp của người khác (0.264112ms)
+✔ local: Bribe hidden information is private in command, GET, live SSE, reconnect, and invalid errors (79.674781ms)
+✔ local: Wire private result reaches only authorized owner/investigator over HTTP and SSE (12.107869ms)
+✔ local: expired disconnected Bribe resumes before reconnect and rejects stale swap without refund (6.140117ms)
+✔ worker: Bribe hidden information is private in command, GET, live SSE, reconnect, and invalid errors (23.877776ms)
+✔ worker: Wire private result reaches only authorized owner/investigator over HTTP and SSE (6.153948ms)
+✔ worker: expired disconnected Bribe resumes before reconnect and rejects stale swap without refund (3.766213ms)
+✔ Worker restart keeps original deadline; alarm expires disconnected human and persists before rejection (4.528645ms)
+✔ Worker duplicate concurrent Bribe decisions and an alarm cannot apply a stale swap twice (3.183538ms)
+✔ local timer resolves abandoned Bribe with zero clients and zero incoming requests (1502.659305ms)
+✔ local: ordinary/leader target cannot be probed through legacy errors or unrelated observers (23.214844ms)
+✔ worker: ordinary/leader target cannot be probed through legacy errors or unrelated observers (12.012792ms)
+✔ Wire owner receives exact nonfirst investigation; all other secrets remain private (8.191002ms)
+✔ Wire does not trigger on unrelated players, invalid investigations or dead owner (0.686249ms)
+✔ Wire supports multiple owners watching distinct players and equipment investigations (0.574273ms)
+✔ Bribe ordinary: consume before decision, private result, locked pending, swap clears stale knowledge (1.697581ms)
+✔ Bribe leader is legitimately investigated and consumed, swap forbidden, decline allowed (1.021276ms)
+✔ Bribe declined on ordinary card keeps identities and private knowledge (0.470849ms)
+✔ Bribe invalid first-stage ownSlot requests are identical for leader and ordinary with no mutation (2.044295ms)
+✔ Bribe invalid targets and decisions do not reveal or mutate; stale decision rejected (1.321382ms)
+✔ BOT watched investigation uses normal Wire privacy; BOT Bribe resolves out of turn without stuck main turn (1.666655ms)
+✔ shoot reactions redirect before defence, reset passes and deadline, reconnect restores public state (1.056939ms)
+✔ shot pass/force/timed order and invalid reaction leave private state intact (0.688843ms)
+✔ Cloudflare assets generated exactly from public source (1.79166ms)
+✔ Wire owner may be a BOT and Bribe investigation shares only the watched result (0.28918ms)
+✔ board first UI offers all clickable pieces, 3 role cards and item art (35.825078ms)
+✔ reveal pending highlights own card, aim phase allows target click (3.182185ms)
+✔ clicking an opponent card opens an investigate confirmation (2.144735ms)
+✔ equipment target selection is dispatched as server validated command (1.97313ms)
+✔ Bribe card-first flow sends investigation before own-card choice, including decline and reconnect (2.889481ms)
+✔ explicit interaction states recover selections on server change and keep optional equipment cancellation local (1.60976ms)
+✔ reaction table shows public shooter/victim, deadline and only viewer defensive equipment (1.821234ms)
+ℹ tests 54
+ℹ suites 0
+ℹ pass 54
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1871.173942
