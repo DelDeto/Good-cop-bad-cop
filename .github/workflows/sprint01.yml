@@ -4,7 +4,8 @@ on:
   pull_request:
     branches: [main, feature/v1.6-sprint-01]
   push:
-    branches: [main, feature/v1.6-sprint-01, feature/v1.7-responsive-table]
+    branches: [main, feature/v1.6-sprint-01, feature/v1.7-responsive-table, feature/v1.8-premium-release]
+  workflow_call:
   workflow_dispatch:
 
 permissions:

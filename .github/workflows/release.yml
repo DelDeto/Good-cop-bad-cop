@@ -1,0 +1,141 @@
+name: Release UI / Cloudflare
+on:
+  push:
+    branches: [feature/v1.8-premium-release]
+    tags: ['v*']
+  workflow_dispatch:
+permissions:
+  contents: read
+# Setup and deployment share one lock. Never interrupt an activation or rollback.
+concurrency:
+  group: cloudflare-production-diep-vien-so-dach-online
+  cancel-in-progress: false
+jobs:
+  gates:
+    uses: ./.github/workflows/sprint01.yml
+  release:
+    name: Inspect, dry-run and gated release
+    needs: gates
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    permissions:
+      contents: write
+    env:
+      RELEASE_OUTPUT_DIR: ${{ runner.temp }}/gcbc-release
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6
+        with:
+          node-version: 24
+      - name: Inspect existing Worker; prepare module package (read only)
+        env:
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+        run: node scripts/release/run.mjs inspect
+      - name: Install pinned official compiler in isolation
+        run: npm install --prefix "$RUNNER_TEMP/gcbc-wrangler" --no-package-lock --no-save wrangler@4.158.0
+      - name: Compiler dry-run, including text modules and game artwork (no upload)
+        env:
+          WRANGLER_SEND_METRICS: 'false'
+        run: node "$RUNNER_TEMP/gcbc-wrangler/node_modules/wrangler/bin/wrangler.js" deploy --dry-run --config "$RELEASE_OUTPUT_DIR/package/wrangler.json" --outdir "$RELEASE_OUTPUT_DIR/compiled"
+      - name: Mark dry-run passed
+        run: node scripts/release/run.mjs dry-run-passed
+      - name: Read successful initial setup record
+        if: github.ref_type == 'tag'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh api 'repos/${{ github.repository }}/contents/deployment-state/setup.json?ref=automation%2Fdeployment-state' --jq .content | base64 --decode > "$RUNNER_TEMP/setup.json"
+      - name: Upload version without routing traffic (release tags only)
+        if: github.ref_type == 'tag'
+        env:
+          SETUP_REPORT_FILE: ${{ runner.temp }}/setup.json
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+        run: node scripts/release/run.mjs deploy
+      - name: Save recovery checkpoint before activation
+        if: github.ref_type == 'tag'
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7
+        with:
+          name: rollback-checkpoint
+          path: ${{ env.RELEASE_OUTPUT_DIR }}/report.json
+          if-no-files-found: error
+          retention-days: 90
+      - name: Activate and verify health, commit and frontend bytes
+        if: github.ref_type == 'tag'
+        env:
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+        run: node scripts/release/run.mjs activate
+      - name: Recover previous verified version after any deployment failure
+        if: failure() && github.ref_type == 'tag'
+        env:
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+        run: node scripts/release/run.mjs recover
+      - name: Write release summary
+        if: always()
+        env:
+          RELEASE_JOB_STATUS: ${{ job.status }}
+        run: node scripts/release/run.mjs summary
+      - name: Persist sanitized setup/release report (never secrets or rooms)
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: node scripts/release/publish.mjs
+      - name: Upload complete report and compiler evidence
+        if: always()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7
+        with:
+          name: cloudflare-setup-release-evidence
+          path: ${{ env.RELEASE_OUTPUT_DIR }}/
+          if-no-files-found: error
+          retention-days: 90
+  recovery:
+    name: Independent recovery after failed/timed-out release job
+    needs: release
+    if: always() && github.ref_type == 'tag' && (needs.release.result == 'failure' || needs.release.result == 'cancelled')
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    permissions:
+      actions: read
+      contents: write
+    env:
+      RELEASE_OUTPUT_DIR: ${{ runner.temp }}/gcbc-recovery
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6
+        with:
+          node-version: 24
+      - name: Retrieve durable checkpoint (final report preferred)
+        id: checkpoint
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          mkdir -p "$RELEASE_OUTPUT_DIR"
+          if gh run download "$GITHUB_RUN_ID" --repo "$GITHUB_REPOSITORY" --name cloudflare-setup-release-evidence --dir "$RELEASE_OUTPUT_DIR"; then
+            echo 'found=true' >> "$GITHUB_OUTPUT"
+          elif gh run download "$GITHUB_RUN_ID" --repo "$GITHUB_REPOSITORY" --name rollback-checkpoint --dir "$RELEASE_OUTPUT_DIR"; then
+            echo 'found=true' >> "$GITHUB_OUTPUT"
+          else
+            echo 'No checkpoint: activation was never authorized.' >> "$GITHUB_STEP_SUMMARY"
+          fi
+      - name: Restore only the version this run replaced
+        if: steps.checkpoint.outputs.found == 'true'
+        env:
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+        run: node scripts/release/run.mjs recover
+      - name: Record recovery outcome
+        if: always() && steps.checkpoint.outputs.found == 'true'
+        env:
+          RELEASE_JOB_STATUS: failure
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          node scripts/release/run.mjs summary
+          node scripts/release/publish.mjs
