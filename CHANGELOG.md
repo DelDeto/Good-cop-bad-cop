@@ -35,3 +35,12 @@ No production deployment, team/win-rule changes, or new artwork. Existing V1.5 b
 - Reproduce the Node 22 full-game failure with seed 1558 (5 BOTs, normal). Retain unseeded full games, add five seeded replays and public-state liveness checks after each move. Production RNG is unchanged.
 - Expand to 126 tests and add a fail-on-any-error repeat runner. CI executes the entire suite five additional times per Node 20/22/24 job.
 - Twenty local runs per Node version passed: 60 complete suites, 7,560 test executions, zero failed/skipped/cancelled. V1.6.1 shot/Coffee/Bribe fixes remain covered; the previously documented offline-human Serum policy gate remains open.
+
+## V1.7.0 — responsive tabletop UX
+
+- Replace the gameplay dashboard with a viewport table and one personal hand at the bottom. Viewer-relative 4–8-seat plans, compact mobile seats, original card art, public aim/shot arrows and readable status labels.
+- Move chat, public timeline, help and private memory into drawers; preserve valid targeting and chat focus/drafts through unrelated SSE or chat responses. Mark invalidated memory without retaining old identities as current information.
+- Equipment detail → target selection → confirmation; full-size seat inspection, touch/keyboard interaction, long-press release suppression and reduced-motion support. Server-confirmed private investigation detail, reaction and outcome feedback.
+- Keep engine/server behavior and all V1.6.1 fixes. Only Worker release-version metadata changes. Synchronize public assets; target version/cache keys 1.7.0.
+- Add browser geometry/scenario QA, actual multiplayer/7-BOT solo integration, before/after screenshots and CI browser artifacts. Existing UI tests adapted for the new release label, explicit equipment confirmation and read-only eliminated-seat inspection; gameplay/privacy assertions retained.
+- Existing offline-human Serum P1 remains open; no merge or production deployment.

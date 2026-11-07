@@ -1,0 +1,10 @@
+{
+  "base": "cfb0a1d3c948527d1a7976efaea0cc0ece6cd2bb",
+  "engineByteIdentical": true,
+  "engineSHA256": "8b1746fd6316a2aee384abe56e721585223b65ed70281dd6a20ac03ca1827e68",
+  "serverByteIdentical": true,
+  "workerChanges": "health version metadata only; router/GameRoom unchanged",
+  "applicationDependenciesAdded": 0,
+  "productionDeploymentPerformed": false,
+  "mergePerformed": false
+}

@@ -30,9 +30,11 @@ function validReaction(eq){
 }
 function reactionBanner(){
  const p=state.pending;if(p?.kind!=='shot')return '';
- return `<div class="reaction-table" role="status"><b>🎯 ${esc(state.players[p.shooter].name)} → ${esc(state.players[p.victim].name)}</b><br>Phản ứng: ${state.hand.filter(validReaction).map(eq=>esc(eq.name)).join(' · ')||'Có thể bỏ qua / chờ người khác'}<br>${p.deadline?`Tự xử lý sau <strong data-countdown="${p.deadline}">${Math.max(0,Math.ceil((p.deadline-Date.now())/1000))}</strong> giây`:'Không có hạn tự động'} · Người bắn xác nhận sau <span data-countdown="${p.forceAt||p.since+15000}">${Math.max(0,Math.ceil(((p.forceAt||p.since+15000)-Date.now())/1000))}</span> giây</div>`;
+ const names=`#${p.shooter+1} ${state.players[p.shooter].name} → #${p.victim+1} ${state.players[p.victim].name}`;
+ return `<div class="reaction-table" role="status"><strong title="${esc(names)}">🎯 ${esc(names)}</strong><span>Phản ứng: ${state.hand.filter(validReaction).map(eq=>esc(eq.name)).join(' · ')||'Có thể bỏ qua / chờ người khác'}</span><span>${p.deadline?`Tự xử lý: <b data-countdown="${p.deadline}">…</b>s`:'Không tự xử lý'} · Người bắn xác nhận sau <b data-countdown="${p.forceAt||p.since+15000}">…</b>s</span></div>`;
 }
-let pick=null; let hoverTimer=null; let dragged=null;
+
+let pick=null; let hoverTimer=null; let holdOrigin=null; let dragged=null;
 const physicalArt={vest:0,planted:1,smoke:2,coffee:3,camera:4,disguise:5,taser:6,k9:7,medkit:8,serum:9,shield:10,restrain:11,walkie:12,wiretap:13,polygraph:14,wire:15,blackmail:16,bribe:17,confiscation:18,evidence:19,database:20,defib:21,metal:22};
 
 const equipmentArt={vest:'🛡',planted:'🗂',smoke:'◉',coffee:'☕',camera:'◈',disguise:'♟',taser:'ϟ',k9:'♞',medkit:'✚',serum:'⚗',shield:'▱',restrain:'⛓',walkie:'▣',wiretap:'⌁',polygraph:'≋',wire:'◌',blackmail:'✉',bribe:'＄',confiscation:'⌖',evidence:'▤',database:'▦',defib:'✚',metal:'◎'};
@@ -42,10 +44,10 @@ const cardSeal=(type)=>type==='agent'?'★':type==='kingpin'?'♛':type==='hones
 const notif=(message)=>{const el=$('#toast');el.innerHTML=`<div class="toast">${esc(message)}</div>`;clearTimeout(window._toast);window._toast=setTimeout(()=>el.innerHTML='',3500);};
 const api=async(url,data)=>{const r=await fetch(url,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(data)});const j=await r.json();if(!r.ok)throw Error(j.error||'Lỗi máy chủ');return j;};
 const codeFromURL=()=>new URLSearchParams(location.search).get('room')?.toUpperCase();
-function navbar(suffix='HỒ SƠ BÍ MẬT'){return `<header class="topbar"><div class="brand"><div class="mark">✪</div><div><h1>Điệp Viên <span>Số Dách</span></h1><small>GOOD COP · BAD COP <b>ONLINE V1.6.1</b></small></div></div><div class="topnote"><span class="live-dot"></span>${esc(suffix)}<br><small>HỒ SƠ MẬT · 23 TRANG BỊ</small></div></header>`;}
+function navbar(suffix='HỒ SƠ BÍ MẬT'){return `<header class="topbar"><div class="brand"><div class="mark">✪</div><div><h1>Điệp Viên <span>Số Dách</span></h1><small>GOOD COP · BAD COP <b>ONLINE V1.7</b></small></div></div><div class="topnote"><span class="live-dot"></span>${esc(suffix)}<br><small>HỒ SƠ MẬT · 23 TRANG BỊ</small></div></header>`;}
 
-function home(){root.innerHTML=navbar()+`<main class="home"><section><span class="eyebrow">MULTIPLAYER / HIDDEN IDENTITY</span><h2>AI LÀ <span>ĐỒNG MINH</span><br>AI LÀ KẺ <span>PHẢN BỘI?</span></h2><p>Thẩm vấn, lật thân phận, chơi trang bị và truy tìm thủ lĩnh đối phương. Mỗi người chơi trên thiết bị của mình, mọi bí mật được giữ trên máy chủ.</p><div class="hero-cards" aria-hidden="true"><div class="showcase-card cop"><span>ĐIỆP VIÊN</span><strong>✦</strong><small>TRUNG THÀNH</small></div><div class="showcase-card gear"><span>TRANG BỊ</span><strong>⚗</strong><small>HỒ SƠ TỐI MẬT</small></div><div class="showcase-card mafia"><span>MAFIA</span><strong>♛</strong><small>TRÙM CUỐI</small></div></div><div class="features"><span>◉ 4–8 người</span><span>◉ 23 trang bị</span><span>◉ Trình duyệt PC / Mobile</span><span>◉ Chơi với bot AI</span><span>◉ Đồng bộ phòng chơi</span></div></section><section class="box formbox"><h3>Đăng nhập vào cuộc điều tra</h3><div class="field"><label>Tên mật vụ</label><input id="name" maxlength="24" placeholder="Ví dụ: Ghế 03 · Đức" autocomplete="nickname" value="${esc(localStorage.getItem('sd-name')||'')}"></div><div class="solobox"><div class="eyebrow">CHẾ ĐỘ 01 · CHƠI VỚI BOT</div><div class="botselects"><div class="field"><label>Số BOT</label><select id="soloCount"><option value="3">3 BOT (bàn 4 người)</option><option value="4">4 BOT (bàn 5 người)</option><option value="5">5 BOT (bàn 6 người)</option><option value="6">6 BOT (bàn 7 người)</option><option value="7">7 BOT (bàn 8 người)</option></select></div><div class="field"><label>Độ khó</label><select id="soloLevel"><option value="normal">Thường</option><option value="hard">Khó</option></select></div></div><button class="btn primary wide" data-act="solo">🤖 CHƠI NGAY VỚI BOT · SOLO MODE</button><p class="tiny muted" style="margin:8px 0 0">Bot tự điều tra, ngắm, bắn và phản ứng; mỗi lượt có độ trễ để dễ theo dõi.</p></div><hr class="hr"><button class="btn wide" data-act="create">+ Tạo phòng với bạn bè · MULTIPLAYER</button><hr class="hr"><div class="field"><label>Mã phòng 6 ký tự</label><input id="code" maxlength="6" placeholder="VD: B4A8CD" class="mono" value="${esc(codeFromURL()||'')}"></div><button class="btn wide" data-act="join">↗ Tham gia phòng</button><p class="tiny muted">Không cần tài khoản. Phòng tự hết hạn sau 24 giờ.</p></section></main><div class="footer">FAN-MADE PROTOTYPE • GIAO DIỆN NGUYÊN BẢN • KHÔNG SỬ DỤNG TRANH MINH HỌA CÓ BẢN QUYỀN</div>`;}
-async function connect(){if(stream){stream.close();stream=null;}if(!session)return;let {code,token}=session;try{const j=await fetch(`/api/state?code=${encodeURIComponent(code)}&token=${encodeURIComponent(token)}`).then(r=>r.json());if(j.error)throw Error(j.error);state=j;render();stream=new EventSource(`/api/events?code=${encodeURIComponent(code)}&token=${encodeURIComponent(token)}`);stream.onmessage=e=>{try{state=JSON.parse(e.data);render();}catch(err){console.error(err)}};stream.onerror=()=>{};}catch(err){localStorage.removeItem('sd-'+code);session=null;home();notif('Không thể kết nối: '+err.message);}}
+function home(){root.className='';root.innerHTML=navbar()+`<main class="home"><section><span class="eyebrow">MULTIPLAYER / HIDDEN IDENTITY</span><h2>AI LÀ <span>ĐỒNG MINH</span><br>AI LÀ KẺ <span>PHẢN BỘI?</span></h2><p>Thẩm vấn, lật thân phận, chơi trang bị và truy tìm thủ lĩnh đối phương. Mỗi người chơi trên thiết bị của mình, mọi bí mật được giữ trên máy chủ.</p><div class="hero-cards" aria-hidden="true"><div class="showcase-card cop"><span>ĐIỆP VIÊN</span><strong>✦</strong><small>TRUNG THÀNH</small></div><div class="showcase-card gear"><span>TRANG BỊ</span><strong>⚗</strong><small>HỒ SƠ TỐI MẬT</small></div><div class="showcase-card mafia"><span>MAFIA</span><strong>♛</strong><small>TRÙM CUỐI</small></div></div><div class="features"><span>◉ 4–8 người</span><span>◉ 23 trang bị</span><span>◉ Trình duyệt PC / Mobile</span><span>◉ Chơi với bot AI</span><span>◉ Đồng bộ phòng chơi</span></div></section><section class="box formbox"><h3>Đăng nhập vào cuộc điều tra</h3><div class="field"><label>Tên mật vụ</label><input id="name" maxlength="24" placeholder="Ví dụ: Ghế 03 · Đức" autocomplete="nickname" value="${esc(localStorage.getItem('sd-name')||'')}"></div><div class="solobox"><div class="eyebrow">CHẾ ĐỘ 01 · CHƠI VỚI BOT</div><div class="botselects"><div class="field"><label>Số BOT</label><select id="soloCount"><option value="3">3 BOT (bàn 4 người)</option><option value="4">4 BOT (bàn 5 người)</option><option value="5">5 BOT (bàn 6 người)</option><option value="6">6 BOT (bàn 7 người)</option><option value="7">7 BOT (bàn 8 người)</option></select></div><div class="field"><label>Độ khó</label><select id="soloLevel"><option value="normal">Thường</option><option value="hard">Khó</option></select></div></div><button class="btn primary wide" data-act="solo">🤖 CHƠI NGAY VỚI BOT · SOLO MODE</button><p class="tiny muted" style="margin:8px 0 0">Bot tự điều tra, ngắm, bắn và phản ứng; mỗi lượt có độ trễ để dễ theo dõi.</p></div><hr class="hr"><button class="btn wide" data-act="create">+ Tạo phòng với bạn bè · MULTIPLAYER</button><hr class="hr"><div class="field"><label>Mã phòng 6 ký tự</label><input id="code" maxlength="6" placeholder="VD: B4A8CD" class="mono" value="${esc(codeFromURL()||'')}"></div><button class="btn wide" data-act="join">↗ Tham gia phòng</button><p class="tiny muted">Không cần tài khoản. Phòng tự hết hạn sau 24 giờ.</p></section></main><div class="footer">FAN-MADE PROTOTYPE • GIAO DIỆN NGUYÊN BẢN • KHÔNG SỬ DỤNG TRANH MINH HỌA CÓ BẢN QUYỀN</div>`;}
+async function connect(){if(stream){stream.close();stream=null;}if(!session)return;let {code,token}=session;try{const r=await fetch(`/api/state?code=${encodeURIComponent(code)}&token=${encodeURIComponent(token)}`),j=await r.json();if(j.error||!r.ok){const e=Error(j.error||'Không thể đọc trạng thái.');e.status=r.status;throw e;}state=j;render();stream=new EventSource(`/api/events?code=${encodeURIComponent(code)}&token=${encodeURIComponent(token)}`);stream.onmessage=e=>{try{state=JSON.parse(e.data);connection='online';render();}catch(err){console.error(err)}};stream.onopen=()=>{connection='online';render();};stream.onerror=()=>{connection='reconnecting';render();};}catch(err){connection='reconnecting';if([400,401,403,404].includes(err.status)){localStorage.removeItem('sd-'+code);session=null;state=null;home();notif('Không thể kết nối: '+err.message);}else{if(state)render();else root.innerHTML=navbar('ĐANG KẾT NỐI LẠI')+'<main class="box"><p>Đang chờ kết nối. Phiên chơi của bạn được giữ lại.</p></main>';clearTimeout(window._reconnect);window._reconnect=setTimeout(connect,1500);}}}
 async function newRoom(kind){try{const name=$('#name')?.value.trim();if(!name)throw Error('Vui lòng nhập tên.');localStorage.setItem('sd-name',name);let result;if(kind==='create'||kind==='solo')result=await api('/api/create',{name});else{const code=$('#code')?.value.trim().toUpperCase();if(code.length!==6)throw Error('Mã phòng phải có 6 ký tự.');result=await api('/api/join',{name,code});}
  if(kind==='solo'){
    const count=Number($('#soloCount').value),level=$('#soloLevel').value;
@@ -55,22 +57,7 @@ async function newRoom(kind){try{const name=$('#name')?.value.trim();if(!name)th
  session=result;localStorage.setItem('sd-'+result.code,result.token);history.replaceState(null,'',`?room=${result.code}`);connect();
  }catch(err){notif(err.message);}}
 
-async function send(command){if(!session||busy)return;busy=true;render();try{const r=await api('/api/command',{code:session.code,token:session.token,command});state=r.state;pick=null;render();}catch(err){pick=null;confirmation=null;notif(err.message);try{const fresh=await fetch(`/api/state?code=${encodeURIComponent(session.code)}&token=${encodeURIComponent(session.token)}`).then(r=>r.json());if(!fresh.error)state=fresh;}catch{notif('Mất kết nối. Đang chờ đồng bộ lại.');}}finally{busy=false;render();}}
-function seatBox(p,idx=0){
- const total=state.players.length,upper=Math.ceil(total/2),row=idx<upper?1:3,colIndex=idx<upper?idx:idx-upper;
- const count=row===1?upper:total-upper;
- const cols=count===1?[2]:count===2?[1,4]:count===3?[1,2,4]:[1,2,3,4];const col=cols[Math.min(colIndex,cols.length-1)];
- const cards=(p.cards.length?p.cards:[{},{},{}]).map((c,i)=>{
- const own=state.me===p.seat?state.myCards[i]:null;const known=state.known[`${p.id}:${i}`];const v=own?.type||c.type||known?.type||null;
- const showed=own||c.shown||known;const team=v==='honest'||v==='agent'?'cop':v?'mafia':'unknown';
- return `<button type="button" data-pick-card="${p.seat}:${i}" aria-label="Ghế ${p.seat+1}, lá ${i+1}: ${esc(showed?(label[v]||'Danh tính đã biết'):'Chưa biết')}" title="${esc(own?'Bài của bạn':c.shown?'Đã công khai':known?'Bạn đã điều tra lá này':'Chạm để điều tra')}" class="mini physical-mini ${showed?'face':'card-back'} ${team} ${known&&!c.shown&&!own?'known':''} ${eligibleCard(p.seat,i)?'tappable':''}"><span class="mini-watermark">${showed?cardSeal(v):'◎'}</span><span class="mini-caption">${showed?esc(label[v]||'ĐÃ LẬT'):'MẬT'}</span></button>`;
- }).join('');
- const target=p.gun?state.players[p.aim]:null;
- return `<article style="--seat-col:${col};--seat-row:${row}" data-pick-seat="${p.seat}" role="group" class="player ${p.isYou?'you':''} ${p.seat===state.turn&&state.status==='playing'?'active':''} ${!p.alive?'dead':''} ${p.bot?'npc':''} ${eligibleSeat(p.seat)?'targetable':''} ${state.pending?.kind==='shot'&&state.pending.victim===p.seat?'shot-victim':''} ${state.pending?.kind==='shot'&&state.pending.shooter===p.seat?'shot-shooter':''}">
- <div class="playerhead"><span class="seat">GHẾ ${String(p.seat+1).padStart(2,'0')} ${p.isYou?'· BẠN':''}</span><span class="seat ${p.seat===state.turn?'playing':''}">${p.seat===state.turn?'● ĐANG ĐI':''}</span></div>
- <div class="player-inner"><div class="avatar" data-select-person="${p.seat}" role="button" tabindex="0" aria-label="Chọn ${esc(p.name)}">${agentAvatar(p)}${p.bot?'<span class="avatar-tag">BOT</span>':''}</div><div class="player-data"><div class="playername" data-select-person="${p.seat}" role="button" tabindex="0">${esc(p.name)}${p.bot?'<span class="botbadge">AI</span>':''}</div><div class="mini-cards">${cards}</div></div></div>
- <div class="armstrip">${p.gun?`<span class="armed" data-drag-gun="${p.seat}" draggable="${p.isYou}">⌖ SÚNG → ${esc(target?.name||'ĐANG NGẮM')}</span>`:''}${p.wounded?'<span class="injury">✚ BỊ THƯƠNG</span>':''}${!p.alive?'<span class="injury">☠ ĐÃ LOẠI</span>':''}${!p.gun&&!p.wounded&&p.alive?'<span class="on-watch">◉ ĐANG THEO DÕI</span>':''}</div></article>`;
-}
+async function send(command){if(!session||busy)return;busy=true;render();try{const r=await api('/api/command',{code:session.code,token:session.token,command});state=r.state;if(command.type!=='chat')pick=null;render();if(command.type==='actionInvestigate'){const q=state.players[Number(command.target)],k=state.known[`${q.id}:${Number(command.slot)}`];if(k)showCardDetail('Hồ sơ đã xác minh',`${q.name} · Lá ${Number(command.slot)+1}: ${label[k.type]}. Chỉ bạn được xem kết quả này.`,cardSeal(k.type));}}catch(err){if(command.type!=='chat')pick=null;confirmation=null;notif(err.message);try{const fresh=await fetch(`/api/state?code=${encodeURIComponent(session.code)}&token=${encodeURIComponent(session.token)}`).then(r=>r.json());if(!fresh.error)state=fresh;}catch{notif('Mất kết nối. Đang chờ đồng bộ lại.');}}finally{busy=false;render();}}
 
 function lobby(){const spots=Array.from({length:8},(_,i)=>state.players[i]?`<div class="lobbyseat"><small>GHẾ ${String(i+1).padStart(2,'0')}</small><strong>${esc(state.players[i].name)} ${state.players[i].bot?'🤖':''}</strong><div class="my-info">${i===state.me?'✦ BẠN':state.players[i].bot?'BOT TỰ ĐỘNG':i===0?'CHỦ PHÒNG':'ĐÃ THAM GIA'}</div></div>`:`<div class="lobbyseat empty"><small>GHẾ ${String(i+1).padStart(2,'0')}</small><strong>Chưa có người</strong></div>`).join('');root.innerHTML=navbar('PHÒNG CHỜ')+`<main class="layout lobbycenter"><div class="banner"><div><div class="eyebrow">MẬT MÃ PHÒNG</div><div class="roomline"><strong class="roomcode">${esc(state.code)}</strong>${buttons('⧉ Sao chép mã','copy')}</div></div><div class="right"><span class="pill gold">${state.players.length}/8 người</span>${buttons('↗ Chia sẻ link','share','ghost')}</div></div><div class="panel"><div class="panelhead"><h3>DANH SÁCH MẬT VỤ</h3><span class="muted tiny">Cần tối thiểu 4 người</span></div><div class="panelbody"><div class="lobbyseats">${spots}</div><div class="joinhint">${state.isOwner?'Bạn là chủ phòng. Khi đủ 4 người, nhấn bắt đầu để chia bài bí mật.':'Đang chờ chủ phòng bắt đầu. Hãy chia sẻ mã để mời bạn bè.'}</div>${state.isOwner?`<div class="lobby-controls"><div class="botselects"><div class="field"><label>Thêm bot vào phòng</label><select id="lobbyBotCount">${Array.from({length:8-state.players.filter(p=>!p.bot).length},(_,i)=>`<option value="${i}" ${i===state.players.filter(p=>p.bot).length?'selected':''}>${i} bot</option>`).join('')}</select></div><div class="field"><label>Độ khó bot</label><select id="lobbyBotLevel"><option value="normal">Thường</option><option value="hard">Khó</option></select></div></div>${buttons('Cập nhật bot','setBots','wide')}${buttons('▶ BẮT ĐẦU ĐIỀU TRA','start','primary wide')}</div>`:''}</div></div></main>`;}
 function canShoot(){const p=state?.players[state.me];return !!(state?.status==='playing'&&state.turn===state.me&&state.phase==='action'&&!state.pending&&p?.alive&&p.gun&&!p.gunFresh&&p.aim!==null&&state.players[p.aim]?.alive);}
@@ -100,7 +87,7 @@ function eligibleCard(seat,slot){
   if(state.pending?.kind==='bribe')return own&&state.pending.owner===state.me&&state.pending.canSwap;
   if(own&&(state.pending?.kind==='reveal'||state.pending?.kind==='serum'&&state.pending.target===seat))return !c.shown;
   if(pick?.kind==='equipment'&&['wiretap','blackmail','bribe'].includes(pick.id))return eligibleSeat(seat)&&(!c.shown||pick.id==='blackmail');
-  return state.turn===state.me&&!state.pending&&state.phase==='action'&&!own&&p.alive&&!p.effects.disguise&&!c.shown;
+  return state.turn===state.me&&!state.pending&&state.phase==='action'&&!own&&p.alive&&!p.effects.disguise&&!c.shown&&!state.known[`${p.id}:${slot}`];
 }
 function eligibleSeat(seat){
   if(!state||state.status!=='playing')return false;
@@ -108,15 +95,15 @@ function eligibleSeat(seat){
   if(pick?.kind==='equipment'){
     const id=pick.id,second=pick.selected!==undefined,target=pick.selected;
     if(!q.alive&&id!=='defib')return false;
-    if(id==='defib')return !q.alive&&seat!==state.me;
+    if(id==='defib')return !q.alive&&seat!==state.me&&q.cards.every(c=>!['agent','kingpin'].includes(c.type));
     if(id==='medkit')return q.wounded;
     if(['k9','taser'].includes(id))return q.gun&&(id!=='taser'||seat!==state.me);
     if(id==='evidence')return q.handCount>0&&seat!==state.me;
     if(id==='restrain')return pend?.kind==='shot'&&seat!==pend.shooter&&seat!==pend.victim;
     if(id==='shield')return pend?.kind==='shot'&&aliveNeighbors(pend.victim).includes(seat);
     if(id==='confiscation')return second?seat!==state.me&&seat!==target&&!q.gun:q.gun;
-    if(['wiretap','blackmail'].includes(id))return seat!==state.me&&(!second||seat!==target)&&(!q.effects.disguise||id==='blackmail');
-    if(id==='bribe')return second?seat===state.me:seat!==state.me&&!q.effects.disguise;
+    if(['wiretap','blackmail'].includes(id))return seat!==state.me&&(!second||seat!==target)&&(!q.effects.disguise||id==='blackmail')&&(id==='blackmail'||q.cards.some(c=>!c.shown));
+    if(id==='bribe')return second?seat===state.me:seat!==state.me&&!q.effects.disguise&&q.cards.some(c=>!c.shown);
     if(['polygraph','serum'].includes(id))return seat!==state.me&&!q.effects.disguise&&q.cards.some(c=>!c.shown);
     if(id==='wire')return !q.effects.wire;
     if(id==='disguise')return !q.effects.disguise;
@@ -141,18 +128,114 @@ function interactionGuide(){
     return `<div class="pick-banner"><span>🃏 ĐANG DÙNG: <b>${esc(eq?.name||id)}</b><br>${esc(message)}</span><div class="pick-actions">${buttons('Hủy','cancelPick','ghost')}</div></div>`;
   }
   if(state?.pending?.kind==='shot')return `<div class="pick-banner warning"><span>⚠️ ĐANG CÓ PHÁT BẮN · Chạm trang bị phản ứng hoặc chọn “Bỏ qua”.</span></div>`;
-  return `<div class="pick-banner"><span>♟ <b>CHƠI TRỰC TIẾP:</b> Chạm lá úp để điều tra · Chạm súng để lấy · Chạm trang bị để dùng · Chạm avatar để ngắm / bắn</span></div>`;
+  return `<div class="pick-banner"><span>♟ <b>Chạm trực tiếp trên bàn:</b> Chạm lá úp để điều tra · Chạm súng để lấy · Chạm trang bị để dùng · Chạm avatar để ngắm / bắn</span></div>`;
 }
 function renderGear(eq,i){const artIndex=physicalArt[eq.id];return `<button type="button" data-eqcard-index="${i}" draggable="true" class="equipment gear-card physical-gear ${(pick?.id===eq.id?'selected':'')} ${validReaction(eq)?'reaction-ready':''}" aria-label="Dùng trang bị ${esc(eq.name)}" title="Chạm để dùng; nhấn giữ để đọc kỹ"><div class="gear-head"><span class="eyebrow">TRANG BỊ · ${esc(eq.category)}</span><span class="gear-number">#${String(i+1).padStart(2,'0')}</span></div><div class="gear-illustration ${artIndex!==undefined?'photo-art':''}" style="${artIndex!==undefined?'--art-position:'+artIndex:''}">${artIndex===undefined?(equipmentArt[eq.id]||'▣'):''}</div><strong>${esc(eq.name)}</strong><p>${esc(eq.description)}</p><span class="card-foot">CHẠM ĐỂ KÍCH HOẠT · GCB</span></button>`;}
 
-function board(){let me=state.players[state.me];const cards=state.myCards.map((c,i)=>`<button type="button" data-own-card="${i}" class="secret physical-card ${c.type} ${eligibleCard(state.me,i)?'tappable':''}"><small>LÁ ${i+1} ${c.revealed?'· CÔNG KHAI':'· BÍ MẬT'}</small><div class="symbol illustrated-role">${roleArt(c.type)}</div><strong>${label[c.type]}</strong><span class="card-stamp">THẺ DANH TÍNH</span></button>`).join('');const hand=state.hand[0];const log=state.log.slice().reverse().map(x=>`<p>${esc(x.msg)}</p>`).join('');const priv=state.privateLog.slice().reverse().map(x=>`<p><strong>RIÊNG BẠN:</strong> ${esc(x)}</p>`).join('');const turnPlayer=state.players[state.turn];const wins=state.status==='finished';const bots=state.players.filter(p=>p.bot).length;root.innerHTML=navbar('CHIẾN DỊCH ĐIỀU TRA')+`<main class="layout"><div class="banner noir-banner"><div><div class="eyebrow">PHÒNG ${esc(state.code)} • LƯỢT ${state.round} ${bots?'• 🤖 '+bots+' BOT':''}</div><h2>${wins?'🏆 '+esc(state.winner):`ĐẾN LƯỢT: ${esc(turnPlayer.name)}`}</h2></div><div class="right"><span class="pill ${wins?'green':state.pending?.kind==='shot'?'red':'gold'}">${wins?'KẾT THÚC':state.pending?.kind==='shot'?'ĐANG XỬ LÝ BẮN':'ĐANG CHƠI'}</span>${buttons('⧉ Mã phòng','copy','ghost')}</div></div>${interactionGuide()}<div class="gamegrid"><section class="board-wrap"><div class="board physical-board"><div class="playergrid playergrid-physical">${state.players.map((p,i)=>seatBox(p,i)).join('')}<div class="table-center">${reactionBanner()}<div class="center-label">HỒ SƠ MẬT • LƯỢT ${state.round}</div><div class="table-items"><button type="button" data-board-item="equipment" draggable="true" aria-label="Rút trang bị từ chồng bài" class="item-stack interactive-stack"><div class="stack-back back3"></div><div class="stack-back back2"></div><div class="stack-top"><div class="equ-symbol">▤</div><strong>TRANG BỊ</strong><small>${state.equipmentCount} LÁ</small></div></button><div class="center-medallion"><span>✪</span><strong>TRUY TÌM<br>TRÙM MAFIA</strong><small>TRUST NO ONE</small></div><button type="button" data-board-item="gun" draggable="true" aria-label="Lấy súng ở giữa bàn" class="gun-item interactive-stack"><div class="gun-silhouette"><svg viewBox="0 0 180 120" class="pistol-svg" aria-hidden="true"><path d="M18 51H132Q146 52 145 65L134 72L107 69L92 110L59 109L69 73L44 74L25 63Z" fill="#5a5b5b" stroke="#d2c7a5" stroke-width="4"/><path d="M26 46h115l12 10-12 8H23z" fill="#777e80" stroke="#1c2022" stroke-width="6"/><circle cx="77" cy="60" r="16" fill="#283134" stroke="#a2a39d" stroke-width="6"/><path d="M143 49h32v11h-32" fill="#899194" stroke="#1d2429" stroke-width="4"/><path d="M86 73l-10 29 13-3 17-29" fill="#4f3327" stroke="#161616" stroke-width="3"/></svg></div><strong>SÚNG</strong><small>${state.gunsFree} CÒN LẠI</small></button></div><div class="table-caption">CHẠM VẬT THỂ ĐỂ THỰC HIỆN · GIỮ BÍ MẬT · TÌM ĐỒNG MINH</div></div></div></div><div class="footer">Luật thực thi trên máy chủ • Vai trò chưa công khai chỉ hiển thị cho chủ sở hữu • Bản thử nghiệm</div></section><aside class="side"><div class="panel"><div class="panelhead"><h3>THẺ DANH TÍNH CỦA BẠN</h3><span class="pill ${me.alive?'green':'red'}">${me.alive?'CÒN SỐNG':'ĐÃ LOẠI'}</span></div><div class="panelbody"><div class="secretcards">${cards}</div><div class="my-info">Phe của bạn: <strong>${state.myTeam==='honest'?'ĐIỆP VIÊN':state.myTeam==='crooked'?'MAFIA':'CHIẾN THẮNG ĐƠN ĐỘC'}</strong></div><div class="my-info">${me.wounded?'🩸 Bạn đang có 1 dấu bị thương.':'◉ Bạn chưa bị thương.'}</div></div></div><div class="panel"><div class="panelhead"><h3>HƯỚNG DẪN LƯỢT</h3><small class="muted">${state.phase==='action'?'CHỌN 1 HÀNH ĐỘNG':state.phase==='aim'?'NGẮM / KẾT THÚC':''}</small></div><div class="panelbody">${wins?`${state.isOwner?buttons('↻ CHƠI VÁN MỚI','restart','primary wide'):''}`:actions()}</div></div><div class="panel"><div class="panelhead"><h3>TRANG BỊ</h3><span class="pill">${state.hand.length}/1</span></div><div class="panelbody">${state.hand.length?`<div class="hand-tray">${state.hand.map((eq,i)=>renderGear(eq,i)).join('')}</div>`:'<div class="empty-equipment"><span>▤</span><p>Chưa có trang bị. Hãy dùng hành động “Lấy trang bị”.</p></div>'}</div></div><div class="panel last"><div class="panelhead"><h3>NHẬT KÝ VÁN CHƠI</h3><small class="muted">${state.direction===1?'↻ Thuận chiều':'↺ Ngược chiều'}</small></div><div class="panelbody"><div class="log">${priv}${log||'<p>Chưa có sự kiện.</p>'}</div><div class="chatline"><input maxlength="200" id="chat" placeholder="Trao đổi hoặc tung tin giả..."><button class="btn" data-act="chat">Gửi</button></div></div></div></aside></div></main>`;}
+// Viewer-relative positions; public server seat indices never change.
+const seatPlans={
+ 4:[[17,55],[50,14],[83,55]],
+ 5:[[17,62],[34,14],[66,14],[83,62]],
+ 6:[[17,65],[24,14],[50,14],[76,14],[83,65]],
+ 7:[[17,77],[17,44],[34,14],[66,14],[83,44],[83,77]],
+ 8:[[17,77],[17,44],[26,14],[50,14],[74,14],[83,44],[83,77]]
+};
+function seatPosition(seat,me,total){const relative=(seat-me+total)%total;if(relative===0)return {relative,x:50,y:100,mx:50,my:100};const [x,y]=seatPlans[total][relative-1];const mx=y===14?(total===8?[20,50,80][relative-3]:x===24?20:x===76?80:x):x;return {relative,x,y:y===14?16:y===44?48:y===77?80:y,mx,my:y};}
+let drawer=null,connection='online',modalTrigger=null,chatDraft='';
+let knownPositions=new Set(),stalePositions=new Set(),memoryRoom=null,lastMemoryStatus=null;
+function trackMemory(){
+ if(memoryRoom!==state.code||(lastMemoryStatus==='finished'&&state.status==='playing')){knownPositions=new Set();stalePositions=new Set();if(memoryRoom!==state.code){chatDraft='';if($('#chat'))$('#chat').value='';drawer=null;}memoryRoom=state.code;}lastMemoryStatus=state.status;
+ for(const k of knownPositions)if(!state.known[k])stalePositions.add(k);
+ for(const k of Object.keys(state.known)){knownPositions.add(k);stalePositions.delete(k);}
+}
+function roleButton(p,i){
+ const own=p.seat===state.me,c=p.cards[i],known=state.known[`${p.id}:${i}`],mine=own?state.myCards[i]:null,type=mine?.type||c.type||known?.type;
+ const visibility=own?(mine?.revealed?'CÔNG KHAI':'RIÊNG BẠN'):c.shown?'CÔNG KHAI':known?'ĐÃ BIẾT':stalePositions.has(`${p.id}:${i}`)?'HẾT HIỆU LỰC':'CHƯA BIẾT';
+ const team=type==='honest'||type==='agent'?'cop':type?'mafia':'unknown';
+ return `<button id="card-${p.seat}-${i}" type="button" data-pick-card="${p.seat}:${i}" ${own?`data-own-card="${i}"`:''} aria-label="Ghế ${p.seat+1}, lá ${i+1}: ${esc(type?label[type]:visibility)}" title="${esc(type?label[type]+' · '+visibility:visibility)}" class="mini physical-mini ${own?'secret physical-card ':''}${type?'face':'card-back'} ${team} ${known&&!c.shown&&!own?'known':''} ${eligibleCard(p.seat,i)?'tappable':''}"><span class="mini-watermark">${own?roleArt(type):type?cardSeal(type):'◎'}</span><span class="mini-caption">${own?esc(label[type]):type?esc(label[type]):String(i+1)}</span><span class="card-visibility">${own?(mine?.revealed?'◉ Công khai':'◆ Bí mật'):c.shown?'◉':known?'◆':stalePositions.has(`${p.id}:${i}`)?'↻':'○'}</span></button>`;
+}
+function seatBox(p){
+ const pos=seatPosition(p.seat,state.me,state.players.length),own=p.seat===state.me,aim=p.gun&&p.aim!==null&&state.players[p.aim]?.alive?state.players[p.aim]:null;
+ const team=state.myTeam==='honest'?'Điệp viên':state.myTeam==='crooked'?'Mafia':'Đơn độc';
+ const effects=Object.keys(p.effects||{}).filter(k=>p.effects[k]).map(k=>({wire:'🎧 Nghe lén',disguise:'♟ Cải trang',planted:'▤ Bằng chứng giả'}[k]||k));
+ const shot=state.pending?.kind==='shot';const shotTarget=shot&&state.pending.shooter===p.seat?state.players[state.pending.victim]:null;
+ return `<article data-seat="${p.seat}" data-pick-seat="${p.seat}" style="--seat-x:${pos.x}%;--seat-y:${pos.y}%;--seat-my:${pos.my}%;--seat-mx:${pos.mx}%" class="player seat-card ${own?'you':''} ${p.seat===state.turn&&state.status==='playing'?'active':''} ${!p.alive?'dead':''} ${p.bot?'npc':''} ${eligibleSeat(p.seat)?'targetable':''} ${shot&&state.pending.victim===p.seat?'shot-victim':''} ${shot&&state.pending.shooter===p.seat?'shot-shooter':''}" aria-label="Ghế ${p.seat+1} · ${esc(p.name)}${own?' · Bạn':''}">
+ <div class="playerhead"><span class="seat">${own?'BẠN · #':'GHẾ '}${p.seat+1}${p.bot?' · BOT':''}</span><span class="own-team-mobile">${own?esc(team):''}</span><span class="own-flags" title="${esc(effects.join(' · '))}">${own?(p.gun?'⌖':'')+(effects.length?' ♟':''):''}</span><span class="seat-turn">${p.wounded?'✚ Thương · ':''}${p.seat===state.turn&&state.status==='playing'?'● Lượt này':!p.alive?'☠ Đã loại':''}</span><button type="button" class="seat-info" data-seat-info="${p.seat}" aria-label="Chi tiết ${esc(p.name)}">ⓘ</button></div>
+ <div class="player-inner"><button type="button" class="avatar" data-select-person="${p.seat}" aria-label="Chọn ${esc(p.name)}">${agentAvatar(p)}</button><button id="person-${p.seat}" type="button" class="playername" data-select-person="${p.seat}" title="${esc(p.name)}">${esc(p.name)}</button></div>
+ <div class="mini-cards">${p.cards.map((c,i)=>roleButton(p,i)).join('')}</div>
+ <div class="armstrip">${own?`<span class="own-team-desktop">Phe ${esc(team)}</span>`:''}${!p.alive?'<span class="injury">☠ Đã loại</span>':''}${p.gun?`<span class="armed" title="${esc(aim?'Ngắm '+aim.name:'Chưa ngắm mục tiêu')}" data-drag-gun="${p.seat}" draggable="${own}">⌖ ${shotTarget?'🎯 #'+(shotTarget.seat+1)+' '+esc(shotTarget.name):aim?'→ #'+(aim.seat+1)+' '+esc(aim.name):'Chưa ngắm'}</span>`:''}${p.wounded?'<span class="injury">✚ Thương</span>':''}${effects.length?`<span class="effect-chip" title="${esc(effects.join(' · '))}">${esc(effects.join(' · '))}</span>`:''}${shot&&state.pending.victim===p.seat?'<span class="injury">⚠ Bị bắn</span>':''}</div></article>`;
+}
+function compactActions(){
+ const me=state.players[state.me],p=state.pending;
+ if(busy)return '<span class="action-hint" role="status">Đang chờ xác nhận…</span>';
+ if(state.status==='finished')return `<span class="action-hint">${esc(state.winner)}</span>${state.isOwner?buttons('↻ Ván mới','restart','primary'):''}`;
+ if(!me.alive)return '<span class="action-hint">☠ Bạn đã bị loại · Tiếp tục quan sát bàn.</span>';
+ if(p?.kind==='shot')return `${!p.passes.includes(state.me)?buttons('Bỏ qua phản ứng','passShot','primary'):'<span class="action-hint">✓ Đã bỏ qua · Chờ phản ứng</span>'}${p.shooter===state.me?`<button class="btn" data-act="forceShot" data-force-at="${p.forceAt||p.since+15000}" disabled>Xử lý phát bắn</button>`:''}`;
+ if(p?.kind==='bribe')return p.owner===state.me?`<span class="action-hint">Tiền Bẩn: ${esc(label[state.known[`${state.players[p.target].id}:${p.slot}`]?.type])}. ${p.canSwap?'Chọn bài của bạn để đổi.':'Lá thủ lĩnh: không đổi.'} <span data-countdown="${p.deadline}">…</span>s</span>${buttons('Không đổi','declineBribe','primary')}`:'<span class="action-hint">Chờ chủ Tiền Bẩn quyết định.</span>';
+ if(p?.kind==='serum')return `<span class="action-hint">${p.target===state.me?'Chạm một trong ba lá danh tính của bạn để lật công khai.':'Chờ mục tiêu Huyết Thanh lật bài.'}</span>`;
+ if(state.turn!==state.me)return `<span class="action-hint">Đang đến lượt ${esc(state.players[state.turn].name)} · Có thể dùng trang bị hợp lệ.</span>`;
+ if(p?.kind==='reveal')return '<span class="action-hint">Chạm một lá danh tính của bạn để lật công khai.</span>';
+ if(p?.kind==='discard')return '<span class="action-hint">Chạm trang bị để bỏ bớt, giữ đúng một lá.</span>';
+ if(state.phase==='aim')return `<span class="action-hint">${me.gun?'Chạm avatar đối thủ để ngắm / đổi mục tiêu.':'Đã xong hành động chính.'}</span>${buttons('✓ KẾT THÚC LƯỢT','endTurn','primary')}`;
+ return `${buttons('🔎 Điều tra','investigate')}${buttons('⌖ Lấy súng','arm')}${buttons('▤ Rút bài','equip')}${canShoot()?buttons('🎯 Bắn','shoot','danger'):''}`;
+}
+function hubHTML(){
+ return `<span class="hub-label">HỒ SƠ MẬT · LƯỢT ${state.round}</span><div class="hub-objects"><button data-board-item="equipment" draggable="true" class="hub-deck" title="Rút trang bị" aria-label="Rút trang bị từ chồng bài"><span>▤</span><b>TRANG BỊ</b><small>${state.equipmentCount} lá</small></button><span class="hub-seal" aria-hidden="true">✪</span><button data-board-item="gun" draggable="true" class="hub-gun" title="Lấy súng" aria-label="Lấy súng ở giữa bàn"><span>⌖</span><b>SÚNG</b><small>${state.gunsFree} còn lại</small></button></div><span class="hub-direction">${state.direction===1?'↻ Thuận chiều':'↺ Ngược chiều'}</span>`;
+}
+function statusHTML(){const turn=state.players[state.turn];return `<div class="game-brand"><strong>ĐIỆP VIÊN <span>SỐ DÁCH</span></strong><small>ONLINE V1.7 · PHÒNG ${esc(state.code)}</small></div><div class="turn-status" role="status"><small>${state.status==='finished'?'HỒ SƠ KHÉP LẠI':'LƯỢT '+state.round}</small><h1>${state.status==='finished'?'🏆 Kết thúc ván':state.turn===state.me?'ĐẾN LƯỢT BẠN':esc(turn.name)}</h1></div><div class="connection-status" title="${connection==='online'?'Đang đồng bộ trạng thái máy chủ':'Đang tự kết nối lại'}">${connection==='online'?'● Trực tuyến':'◌ Nối lại…'}</div>`;}
+function gameFeedback(){if(state.pending?.kind==='shot')return reactionBanner();if(state.status==='finished')return `<div class="result-strip" role="status">🏆 ${esc(state.winner)}</div>`;return interactionGuide();}
+function gameScaffold(){return `<main id="game-shell" class="game-shell" data-player-count="${state.players.length}"><header id="table-status" class="table-status"></header><section id="table-feedback" class="table-feedback" aria-live="polite"></section><section id="table-board" class="table-board" aria-label="Bàn chơi"><svg id="aim-lines" class="aim-lines" aria-hidden="true"></svg><div id="seats"></div><div id="table-hub" class="table-hub"></div><div id="event-strip" class="event-strip" role="status"></div></section><section class="personal-dock" aria-label="Khu vực cá nhân"><div id="my-seat"></div><div id="my-gear" class="my-gear"></div><div id="turn-actions" class="turn-actions"></div></section><nav class="game-nav" aria-label="Thông tin bàn"><button data-act="drawer-memory">◆ Ghi nhớ</button><button data-act="drawer-timeline">≡ Nhật ký</button><button data-act="drawer-chat">☏ Chat</button><button data-act="drawer-help">? Trợ giúp</button><button data-act="copy">⧉ Mã phòng</button></nav><div id="drawer-host"></div></main>`;}
+function patchPart(selector,html){const el=$(selector);if(el&&el._markup!==html){el.innerHTML=html;el._markup=html;}}
+function board(){
+ trackMemory();const me=state.players[state.me];
+ const parts={'#table-status':statusHTML(),'#table-feedback':gameFeedback(),'#seats':state.players.filter(p=>p.seat!==state.me).map(p=>seatBox(p)).join(''),'#table-hub':hubHTML(),'#my-seat':seatBox(me),'#my-gear':`<span class="hand-label">TRANG BỊ · ${state.hand.length}/1</span>${state.hand.length?`<div class="hand-tray">${state.hand.map((eq,i)=>renderGear(eq,i)).join('')}</div>`:'<span class="empty-hand">▤ Chưa có trang bị</span>'}`,'#turn-actions':compactActions(),'#event-strip':state.log.length?`<span>${esc(state.log.at(-1).msg)}</span>${buttons('Chi tiết','drawer-timeline')}`:'<span>Chạm trực tiếp trên bàn để điều tra.</span>'};
+ root.className='game-root';
+ if(!$('#game-shell')){
+  // String fallback also makes the existing DOM-free privacy/UI tests useful.
+  let html=gameScaffold();for(const [selector,content] of Object.entries(parts))html=html.replace(new RegExp(`(<(?:header|section|div)[^>]*id="${selector.slice(1)}"[^>]*>)(</(?:header|section|div)>)`),(_,open,close)=>open+content+close);root.innerHTML=html;for(const [selector,content] of Object.entries(parts)){const el=$(selector);if(el)el._markup=content;}
+ }else{
+  const active=document.activeElement,id=active?.id,start=active?.selectionStart,end=active?.selectionEnd;
+  for(const [selector,content] of Object.entries(parts))patchPart(selector,content);
+  if(id&&document.activeElement!==active){const restored=$('#'+id);restored?.focus?.({preventScroll:true});if(typeof start==='number'&&restored?.setSelectionRange)restored.setSelectionRange(start,end);}
+ }
+ const shell=$('#game-shell');if(shell)shell.dataset.playerCount=state.players.length;
+ renderDrawer();updateCountdowns();if(typeof requestAnimationFrame==='function')requestAnimationFrame(drawAimLines);
+}
+function drawAimLines(){
+ const table=$('#table-board'),svg=$('#aim-lines');if(!table||!svg||!table.getBoundingClientRect)return;
+ const b=table.getBoundingClientRect();svg.setAttribute('viewBox',`0 0 ${b.width} ${b.height}`);
+ let html='<defs><marker id="aim-arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0 0L8 4L0 8" fill="#d6b16a"/></marker><marker id="shot-arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0 0L8 4L0 8" fill="#ed8c82"/></marker></defs>';
+ for(const p of state.players){const shot=state.pending?.kind==='shot'&&state.pending.shooter===p.seat;const targetSeat=shot?state.pending.victim:p.aim;if(!p.alive||!p.gun||targetSeat===null||!state.players[targetSeat]?.alive)continue;
+  const from=document.querySelector(`[data-seat="${p.seat}"]`),to=document.querySelector(`[data-seat="${targetSeat}"]`);if(!from||!to)continue;
+  const a=from.getBoundingClientRect(),z=to.getBoundingClientRect();let x=a.x+a.width/2-b.x,y=a.y+a.height/2-b.y,tx=z.x+z.width/2-b.x,ty=z.y+z.height/2-b.y;
+  const dx=tx-x,dy=ty-y,trim=(r)=>Math.min((r.width/2+8)/Math.max(1,Math.abs(dx)),(r.height/2+8)/Math.max(1,Math.abs(dy)));
+  const f=trim(a),t=trim(z);const sx=x+dx*f,sy=Math.max(4,Math.min(b.height-4,y+dy*f)),ex=tx-dx*t,ey=Math.max(4,Math.min(b.height-4,ty-dy*t));
+  html+=`<path data-aim-from="${p.seat}" data-aim-to="${targetSeat}" d="M${sx} ${sy}L${ex} ${ey}" class="${shot?'shot-line':'aim-line'}" marker-end="url(#${shot?'shot-arrow':'aim-arrow'})"><title>${esc(p.name)} → ${esc(state.players[targetSeat].name)}</title></path>`;
+ }
+ if(svg.innerHTML!==html)svg.innerHTML=html;
+}
+function memoryHTML(){return state.players.map(p=>`<section class="memory-person"><h3>#${p.seat+1} · ${esc(p.name)}</h3>${p.cards.map((c,i)=>{const k=state.known[`${p.id}:${i}`],own=p.seat===state.me?state.myCards[i]:null,type=own?.type||c.type||k?.type;return `<button data-memory-card="${p.seat}:${i}">Lá ${i+1} · ${type?esc(label[type]):stalePositions.has(`${p.id}:${i}`)?'↻ Thông tin cũ hết hiệu lực':'○ Chưa biết'} <small>${c.shown?'◉ Công khai':k?'◆ Chỉ bạn biết':own?'◆ Bài của bạn':''}</small></button>`;}).join('')}</section>`).join('');}
+function renderDrawer(){
+ const host=$('#drawer-host');if(!host)return;
+ if(!drawer){if($('#chat'))chatDraft=$('#chat').value;host.innerHTML='';return;}
+ const creating=!$('#info-drawer');if(creating)host.innerHTML=`<div class="drawer-scrim" data-act="drawer-close"></div><aside id="info-drawer" class="info-drawer" role="dialog" aria-modal="true" aria-labelledby="drawer-title"><header><h2 id="drawer-title"></h2>${buttons('Đóng ×','drawer-close')}</header><div id="drawer-content" class="drawer-content"></div><div id="drawer-chatbox" class="chatline"><input id="chat" maxlength="200" aria-label="Tin nhắn" placeholder="Trao đổi trên bàn…">${buttons('Gửi','chat')}</div></aside>`;
+ if(creating&&$('#chat'))$('#chat').value=chatDraft;
+ const titles={memory:'Hồ sơ riêng của bạn',timeline:'Diễn biến trên bàn',chat:'Trò chuyện',help:'Cách chơi trực tiếp'};const title=$('#drawer-title');if(title)title.textContent=titles[drawer];
+ let html=drawer==='memory'?memoryHTML():drawer==='help'?'<h3>Chạm trực tiếp trên bàn</h3><p>Chạm lá úp để điều tra, súng hoặc chồng bài để lấy. Sau hành động chính, chạm tên đối thủ để ngắm. Bắn cần xác nhận và có cửa sổ phản ứng.</p><p>Chạm trang bị để đọc và chọn Dùng. Các mục tiêu hợp lệ được viền sáng. Trang bị hai mục tiêu cho phép hủy trước khi gửi.</p><p>◆ là thông tin riêng; ◉ là bài công khai; ↻ nghĩa là ký ức vị trí cũ hết hiệu lực. Nhấn giữ lá để đọc chi tiết.</p>':`<div class="private-findings"><h3>◆ RIÊNG BẠN</h3>${state.privateLog.slice().reverse().map(x=>`<p>${esc(x)}</p>`).join('')||'<p>Chưa có kết quả riêng.</p>'}</div><div class="timeline"><h3>◉ Diễn biến công khai</h3>${state.log.slice().reverse().map(x=>`<p>${esc(x.msg)}</p>`).join('')}</div>`;
+ patchPart('#drawer-content',html);const chat=$('#drawer-chatbox');if(chat)chat.style.display=drawer==='chat'?'flex':'none';
+}
+function inspectSeat(seat){const p=state.players[seat],selectable=eligibleSeat(seat);modal(`#${seat+1} · ${p.name}`,`<p>${p.alive?'Đang sống':'Đã bị loại'}${seat===state.me?' · Phe '+(state.myTeam==='honest'?'Điệp viên':state.myTeam==='crooked'?'Mafia':'Đơn độc'):''}${p.wounded?' · Bị thương':''}${p.gun?' · Có súng':''}</p><div class="inspect-card-choices">${p.cards.map((c,i)=>{const type=seat===state.me?state.myCards[i]?.type:c.type||state.known[`${p.id}:${i}`]?.type;return `<button data-inspect-card="${seat}:${i}">Lá ${i+1}<br>${esc(type?label[type]:'Chưa biết')}</button>`;}).join('')}</div>`,selectable?'Chọn người này':'Đóng',()=>{if(selectable)handleSeatClick(seat);},'Chạm lá để điều tra/chọn, hoặc nhấn giữ để đọc.');}
+function inspectEquipment(index){const eq=state.hand[index];if(!eq)return;if(state.status==='finished')return showCardDetail(eq.name,eq.description,equipmentArt[eq.id]);if(state.pending?.kind==='discard')return activateEquipment(index);
+ modal(eq.name,`<div class="equipment-detail">${renderGear(eq,index).replace(/<button[^>]*>/,'<div class="equipment gear-card physical-gear">').replace(/<\/button>$/,'</div>')}</div>`,'Dùng trang bị',()=>{if(state.hand[index]?.id!==eq.id)return notif('Trang bị đã thay đổi. Hãy chọn lại.');if(['vest','smoke','coffee','camera','database','metal'].includes(eq.id))return send({type:'playEquipment'});activateEquipment(index);},'Trang bị của riêng bạn · Máy chủ xác nhận mọi tác dụng.');}
+
 function render(){
- const context=state?JSON.stringify([state.code,state.status,state.turn,state.phase,state.pending]):null;
+ const pend=state?.pending;
+ const context=state?JSON.stringify([state.code,state.status,state.turn,state.phase,pend?.kind,pend?.decisionId,pend?.target,pend?.shooter,pend?.victim,pend?.since]):null;
  if(context!==interactionContext){pick=null;confirmation=null;const m=$('#modal');m.classList.add('hide');m._callback=null;interactionContext=context;}
- if(pick&&!state?.hand.some(eq=>eq.id===pick.id))pick=null;
+ if(pick&&(!state?.hand.some(eq=>eq.id===pick.id)||(pick.selected!==undefined&&!state.players[pick.selected]?.alive))){pick=null;confirmation=null;$('#modal').classList.add('hide');$('#modal')._callback=null;}
  if(state?.pending&&!['shot'].includes(state.pending.kind))pick=null;
- if(!state){home();return;}if(state.status==='lobby')lobby();else board();root.dataset&&(root.dataset.interactionState=interactionState());}
-function modal(title,fields,submitText,callback,desc=''){confirmation=confirmation||'SELECT_PLAYER';const m=$('#modal');m.classList.remove('hide');m.innerHTML=`<section class="modal"><div class="eyebrow">LỆNH TÁC CHIẾN</div><h3>${esc(title)}</h3>${desc?`<p>${esc(desc)}</p>`:''}<div id="formfields">${fields}</div><div class="modalbuttons">${buttons('Huỷ','close','ghost')}${buttons(esc(submitText),'confirm','primary')}</div></section>`;m._callback=callback;if(root.dataset)root.dataset.interactionState=interactionState();}
+ if(!state){root.className='';home();return;}if(state.status==='lobby'){root.className='';lobby();}else board();if(root.dataset){root.dataset.interactionState=interactionState();root.dataset.busy=String(busy);}}
+function modal(title,fields,submitText,callback,desc=''){if(!document.activeElement?.closest?.('#modal'))modalTrigger=document.activeElement;confirmation=confirmation||'SELECT_PLAYER';const m=$('#modal');m.classList.remove('hide');m.innerHTML=`<section class="modal" tabindex="-1" role="dialog" aria-modal="true" aria-label="${esc(title)}"><div class="eyebrow">LỆNH TÁC CHIẾN</div><h3>${esc(title)}</h3>${desc?`<p>${esc(desc)}</p>`:''}<div id="formfields">${fields}</div><div class="modalbuttons">${buttons('Huỷ','close','ghost')}${buttons(esc(submitText),'confirm','primary')}</div></section>`;m._callback=callback;m.querySelector?.('.modal')?.focus?.();if(root.dataset)root.dataset.interactionState=interactionState();}
 function field(labelText,key,opts,hasBlank=false){return `<div class="field"><label>${esc(labelText)}</label><select name="${esc(key)}">${hasBlank?'<option value="">Không đổi / không chọn</option>':''}${opts.map(({v,t})=>`<option value="${esc(v)}">${esc(t)}</option>`).join('')}</select></div>`;}
 const targetOptions=(filter=()=>true)=>state.players.filter(filter).map(p=>({v:p.seat,t:`Ghế ${p.seat+1} · ${p.name}${!p.alive?' (đã loại)':''}`}));
 const cardOptions=(idx,hiddenOnly=true)=>{const p=state.players[idx];if(!p)return[];return p.cards.map((c,i)=>({v:i,t:`Lá ${i+1}${c.shown?' · đã lật':' · đang úp'}`})).filter((x,i)=>!hiddenOnly||!p.cards[i].shown);};
@@ -196,9 +279,10 @@ function handleOwnCard(slot){
   if(state.pending?.kind==='serum'&&state.pending.target===state.me&&!state.myCards[slot].revealed)return confirmPlay('Huyết Thanh Nói Thật',`Lật công khai lá số ${slot+1}?`,()=>send({type:'serumReveal',slot}));
   showCardDetail(label[state.myCards[slot].type],`Lá số ${slot+1} · ${state.myCards[slot].revealed?'Đã công khai':'Bí mật chỉ bạn biết'}`,cardSeal(state.myCards[slot].type));
 }
-function showCardDetail(title,desc,art){const m=$('#modal');m.classList.remove('hide');m.innerHTML=`<section class="modal card-inspect"><div class="eyebrow">HỒ SƠ CHI TIẾT</div><div class="inspector-art">${esc(art||'✦')}</div><h3>${esc(title)}</h3><p>${esc(desc)}</p><div class="modalbuttons">${buttons('Đóng','close','primary')}</div></section>`;}
-function finishEquipment(rest){if(!pick||pick.kind!=='equipment')return;const id=pick.id;pick=null;render();return send({type:'playEquipment',...rest});}
+function showCardDetail(title,desc,art){if(!document.activeElement?.closest?.('#modal'))modalTrigger=document.activeElement;const m=$('#modal');m.classList.remove('hide');m.innerHTML=`<section class="modal card-inspect" tabindex="-1" role="dialog" aria-modal="true" aria-label="${esc(title)}"><div class="eyebrow">HỒ SƠ CHI TIẾT</div><div class="inspector-art">${esc(art||'✦')}</div><h3>${esc(title)}</h3><p>${esc(desc)}</p><div class="modalbuttons">${buttons('Đóng','close','primary')}</div></section>`;m.querySelector?.('.modal')?.focus?.();}
+function finishEquipment(rest){if(!pick||pick.kind!=='equipment')return;const eq=state.hand.find(e=>e.id===pick.id);return confirmPlay('Dùng '+(eq?.name||pick.id),[rest.target,rest.target2].filter(x=>x!==undefined).map((x,i)=>`#${Number(x)+1} · ${state.players[Number(x)].name}${(i?rest.slot2:rest.slot)!==undefined?' · lá '+(Number(i?rest.slot2:rest.slot)+1):''}`).join(' → ')+' · Xác nhận sử dụng trang bị?',()=>{if(busy)return;if(!state.hand.some(e=>e.id===eq?.id))return notif('Trang bị đã thay đổi. Hãy chọn lại.');pick=null;send({type:'playEquipment',...rest});});}
 function handleCardClick(seat,slot){
+  if(busy)return;
   if(seat===state.me)return handleOwnCard(slot);
   const p=state.players[seat],c=p?.cards[slot];if(!p||!c)return;
   if(pick?.kind==='equipment'){
@@ -210,13 +294,14 @@ function handleCardClick(seat,slot){
     }
     return handleSeatClick(seat);
   }
-  if(state.turn===state.me&&state.phase==='action'&&!state.pending&&p.alive&&!c.shown&&!p.effects.disguise){
+  if(state.status==='playing'&&state.turn===state.me&&state.phase==='action'&&!state.pending&&p.alive&&!c.shown&&!p.effects.disguise&&!state.known[`${p.id}:${slot}`]){
     return confirmPlay('Điều tra lá bài',`Bạn muốn dùng hành động chính để xem lá ${slot+1} của ${p.name}? Chỉ mình bạn biết kết quả.`,()=>send({type:'actionInvestigate',target:seat,slot}));
   }
   const known=state.known[`${p.id}:${slot}`];const type=c.type||known?.type;
   showCardDetail(type?label[type]:'HỒ SƠ CHƯA XÁC MINH',type?`Ghế ${seat+1}, lá ${slot+1}. ${c.shown?'Công khai':'Bạn đã từng điều tra'}`:'Danh tính này chưa được tiết lộ. Không thể xem bài bí mật của đối thủ.',type?cardSeal(type):'◎');
 }
 function handleSeatClick(seat){
+  if(busy)return;
   const target=state.players[seat],me=state.players[state.me];if(!target)return;
   if(pick?.kind==='equipment'){
     if(!eligibleSeat(seat))return notif('Mục tiêu chưa hợp lệ. Hãy chọn mục tiêu được viền sáng.');
@@ -228,12 +313,14 @@ function handleSeatClick(seat){
     }
     return finishEquipment({target:seat});
   }
-  if(state.status!=='playing'||state.turn!==state.me||state.pending||!target.alive||seat===state.me)return;
+  if(seat===state.me&&!pick)return inspectSeat(seat);
+  if(state.status!=='playing'||state.turn!==state.me||state.pending||!target.alive||seat===state.me)return inspectSeat(seat);
   if(state.phase==='aim'&&me.gun)return send({type:'chooseAim',target:seat});
   if(state.phase==='action'&&me.gun&&me.aim===seat&&!me.gunFresh)return confirmPlay('Xác nhận nổ súng',`Bắn ${target.name}? Các trang bị phản ứng sẽ được xử lý trước khi phát bắn có hiệu lực.`,()=>send({type:'actionShoot'}));
-  return notif('Chạm lá úp để điều tra. Chỉ ngắm được người khác trong giai đoạn ngắm.');
+  return inspectSeat(seat);
 }
 function activateEquipment(index=0){
+  if(busy)return;
   if(!state?.hand?.[index])return;
   if(state.pending?.kind==='discard'&&state.turn===state.me){return confirmPlay('Bỏ trang bị',`Bỏ ${state.hand[index].name} và giữ lại lá khác?`,()=>send({type:'discardHand',index}));}
   if(state.pending&&state.pending.kind!=='shot')return notif('Hãy hoàn tất lựa chọn đang chờ.');
@@ -247,12 +334,15 @@ function handleBoardItem(item){
   if(item==='gun')return confirmPlay('Lấy súng','Lấy một khẩu súng ở giữa bàn, sau đó chọn lá của bạn để công khai và chọn người để ngắm.',()=>send({type:'actionArm'}));
   if(item==='equipment')return confirmPlay('Rút trang bị','Rút một lá trang bị. Nếu phải công khai danh tính hoặc bỏ bớt trang bị, hãy chạm trực tiếp lá cần chọn.',()=>send({type:'actionEquip'}));
 }
+let suppressClickUntil=0;
+root.addEventListener('click',e=>{if(Date.now()<suppressClickUntil){e.preventDefault();e.stopImmediatePropagation();}},true);
+root.addEventListener('click',e=>{const info=e.target.closest('[data-seat-info]');if(info){e.stopImmediatePropagation();inspectSeat(Number(info.dataset.seatInfo));}const mem=e.target.closest('[data-memory-card]');if(mem){const [seat,slot]=mem.dataset.memoryCard.split(':').map(Number);const p=state.players[seat],type=seat===state.me?state.myCards[slot]?.type:p.cards[slot].type||state.known[`${p.id}:${slot}`]?.type;showCardDetail(type?label[type]:'Chưa biết',`Ghế ${seat+1} · Lá ${slot+1}`,type?cardSeal(type):'◎');}});
 root.addEventListener('click',e=>{
   const el=e.target.closest('[data-pick-card], [data-pick-seat], [data-select-person], [data-own-card], [data-board-item], [data-eqcard-index]');if(!el)return;
-  if(!state||state.status!=='playing')return;
+  if(!state||!['playing','finished'].includes(state.status))return;
   if(el.hasAttribute('data-pick-card')){e.preventDefault();e.stopPropagation();const [s,k]=el.dataset.pickCard.split(':').map(Number);return handleCardClick(s,k);}
   if(el.hasAttribute('data-own-card'))return handleOwnCard(Number(el.dataset.ownCard));
-  if(el.hasAttribute('data-eqcard-index'))return activateEquipment(Number(el.dataset.eqcardIndex));
+  if(el.hasAttribute('data-eqcard-index'))return inspectEquipment(Number(el.dataset.eqcardIndex));
   if(el.hasAttribute('data-board-item'))return handleBoardItem(el.dataset.boardItem);
   const seat=el.hasAttribute('data-select-person')?el.dataset.selectPerson:el.dataset.pickSeat;
   if(seat!==undefined)return handleSeatClick(Number(seat));
@@ -263,8 +353,9 @@ root.addEventListener('contextmenu',e=>{const el=e.target.closest('[data-eqcard-
   else if(el.hasAttribute('data-own-card')){const n=Number(el.dataset.ownCard);showCardDetail(label[state.myCards[n].type],`Lá ${n+1} của bạn`,cardSeal(state.myCards[n].type));}
   else{const [s,k]=el.dataset.pickCard.split(':').map(Number),p=state.players[s],c=p.cards[k],v=c.type||state.known[`${p.id}:${k}`]?.type;showCardDetail(v?label[v]:'LÁ CHƯA XÁC MINH',v?'Đã biết':'Bí mật chưa điều tra',v?cardSeal(v):'◎');}
 });
-root.addEventListener('pointerdown',e=>{const el=e.target.closest('[data-eqcard-index],[data-pick-card],[data-own-card]');if(!el||e.pointerType==='mouse')return;clearTimeout(hoverTimer);hoverTimer=setTimeout(()=>{hoverTimer=null;const evt=new MouseEvent('contextmenu',{bubbles:true,cancelable:true});el.dispatchEvent(evt);},750);});
-for(const ev of ['pointerup','pointercancel','pointermove'])root.addEventListener(ev,()=>{if(hoverTimer){clearTimeout(hoverTimer);hoverTimer=null;}});
+root.addEventListener('pointerdown',e=>{const el=e.target.closest('[data-eqcard-index],[data-pick-card],[data-own-card]');if(!el||e.pointerType==='mouse')return;holdOrigin={x:e.clientX,y:e.clientY};clearTimeout(hoverTimer);hoverTimer=setTimeout(()=>{hoverTimer=null;suppressClickUntil=Date.now()+600;const evt=new MouseEvent('contextmenu',{bubbles:true,cancelable:true});el.dispatchEvent(evt);},750);});
+for(const ev of ['pointerup','pointercancel'])root.addEventListener(ev,()=>{holdOrigin=null;if(hoverTimer){clearTimeout(hoverTimer);hoverTimer=null;}});
+root.addEventListener('pointermove',e=>{if(holdOrigin&&Math.hypot(e.clientX-holdOrigin.x,e.clientY-holdOrigin.y)>8){clearTimeout(hoverTimer);hoverTimer=null;holdOrigin=null;}});
 root.addEventListener('dragstart',e=>{const el=e.target.closest('[data-board-item],[data-eqcard-index],[data-drag-gun]');if(!el)return;dragged={kind:el.hasAttribute('data-board-item')?'board':el.hasAttribute('data-eqcard-index')?'gear':'gun',value:el.dataset.boardItem||el.dataset.eqcardIndex||el.dataset.dragGun};e.dataTransfer?.setData('text/plain',JSON.stringify(dragged));});
 root.addEventListener('dragover',e=>{if(e.target.closest('[data-pick-seat],[data-select-person],[data-pick-card],[data-own-card]'))e.preventDefault();});
 root.addEventListener('drop',e=>{e.preventDefault();const seatEl=e.target.closest('[data-pick-seat],[data-select-person]'),cardEl=e.target.closest('[data-pick-card]');if(!dragged)return;const drag=dragged;dragged=null;
@@ -273,6 +364,7 @@ root.addEventListener('drop',e=>{e.preventDefault();const seatEl=e.target.closes
   if(drag.kind==='gear'){activateEquipment(Number(drag.value));if(!state.hand[Number(drag.value)])return;if(cardEl){const [seat,slot]=cardEl.dataset.pickCard.split(':').map(Number);return handleCardClick(seat,slot);}if(seatEl)return handleSeatClick(Number(seatEl.dataset.pickSeat??seatEl.dataset.selectPerson));}
 });
 root.addEventListener('click',async e=>{const button=e.target.closest('[data-act]');if(!button)return;const action=button.dataset.act;
+ if(action.startsWith('drawer-')){drawer=action==='drawer-close'?null:action.slice(7);renderDrawer();if(drawer==='chat')$('#chat')?.focus();else if(drawer)$('#info-drawer button')?.focus();return;}
  if(action==='declineBribe')return send({type:'resolveBribe',decisionId:state.pending?.decisionId,swap:false});
  if(action==='cancelPick'){pick=null;confirmation=null;render();return;}
  if(action==='create'||action==='join'||action==='solo')return newRoom(action);
@@ -283,9 +375,17 @@ root.addEventListener('click',async e=>{const button=e.target.closest('[data-act
  if(action==='chat'){const input=$('#chat');if(!input?.value.trim())return;const message=input.value;input.value='';return send({type:'chat',message});}
  if(action==='useEquipment')return activateEquipment();return chooseTurn(action);
 });
-$('#modal').addEventListener('click',e=>{const action=e.target.closest('[data-act]')?.dataset.act;if(action==='close'||e.target===$('#modal')){confirmation=null;$('#modal').classList.add('hide');}if(action==='confirm'){const cb=$('#modal')._callback;$('#modal').classList.add('hide');cb?.();}});
+$('#modal').addEventListener('click',e=>{const card=e.target.closest('[data-inspect-card]');if(card){const [seat,slot]=card.dataset.inspectCard.split(':').map(Number);$('#modal').classList.add('hide');return handleCardClick(seat,slot);}const action=e.target.closest('[data-act]')?.dataset.act;if(action==='close'||e.target===$('#modal')){confirmation=null;$('#modal').classList.add('hide');$('#modal')._callback=null;if(root.dataset)root.dataset.interactionState=interactionState();(modalTrigger?.id?$('#'+modalTrigger.id):modalTrigger)?.focus?.({preventScroll:true});}if(action==='confirm'){const cb=$('#modal')._callback;$('#modal')._callback=null;confirmation=null;$('#modal').classList.add('hide');cb?.();}});
 // Keep rendering separate from modals: action response arrives through SSE after server validation.
 const code=codeFromURL();if(code&&localStorage.getItem('sd-'+code)){session={code,token:localStorage.getItem('sd-'+code)};connect();}else home();
 
 // Update text only: never replace focused controls while a deadline ticks.
-if(typeof setInterval==='function')setInterval(()=>{if(typeof document.querySelectorAll==='function')for(const el of document.querySelectorAll('[data-countdown]'))el.textContent=String(Math.max(0,Math.ceil((Number(el.dataset.countdown)-Date.now())/1000)));},250);
+function updateCountdowns(){if(typeof document.querySelectorAll!=='function')return;for(const el of document.querySelectorAll('[data-countdown]'))el.textContent=String(Math.max(0,Math.ceil((Number(el.dataset.countdown)-Date.now())/1000)));for(const el of document.querySelectorAll('[data-force-at]'))el.disabled=Date.now()<Number(el.dataset.forceAt);}
+if(typeof setInterval==='function')setInterval(updateCountdowns,250);
+
+if(typeof window.addEventListener==='function'){
+ window.addEventListener('offline',()=>{connection='reconnecting';stream?.close();if(state)render();});
+ window.addEventListener('online',()=>{if(session)connect();});
+ window.addEventListener('resize',()=>{if(state&&state.status!=='lobby')drawAimLines();});
+ window.addEventListener('keydown',e=>{if(e.key==='Tab'){const overlay=!$('#modal').classList.contains('hide')?$('#modal'):drawer?$('#info-drawer'):null;const items=overlay?[...overlay.querySelectorAll('button:not(:disabled),input,select,[href]')]:[];if(items.length){const first=items[0],last=items.at(-1);if(e.shiftKey&&(document.activeElement===first||document.activeElement===overlay.querySelector('.modal'))){e.preventDefault();last.focus();}else if(!e.shiftKey&&document.activeElement===last){e.preventDefault();first.focus();}}}if(e.key==='Escape'){confirmation=null;$('#modal').classList.add('hide');drawer=null;renderDrawer();(modalTrigger?.id?$('#'+modalTrigger.id):modalTrigger)?.focus?.({preventScroll:true});}});
+}

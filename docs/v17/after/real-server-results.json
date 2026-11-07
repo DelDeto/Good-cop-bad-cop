@@ -1,0 +1,22 @@
+{
+  "status": "PASS",
+  "mode": "actual server.mjs HTTP/SSE, separate browser contexts, no intercepted APIs",
+  "scenarios": [
+    "create room",
+    "join from second browser context",
+    "start four-human multiplayer",
+    "private investigation",
+    "next viewer turn",
+    "reload restores seat and turn",
+    "solo 7 hard BOTs",
+    "BOT timer advances visibly",
+    "mobile viewport no scroll"
+  ],
+  "viewport": {
+    "width": 390,
+    "height": 844,
+    "scrollWidth": 390,
+    "scrollHeight": 844
+  },
+  "pageErrors": []
+}
