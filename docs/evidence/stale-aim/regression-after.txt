@@ -1,0 +1,15 @@
+✔ elimination invalidates every surviving gun aimed at victim; re-aim progresses (4, human) (8.297812ms)
+✔ elimination invalidates every surviving gun aimed at victim; re-aim progresses (4, BOT) (1.297735ms)
+✔ elimination invalidates every surviving gun aimed at victim; re-aim progresses (8, human) (0.763794ms)
+✔ elimination invalidates every surviving gun aimed at victim; re-aim progresses (8, BOT) (0.926695ms)
+✔ a wounded living target or cancelled shot keeps other gun holders aim unchanged (1.126993ms)
+✔ stale saved aim is cleaned without replacing pending metadata or selecting a new target (0.419733ms)
+✔ malformed/stale shot cannot hit a dead player; endTurn requires a living aim (0.682463ms)
+ℹ tests 7
+ℹ suites 0
+ℹ pass 7
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 29.927338

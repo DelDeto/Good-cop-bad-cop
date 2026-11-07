@@ -1,0 +1,20 @@
+[
+  {
+    "fix": "FIX-01",
+    "status": "playing",
+    "shooterAlive": false,
+    "turn": 1,
+    "livingTurn": true,
+    "phase": "action",
+    "turnSequence": 2
+  },
+  {
+    "fix": "FIX-02",
+    "status": "playing",
+    "coffeeUserAlive": false,
+    "turn": 2,
+    "livingTurn": true,
+    "coffeeNext": null,
+    "turnSequence": 2
+  }
+]

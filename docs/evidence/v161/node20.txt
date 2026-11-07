@@ -1,0 +1,573 @@
+TAP version 13
+# Subtest: singleplayer bot room configured from 3 to 7 bots with levels
+ok 1 - singleplayer bot room configured from 3 to 7 bots with levels
+  ---
+  duration_ms: 10.320614
+  ...
+# Subtest: cannot spoof bot action or change bots after start
+ok 2 - cannot spoof bot action or change bots after start
+  ---
+  duration_ms: 0.870842
+  ...
+# Subtest: bots continue and finish a full game without client-side hidden data
+ok 3 - bots continue and finish a full game without client-side hidden data
+  ---
+  duration_ms: 27.063492
+  ...
+# Subtest: bots automatically pass or defend during shots, not before
+ok 4 - bots automatically pass or defend during shots, not before
+  ---
+  duration_ms: 0.564517
+  ...
+# (node:1995) ExperimentalWarning: The MockTimers API is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Bribe timeout boundary auto-declines once, preserves private investigation and spent card
+ok 5 - Bribe timeout boundary auto-declines once, preserves private investigation and spent card
+  ---
+  duration_ms: 7.931488
+  ...
+# Subtest: late owner command cannot race deadline to exchange; early decision cancels expiration
+ok 6 - late owner command cannot race deadline to exchange; early decision cancels expiration
+  ---
+  duration_ms: 2.900243
+  ...
+# Subtest: legacy pending without timestamp declines safely on recovery with no private log in public output
+ok 7 - legacy pending without timestamp declines safely on recovery with no private log in public output
+  ---
+  duration_ms: 0.760048
+  ...
+# Subtest: pending Bribe blocks card-moving equipment and ignores client deadline/target overrides
+ok 8 - pending Bribe blocks card-moving equipment and ignores client deadline/target overrides
+  ---
+  duration_ms: 1.133612
+  ...
+# Subtest: Cloudflare Worker: homepage, create, join, play and player privacy
+ok 9 - Cloudflare Worker: homepage, create, join, play and player privacy
+  ---
+  duration_ms: 48.202323
+  ...
+# Subtest: Cloudflare Durable Object schedules bot turns and alarm advances the room
+ok 10 - Cloudflare Durable Object schedules bot turns and alarm advances the room
+  ---
+  duration_ms: 11.891956
+  ...
+# Subtest: Durable Object Bribe persists private pending across re-instantiation; duplicate commands cannot swap twice
+ok 11 - Durable Object Bribe persists private pending across re-instantiation; duplicate commands cannot swap twice
+  ---
+  duration_ms: 17.088636
+  ...
+# Subtest: đủ 23 trang bị riêng biệt
+ok 12 - đủ 23 trang bị riêng biệt
+  ---
+  duration_ms: 1.759321
+  ...
+# Subtest: chưa đủ 4 người thì không bắt đầu
+ok 13 - chưa đủ 4 người thì không bắt đầu
+  ---
+  duration_ms: 1.734674
+  ...
+# Subtest: chia 3 lá bí mật/người và chỉ một thủ lĩnh mỗi phe
+ok 14 - chia 3 lá bí mật/người và chỉ một thủ lĩnh mỗi phe
+  ---
+  duration_ms: 3.226898
+  ...
+# Subtest: trạng thái gửi cho người khác không lộ bài bí mật
+ok 15 - trạng thái gửi cho người khác không lộ bài bí mật
+  ---
+  duration_ms: 0.560401
+  ...
+# Subtest: không thể hành động sai lượt
+ok 16 - không thể hành động sai lượt
+  ---
+  duration_ms: 0.64714
+  ...
+# Subtest: điều tra trả kết quả riêng, không công khai cho người khác
+ok 17 - điều tra trả kết quả riêng, không công khai cho người khác
+  ---
+  duration_ms: 0.590046
+  ...
+# Subtest: lấy súng yêu cầu lật bài và chọn ngắm trước khi kết thúc lượt
+ok 18 - lấy súng yêu cầu lật bài và chọn ngắm trước khi kết thúc lượt
+  ---
+  duration_ms: 0.487904
+  ...
+# Subtest: bắt đầu cửa sổ bắn, mọi người bỏ qua thì xử lý
+ok 19 - bắt đầu cửa sổ bắn, mọi người bỏ qua thì xử lý
+  ---
+  duration_ms: 0.608903
+  ...
+# Subtest: bị Áo Chống Đạn: huỷ phát bắn và trả súng
+ok 20 - bị Áo Chống Đạn: huỷ phát bắn và trả súng
+  ---
+  duration_ms: 0.907307
+  ...
+# Subtest: cà phê không được dùng lượt mình, được dùng lượt khác
+ok 21 - cà phê không được dùng lượt mình, được dùng lượt khác
+  ---
+  duration_ms: 0.45166
+  ...
+# Subtest: hộp cấp cứu chữa thương cho người khác
+ok 22 - hộp cấp cứu chữa thương cho người khác
+  ---
+  duration_ms: 0.479131
+  ...
+# Subtest: người bị loại không xem được bài úp của người khác
+ok 23 - người bị loại không xem được bài úp của người khác
+  ---
+  duration_ms: 0.885985
+  ...
+# Subtest: local: Bribe hidden information is private in command, GET, live SSE, reconnect, and invalid errors
+ok 24 - local: Bribe hidden information is private in command, GET, live SSE, reconnect, and invalid errors
+  ---
+  duration_ms: 84.841098
+  ...
+# Subtest: local: Wire private result reaches only authorized owner/investigator over HTTP and SSE
+ok 25 - local: Wire private result reaches only authorized owner/investigator over HTTP and SSE
+  ---
+  duration_ms: 13.131825
+  ...
+# (node:2038) ExperimentalWarning: The MockTimers API is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: local: expired disconnected Bribe resumes before reconnect and rejects stale swap without refund
+ok 26 - local: expired disconnected Bribe resumes before reconnect and rejects stale swap without refund
+  ---
+  duration_ms: 19.804505
+  ...
+# Subtest: worker: Bribe hidden information is private in command, GET, live SSE, reconnect, and invalid errors
+ok 27 - worker: Bribe hidden information is private in command, GET, live SSE, reconnect, and invalid errors
+  ---
+  duration_ms: 22.491313
+  ...
+# Subtest: worker: Wire private result reaches only authorized owner/investigator over HTTP and SSE
+ok 28 - worker: Wire private result reaches only authorized owner/investigator over HTTP and SSE
+  ---
+  duration_ms: 7.46725
+  ...
+# Subtest: worker: expired disconnected Bribe resumes before reconnect and rejects stale swap without refund
+ok 29 - worker: expired disconnected Bribe resumes before reconnect and rejects stale swap without refund
+  ---
+  duration_ms: 5.311541
+  ...
+# Subtest: Worker restart keeps original deadline; alarm expires disconnected human and persists before rejection
+ok 30 - Worker restart keeps original deadline; alarm expires disconnected human and persists before rejection
+  ---
+  duration_ms: 7.624223
+  ...
+# Subtest: Worker duplicate concurrent Bribe decisions and an alarm cannot apply a stale swap twice
+ok 31 - Worker duplicate concurrent Bribe decisions and an alarm cannot apply a stale swap twice
+  ---
+  duration_ms: 4.483243
+  ...
+# Subtest: local timer resolves abandoned Bribe with zero clients and zero incoming requests
+ok 32 - local timer resolves abandoned Bribe with zero clients and zero incoming requests
+  ---
+  duration_ms: 1503.354459
+  ...
+# Subtest: local: ordinary/leader target cannot be probed through legacy errors or unrelated observers
+ok 33 - local: ordinary/leader target cannot be probed through legacy errors or unrelated observers
+  ---
+  duration_ms: 17.981971
+  ...
+# Subtest: worker: ordinary/leader target cannot be probed through legacy errors or unrelated observers
+ok 34 - worker: ordinary/leader target cannot be probed through legacy errors or unrelated observers
+  ---
+  duration_ms: 14.270504
+  ...
+# Subtest: Wire owner receives exact nonfirst investigation; all other secrets remain private
+ok 35 - Wire owner receives exact nonfirst investigation; all other secrets remain private
+  ---
+  duration_ms: 9.935873
+  ...
+# Subtest: Wire does not trigger on unrelated players, invalid investigations or dead owner
+ok 36 - Wire does not trigger on unrelated players, invalid investigations or dead owner
+  ---
+  duration_ms: 0.702562
+  ...
+# Subtest: Wire supports multiple owners watching distinct players and equipment investigations
+ok 37 - Wire supports multiple owners watching distinct players and equipment investigations
+  ---
+  duration_ms: 1.410523
+  ...
+# Subtest: Bribe ordinary: consume before decision, private result, locked pending, swap clears stale knowledge
+ok 38 - Bribe ordinary: consume before decision, private result, locked pending, swap clears stale knowledge
+  ---
+  duration_ms: 1.36141
+  ...
+# Subtest: Bribe leader is legitimately investigated and consumed, swap forbidden, decline allowed
+ok 39 - Bribe leader is legitimately investigated and consumed, swap forbidden, decline allowed
+  ---
+  duration_ms: 0.989037
+  ...
+# Subtest: Bribe declined on ordinary card keeps identities and private knowledge
+ok 40 - Bribe declined on ordinary card keeps identities and private knowledge
+  ---
+  duration_ms: 0.571888
+  ...
+# Subtest: Bribe invalid first-stage ownSlot requests are identical for leader and ordinary with no mutation
+ok 41 - Bribe invalid first-stage ownSlot requests are identical for leader and ordinary with no mutation
+  ---
+  duration_ms: 1.723217
+  ...
+# Subtest: Bribe invalid targets and decisions do not reveal or mutate; stale decision rejected
+ok 42 - Bribe invalid targets and decisions do not reveal or mutate; stale decision rejected
+  ---
+  duration_ms: 2.452229
+  ...
+# Subtest: BOT watched investigation uses normal Wire privacy; BOT Bribe resolves out of turn without stuck main turn
+ok 43 - BOT watched investigation uses normal Wire privacy; BOT Bribe resolves out of turn without stuck main turn
+  ---
+  duration_ms: 1.569459
+  ...
+# Subtest: shoot reactions redirect before defence, reset passes and deadline, reconnect restores public state
+ok 44 - shoot reactions redirect before defence, reset passes and deadline, reconnect restores public state
+  ---
+  duration_ms: 0.99731
+  ...
+# Subtest: shot pass/force/timed order and invalid reaction leave private state intact
+ok 45 - shot pass/force/timed order and invalid reaction leave private state intact
+  ---
+  duration_ms: 1.176836
+  ...
+# Subtest: Cloudflare assets generated exactly from public source
+ok 46 - Cloudflare assets generated exactly from public source
+  ---
+  duration_ms: 1.15219
+  ...
+# Subtest: Wire owner may be a BOT and Bribe investigation shares only the watched result
+ok 47 - Wire owner may be a BOT and Bribe investigation shares only the watched result
+  ---
+  duration_ms: 0.553672
+  ...
+# Subtest: board first UI offers all clickable pieces, 3 role cards and item art
+ok 48 - board first UI offers all clickable pieces, 3 role cards and item art
+  ---
+  duration_ms: 35.874686
+  ...
+# Subtest: reveal pending highlights own card, aim phase allows target click
+ok 49 - reveal pending highlights own card, aim phase allows target click
+  ---
+  duration_ms: 2.423206
+  ...
+# Subtest: clicking an opponent card opens an investigate confirmation
+ok 50 - clicking an opponent card opens an investigate confirmation
+  ---
+  duration_ms: 3.246958
+  ...
+# Subtest: equipment target selection is dispatched as server validated command
+ok 51 - equipment target selection is dispatched as server validated command
+  ---
+  duration_ms: 3.337512
+  ...
+# Subtest: Bribe card-first flow sends investigation before own-card choice, including decline and reconnect
+ok 52 - Bribe card-first flow sends investigation before own-card choice, including decline and reconnect
+  ---
+  duration_ms: 4.23942
+  ...
+# Subtest: explicit interaction states recover selections on server change and keep optional equipment cancellation local
+ok 53 - explicit interaction states recover selections on server change and keep optional equipment cancellation local
+  ---
+  duration_ms: 2.737041
+  ...
+# Subtest: reaction table shows public shooter/victim, deadline and only viewer defensive equipment
+ok 54 - reaction table shows public shooter/victim, deadline and only viewer defensive equipment
+  ---
+  duration_ms: 2.283168
+  ...
+# Subtest: local: redirect shot reconnect preserves pending and transitions safely (4)
+ok 55 - local: redirect shot reconnect preserves pending and transitions safely (4)
+  ---
+  duration_ms: 115.335325
+  ...
+# Subtest: local: coffee shot reconnect preserves pending and transitions safely (4)
+ok 56 - local: coffee shot reconnect preserves pending and transitions safely (4)
+  ---
+  duration_ms: 28.655359
+  ...
+# Subtest: worker: redirect shot reconnect preserves pending and transitions safely (4)
+ok 57 - worker: redirect shot reconnect preserves pending and transitions safely (4)
+  ---
+  duration_ms: 28.132258
+  ...
+# Subtest: worker: coffee shot reconnect preserves pending and transitions safely (4)
+ok 58 - worker: coffee shot reconnect preserves pending and transitions safely (4)
+  ---
+  duration_ms: 8.239476
+  ...
+# Subtest: local: redirect shot reconnect preserves pending and transitions safely (8)
+ok 59 - local: redirect shot reconnect preserves pending and transitions safely (8)
+  ---
+  duration_ms: 23.185283
+  ...
+# (node:2061) ExperimentalWarning: The MockTimers API is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: local: coffee shot reconnect preserves pending and transitions safely (8)
+ok 60 - local: coffee shot reconnect preserves pending and transitions safely (8)
+  ---
+  duration_ms: 13.97808
+  ...
+# Subtest: worker: redirect shot reconnect preserves pending and transitions safely (8)
+ok 61 - worker: redirect shot reconnect preserves pending and transitions safely (8)
+  ---
+  duration_ms: 9.993959
+  ...
+# Subtest: worker: coffee shot reconnect preserves pending and transitions safely (8)
+ok 62 - worker: coffee shot reconnect preserves pending and transitions safely (8)
+  ---
+  duration_ms: 9.717919
+  ...
+# Subtest: Worker alarm resolves redirected shot killing BOT shooter and schedules a living BOT next
+ok 63 - Worker alarm resolves redirected shot killing BOT shooter and schedules a living BOT next
+  ---
+  duration_ms: 5.244823
+  ...
+# Subtest: Serum pending survives Worker restart without exposure or unexpected reveal; target can resume
+ok 64 - Serum pending survives Worker restart without exposure or unexpected reveal; target can resume
+  ---
+  duration_ms: 5.299353
+  ...
+# Subtest: local: reconnect repairs an old dead active seat exactly once without interrupting pending choices
+ok 65 - local: reconnect repairs an old dead active seat exactly once without interrupting pending choices
+  ---
+  duration_ms: 8.47856
+  ...
+# Subtest: worker: reconnect repairs an old dead active seat exactly once without interrupting pending choices
+ok 66 - worker: reconnect repairs an old dead active seat exactly once without interrupting pending choices
+  ---
+  duration_ms: 4.450163
+  ...
+# (node:2082) ExperimentalWarning: The MockTimers API is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: FIX-01: redirected ordinary shooter eliminated advances exactly once (4 players, direction 1, human)
+ok 67 - FIX-01: redirected ordinary shooter eliminated advances exactly once (4 players, direction 1, human)
+  ---
+  duration_ms: 14.241482
+  ...
+# Subtest: FIX-01: redirected leader shooter wounded retains aim turn (4 players, direction 1, human)
+ok 68 - FIX-01: redirected leader shooter wounded retains aim turn (4 players, direction 1, human)
+  ---
+  duration_ms: 1.450011
+  ...
+# Subtest: FIX-02: Coffee eliminated recipient (4 players, direction 1, human)
+ok 69 - FIX-02: Coffee eliminated recipient (4 players, direction 1, human)
+  ---
+  duration_ms: 1.03772
+  ...
+# Subtest: FIX-02: Coffee living recipient (4 players, direction 1, human)
+ok 70 - FIX-02: Coffee living recipient (4 players, direction 1, human)
+  ---
+  duration_ms: 0.593761
+  ...
+# Subtest: FIX-01: redirected ordinary shooter eliminated advances exactly once (4 players, direction 1, BOT)
+ok 71 - FIX-01: redirected ordinary shooter eliminated advances exactly once (4 players, direction 1, BOT)
+  ---
+  duration_ms: 1.573895
+  ...
+# Subtest: FIX-01: redirected leader shooter wounded retains aim turn (4 players, direction 1, BOT)
+ok 72 - FIX-01: redirected leader shooter wounded retains aim turn (4 players, direction 1, BOT)
+  ---
+  duration_ms: 0.722032
+  ...
+# Subtest: FIX-02: Coffee eliminated recipient (4 players, direction 1, BOT)
+ok 73 - FIX-02: Coffee eliminated recipient (4 players, direction 1, BOT)
+  ---
+  duration_ms: 1.052992
+  ...
+# Subtest: FIX-02: Coffee living recipient (4 players, direction 1, BOT)
+ok 74 - FIX-02: Coffee living recipient (4 players, direction 1, BOT)
+  ---
+  duration_ms: 4.04417
+  ...
+# Subtest: FIX-01: redirected ordinary shooter eliminated advances exactly once (4 players, direction -1, human)
+ok 75 - FIX-01: redirected ordinary shooter eliminated advances exactly once (4 players, direction -1, human)
+  ---
+  duration_ms: 0.691486
+  ...
+# Subtest: FIX-01: redirected leader shooter wounded retains aim turn (4 players, direction -1, human)
+ok 76 - FIX-01: redirected leader shooter wounded retains aim turn (4 players, direction -1, human)
+  ---
+  duration_ms: 0.799567
+  ...
+# Subtest: FIX-02: Coffee eliminated recipient (4 players, direction -1, human)
+ok 77 - FIX-02: Coffee eliminated recipient (4 players, direction -1, human)
+  ---
+  duration_ms: 0.619369
+  ...
+# Subtest: FIX-02: Coffee living recipient (4 players, direction -1, human)
+ok 78 - FIX-02: Coffee living recipient (4 players, direction -1, human)
+  ---
+  duration_ms: 1.1591
+  ...
+# Subtest: FIX-01: redirected ordinary shooter eliminated advances exactly once (4 players, direction -1, BOT)
+ok 79 - FIX-01: redirected ordinary shooter eliminated advances exactly once (4 players, direction -1, BOT)
+  ---
+  duration_ms: 0.797023
+  ...
+# Subtest: FIX-01: redirected leader shooter wounded retains aim turn (4 players, direction -1, BOT)
+ok 80 - FIX-01: redirected leader shooter wounded retains aim turn (4 players, direction -1, BOT)
+  ---
+  duration_ms: 0.955047
+  ...
+# Subtest: FIX-02: Coffee eliminated recipient (4 players, direction -1, BOT)
+ok 81 - FIX-02: Coffee eliminated recipient (4 players, direction -1, BOT)
+  ---
+  duration_ms: 1.336823
+  ...
+# Subtest: FIX-02: Coffee living recipient (4 players, direction -1, BOT)
+ok 82 - FIX-02: Coffee living recipient (4 players, direction -1, BOT)
+  ---
+  duration_ms: 0.610146
+  ...
+# Subtest: FIX-01: redirected ordinary shooter eliminated advances exactly once (8 players, direction 1, human)
+ok 83 - FIX-01: redirected ordinary shooter eliminated advances exactly once (8 players, direction 1, human)
+  ---
+  duration_ms: 7.344949
+  ...
+# Subtest: FIX-01: redirected leader shooter wounded retains aim turn (8 players, direction 1, human)
+ok 84 - FIX-01: redirected leader shooter wounded retains aim turn (8 players, direction 1, human)
+  ---
+  duration_ms: 3.570418
+  ...
+# Subtest: FIX-02: Coffee eliminated recipient (8 players, direction 1, human)
+ok 85 - FIX-02: Coffee eliminated recipient (8 players, direction 1, human)
+  ---
+  duration_ms: 1.565122
+  ...
+# Subtest: FIX-02: Coffee living recipient (8 players, direction 1, human)
+ok 86 - FIX-02: Coffee living recipient (8 players, direction 1, human)
+  ---
+  duration_ms: 1.343894
+  ...
+# Subtest: FIX-01: redirected ordinary shooter eliminated advances exactly once (8 players, direction 1, BOT)
+ok 87 - FIX-01: redirected ordinary shooter eliminated advances exactly once (8 players, direction 1, BOT)
+  ---
+  duration_ms: 1.652472
+  ...
+# Subtest: FIX-01: redirected leader shooter wounded retains aim turn (8 players, direction 1, BOT)
+ok 88 - FIX-01: redirected leader shooter wounded retains aim turn (8 players, direction 1, BOT)
+  ---
+  duration_ms: 1.260601
+  ...
+# Subtest: FIX-02: Coffee eliminated recipient (8 players, direction 1, BOT)
+ok 89 - FIX-02: Coffee eliminated recipient (8 players, direction 1, BOT)
+  ---
+  duration_ms: 1.825899
+  ...
+# Subtest: FIX-02: Coffee living recipient (8 players, direction 1, BOT)
+ok 90 - FIX-02: Coffee living recipient (8 players, direction 1, BOT)
+  ---
+  duration_ms: 1.765349
+  ...
+# Subtest: FIX-01: redirected ordinary shooter eliminated advances exactly once (8 players, direction -1, human)
+ok 91 - FIX-01: redirected ordinary shooter eliminated advances exactly once (8 players, direction -1, human)
+  ---
+  duration_ms: 2.06879
+  ...
+# Subtest: FIX-01: redirected leader shooter wounded retains aim turn (8 players, direction -1, human)
+ok 92 - FIX-01: redirected leader shooter wounded retains aim turn (8 players, direction -1, human)
+  ---
+  duration_ms: 1.560916
+  ...
+# Subtest: FIX-02: Coffee eliminated recipient (8 players, direction -1, human)
+ok 93 - FIX-02: Coffee eliminated recipient (8 players, direction -1, human)
+  ---
+  duration_ms: 2.070692
+  ...
+# Subtest: FIX-02: Coffee living recipient (8 players, direction -1, human)
+ok 94 - FIX-02: Coffee living recipient (8 players, direction -1, human)
+  ---
+  duration_ms: 6.800651
+  ...
+# Subtest: FIX-01: redirected ordinary shooter eliminated advances exactly once (8 players, direction -1, BOT)
+ok 95 - FIX-01: redirected ordinary shooter eliminated advances exactly once (8 players, direction -1, BOT)
+  ---
+  duration_ms: 1.386277
+  ...
+# Subtest: FIX-01: redirected leader shooter wounded retains aim turn (8 players, direction -1, BOT)
+ok 96 - FIX-01: redirected leader shooter wounded retains aim turn (8 players, direction -1, BOT)
+  ---
+  duration_ms: 9.68181
+  ...
+# Subtest: FIX-02: Coffee eliminated recipient (8 players, direction -1, BOT)
+ok 97 - FIX-02: Coffee eliminated recipient (8 players, direction -1, BOT)
+  ---
+  duration_ms: 1.88703
+  ...
+# Subtest: FIX-02: Coffee living recipient (8 players, direction -1, BOT)
+ok 98 - FIX-02: Coffee living recipient (8 players, direction -1, BOT)
+  ---
+  duration_ms: 1.379046
+  ...
+# Subtest: wounded agent shooter eliminated ends game before another turn (4, human)
+ok 99 - wounded agent shooter eliminated ends game before another turn (4, human)
+  ---
+  duration_ms: 0.71414
+  ...
+# Subtest: wounded agent shooter eliminated ends game before another turn (4, BOT)
+ok 100 - wounded agent shooter eliminated ends game before another turn (4, BOT)
+  ---
+  duration_ms: 0.4311
+  ...
+# Subtest: wounded kingpin shooter eliminated ends game before another turn (4, human)
+ok 101 - wounded kingpin shooter eliminated ends game before another turn (4, human)
+  ---
+  duration_ms: 0.428336
+  ...
+# Subtest: wounded kingpin shooter eliminated ends game before another turn (4, BOT)
+ok 102 - wounded kingpin shooter eliminated ends game before another turn (4, BOT)
+  ---
+  duration_ms: 0.954106
+  ...
+# Subtest: wounded agent shooter eliminated ends game before another turn (8, human)
+ok 103 - wounded agent shooter eliminated ends game before another turn (8, human)
+  ---
+  duration_ms: 1.155575
+  ...
+# Subtest: wounded agent shooter eliminated ends game before another turn (8, BOT)
+ok 104 - wounded agent shooter eliminated ends game before another turn (8, BOT)
+  ---
+  duration_ms: 1.372286
+  ...
+# Subtest: wounded kingpin shooter eliminated ends game before another turn (8, human)
+ok 105 - wounded kingpin shooter eliminated ends game before another turn (8, human)
+  ---
+  duration_ms: 1.47566
+  ...
+# Subtest: wounded kingpin shooter eliminated ends game before another turn (8, BOT)
+ok 106 - wounded kingpin shooter eliminated ends game before another turn (8, BOT)
+  ---
+  duration_ms: 1.434819
+  ...
+# Subtest: Coffee dead stale pointer in restored state is skipped; normal order skips several eliminated seats
+ok 107 - Coffee dead stale pointer in restored state is skipped; normal order skips several eliminated seats
+  ---
+  duration_ms: 0.339604
+  ...
+# Subtest: Coffee remains honored when the shooter dies and direction reverses before resolution
+ok 108 - Coffee remains honored when the shooter dies and direction reverses before resolution
+  ---
+  duration_ms: 1.398155
+  ...
+# Subtest: Coffee victim leader dies: existing winning check takes priority over a future extra turn
+ok 109 - Coffee victim leader dies: existing winning check takes priority over a future extra turn
+  ---
+  duration_ms: 0.487603
+  ...
+# Subtest: Serum audit: offline human choice has no deadline; reconnect is lossless but does not unblock it
+ok 110 - Serum audit: offline human choice has no deadline; reconnect is lossless but does not unblock it
+  ---
+  duration_ms: 1.828854
+  ...
+# Subtest: dead-turn recovery preserves pending Serum and terminal win precedence
+ok 111 - dead-turn recovery preserves pending Serum and terminal win precedence
+  ---
+  duration_ms: 0.643985
+  ...
+1..111
+# tests 111
+# suites 0
+# pass 111
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1889.378122

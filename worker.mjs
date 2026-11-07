@@ -1,4 +1,4 @@
-import {createRoom,joinRoom,command,view,botStep,needsBotStep,shotDeadline,resolveTimedShot} from './src/engine.mjs';
+import {createRoom,joinRoom,command,view,botStep,needsBotStep,pendingDeadline,resolveTimedPending} from './src/engine.mjs';
 import html from './assets/index.txt';
 import appJS from './assets/app.txt';
 import styles from './assets/style.txt';
@@ -16,16 +16,20 @@ const input=async req=>{const s=await req.text();if(s.length>12000)throw Error('
 const normalize=c=>String(c||'').replace(/[^a-z0-9]/gi,'').toUpperCase();
 
 export class GameRoom {
-  constructor(ctx,env){this.ctx=ctx;this.env=env;this.connections=new Set();}
+  constructor(ctx,env){this.ctx=ctx;this.env=env;this.connections=new Set();this.operation=Promise.resolve();}
+  // Serialize read/modify/write across fetch and alarm, including rejected commands.
+  exclusive(action){const next=this.operation.then(action);this.operation=next.catch(()=>{});return next;}
+  fetch(req){return this.exclusive(()=>this.handleFetch(req));}
+  alarm(){return this.exclusive(()=>this.handleAlarm());}
   async schedule(game){
     const expiry=game.createdAt+24*60*60*1000;
-    const deadline=shotDeadline(game);
+    const deadline=pendingDeadline(game);
     let next=expiry;
     if(needsBotStep(game))next=Math.min(next,Date.now()+1300);
     else if(deadline!==null)next=Math.min(next,Math.max(Date.now()+1000,deadline));
     await this.ctx.storage.setAlarm(next);
   }
-  async fetch(req){
+  async handleFetch(req){
     const url=new URL(req.url),op=url.pathname;let game=await this.ctx.storage.get('game');
     try{
       if(op==='/create'){
@@ -36,6 +40,11 @@ export class GameRoom {
         return response({code:room,token:t});
       }
       if(!game)return err('Không tìm thấy phòng.',404);
+      // Persist recovery before processing stale/invalid requests as well as reads.
+      if(resolveTimedPending(game)){
+        await this.ctx.storage.put('game',game);
+        await this.schedule(game);this.notify(game);
+      }
       if(op==='/join'){
         const d=await input(req);let t=String(d.token||'').trim();
         if(!game.players.some(p=>p.token===t)){
@@ -72,13 +81,12 @@ export class GameRoom {
       catch{this.connections.delete(conn);}
     }
   }
-  async alarm(){
+  async handleAlarm(){
     const game=await this.ctx.storage.get('game');
     if(!game)return;
     if(Date.now()>=game.createdAt+24*60*60*1000){await this.ctx.storage.deleteAll();this.connections.clear();return;}
-    let changed=false;
-    if(needsBotStep(game))changed=botStep(game);
-    if(!changed)changed=resolveTimedShot(game);
+    let changed=resolveTimedPending(game);
+    if(!changed&&needsBotStep(game))changed=botStep(game);
     if(changed){await this.ctx.storage.put('game',game);this.notify(game);}
     await this.schedule(game);
   }
@@ -95,7 +103,7 @@ export default {
       if(path==='/favicon.svg')return asset(favicon,'image/svg+xml');
       if(path==='/item-art.webp')return new Response(Uint8Array.from(atob(itemArtB64),c=>c.charCodeAt(0)),{headers:{'Content-Type':'image/webp','Cache-Control':'public,max-age=604800,immutable'}});
       if(path==='/board-texture.webp')return new Response(Uint8Array.from(atob(tableB64),c=>c.charCodeAt(0)),{headers:{'Content-Type':'image/webp','Cache-Control':'public,max-age=604800,immutable'}});
-      if(path==='/api/health')return response({ok:true,version:'1.5.0-card-first-physical',service:'diep-vien-so-dach-online'});
+      if(path==='/api/health')return response({ok:true,version:'1.6.1-sprint01',service:'diep-vien-so-dach-online'});
     }
     if(!path.startsWith('/api/'))return err('Not found.',404);
     let c,op,body=null;

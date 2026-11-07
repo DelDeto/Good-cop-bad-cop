@@ -1,0 +1,430 @@
+✖ FIX-01: redirected ordinary shooter eliminated advances exactly once (4 players, direction 1, human) (7.511202ms)
+✔ FIX-01: redirected leader shooter wounded retains aim turn (4 players, direction 1, human) (1.546656ms)
+✖ FIX-02: Coffee eliminated recipient (4 players, direction 1, human) (0.530388ms)
+✔ FIX-02: Coffee living recipient (4 players, direction 1, human) (0.819687ms)
+✖ FIX-01: redirected ordinary shooter eliminated advances exactly once (4 players, direction 1, BOT) (0.803213ms)
+✔ FIX-01: redirected leader shooter wounded retains aim turn (4 players, direction 1, BOT) (0.637847ms)
+✖ FIX-02: Coffee eliminated recipient (4 players, direction 1, BOT) (0.453323ms)
+✔ FIX-02: Coffee living recipient (4 players, direction 1, BOT) (0.999423ms)
+✖ FIX-01: redirected ordinary shooter eliminated advances exactly once (4 players, direction -1, human) (0.384711ms)
+✔ FIX-01: redirected leader shooter wounded retains aim turn (4 players, direction -1, human) (1.341452ms)
+✖ FIX-02: Coffee eliminated recipient (4 players, direction -1, human) (0.373414ms)
+✔ FIX-02: Coffee living recipient (4 players, direction -1, human) (0.47834ms)
+✖ FIX-01: redirected ordinary shooter eliminated advances exactly once (4 players, direction -1, BOT) (0.356279ms)
+✔ FIX-01: redirected leader shooter wounded retains aim turn (4 players, direction -1, BOT) (1.312228ms)
+✖ FIX-02: Coffee eliminated recipient (4 players, direction -1, BOT) (0.301468ms)
+✔ FIX-02: Coffee living recipient (4 players, direction -1, BOT) (0.621523ms)
+✖ FIX-01: redirected ordinary shooter eliminated advances exactly once (8 players, direction 1, human) (0.606761ms)
+✔ FIX-01: redirected leader shooter wounded retains aim turn (8 players, direction 1, human) (1.209596ms)
+✖ FIX-02: Coffee eliminated recipient (8 players, direction 1, human) (0.484319ms)
+✔ FIX-02: Coffee living recipient (8 players, direction 1, human) (1.514238ms)
+✖ FIX-01: redirected ordinary shooter eliminated advances exactly once (8 players, direction 1, BOT) (0.5119ms)
+✔ FIX-01: redirected leader shooter wounded retains aim turn (8 players, direction 1, BOT) (1.25292ms)
+✖ FIX-02: Coffee eliminated recipient (8 players, direction 1, BOT) (0.39059ms)
+✔ FIX-02: Coffee living recipient (8 players, direction 1, BOT) (5.000715ms)
+✖ FIX-01: redirected ordinary shooter eliminated advances exactly once (8 players, direction -1, human) (0.43117ms)
+✔ FIX-01: redirected leader shooter wounded retains aim turn (8 players, direction -1, human) (1.026274ms)
+✖ FIX-02: Coffee eliminated recipient (8 players, direction -1, human) (0.346805ms)
+✔ FIX-02: Coffee living recipient (8 players, direction -1, human) (0.916741ms)
+✖ FIX-01: redirected ordinary shooter eliminated advances exactly once (8 players, direction -1, BOT) (1.100454ms)
+✔ FIX-01: redirected leader shooter wounded retains aim turn (8 players, direction -1, BOT) (1.417064ms)
+✖ FIX-02: Coffee eliminated recipient (8 players, direction -1, BOT) (0.408156ms)
+✔ FIX-02: Coffee living recipient (8 players, direction -1, BOT) (0.992473ms)
+✔ wounded agent shooter eliminated ends game before another turn (4, human) (0.543948ms)
+✔ wounded agent shooter eliminated ends game before another turn (4, BOT) (0.338412ms)
+✔ wounded kingpin shooter eliminated ends game before another turn (4, human) (0.391591ms)
+✔ wounded kingpin shooter eliminated ends game before another turn (4, BOT) (0.724936ms)
+✔ wounded agent shooter eliminated ends game before another turn (8, human) (1.004962ms)
+✔ wounded agent shooter eliminated ends game before another turn (8, BOT) (0.878053ms)
+✔ wounded kingpin shooter eliminated ends game before another turn (8, human) (1.103688ms)
+✔ wounded kingpin shooter eliminated ends game before another turn (8, BOT) (0.912545ms)
+✖ Coffee dead stale pointer in restored state is skipped; normal order skips several eliminated seats (0.569726ms)
+✖ Coffee remains honored when the shooter dies and direction reverses before resolution (0.381617ms)
+✔ Coffee victim leader dies: existing winning check takes priority over a future extra turn (0.376599ms)
+✔ Serum audit: offline human choice has no deadline; reconnect is lossless but does not unblock it (1.255995ms)
+ℹ tests 44
+ℹ suites 0
+ℹ pass 26
+ℹ fail 18
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 60.716345
+
+✖ failing tests:
+
+test at ../tmp/v161-red.test.mjs:26:2
+✖ FIX-01: redirected ordinary shooter eliminated advances exactly once (4 players, direction 1, human) (7.511202ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  0 !== 1
+  
+      at TestContext.<anonymous> (file:///tmp/v161-red.test.mjs:28:49)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.start (node:internal/test_runner/test:1262:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:387:17) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 0,
+    expected: 1,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at ../tmp/v161-red.test.mjs:36:34
+✖ FIX-02: Coffee eliminated recipient (4 players, direction 1, human) (0.530388ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  1 !== 2
+  
+      at TestContext.<anonymous> (file:///tmp/v161-red.test.mjs:42:10)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 1,
+    expected: 2,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at ../tmp/v161-red.test.mjs:26:2
+✖ FIX-01: redirected ordinary shooter eliminated advances exactly once (4 players, direction 1, BOT) (0.803213ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  0 !== 1
+  
+      at TestContext.<anonymous> (file:///tmp/v161-red.test.mjs:28:49)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 0,
+    expected: 1,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at ../tmp/v161-red.test.mjs:36:34
+✖ FIX-02: Coffee eliminated recipient (4 players, direction 1, BOT) (0.453323ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  1 !== 2
+  
+      at TestContext.<anonymous> (file:///tmp/v161-red.test.mjs:42:10)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 1,
+    expected: 2,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at ../tmp/v161-red.test.mjs:26:2
+✖ FIX-01: redirected ordinary shooter eliminated advances exactly once (4 players, direction -1, human) (0.384711ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  0 !== 3
+  
+      at TestContext.<anonymous> (file:///tmp/v161-red.test.mjs:28:49)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 0,
+    expected: 3,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at ../tmp/v161-red.test.mjs:36:34
+✖ FIX-02: Coffee eliminated recipient (4 players, direction -1, human) (0.373414ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  1 !== 3
+  
+      at TestContext.<anonymous> (file:///tmp/v161-red.test.mjs:42:10)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 1,
+    expected: 3,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at ../tmp/v161-red.test.mjs:26:2
+✖ FIX-01: redirected ordinary shooter eliminated advances exactly once (4 players, direction -1, BOT) (0.356279ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  0 !== 3
+  
+      at TestContext.<anonymous> (file:///tmp/v161-red.test.mjs:28:49)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 0,
+    expected: 3,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at ../tmp/v161-red.test.mjs:36:34
+✖ FIX-02: Coffee eliminated recipient (4 players, direction -1, BOT) (0.301468ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  1 !== 3
+  
+      at TestContext.<anonymous> (file:///tmp/v161-red.test.mjs:42:10)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 1,
+    expected: 3,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at ../tmp/v161-red.test.mjs:26:2
+✖ FIX-01: redirected ordinary shooter eliminated advances exactly once (8 players, direction 1, human) (0.606761ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  0 !== 1
+  
+      at TestContext.<anonymous> (file:///tmp/v161-red.test.mjs:28:49)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 0,
+    expected: 1,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at ../tmp/v161-red.test.mjs:36:34
+✖ FIX-02: Coffee eliminated recipient (8 players, direction 1, human) (0.484319ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  1 !== 2
+  
+      at TestContext.<anonymous> (file:///tmp/v161-red.test.mjs:42:10)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 1,
+    expected: 2,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at ../tmp/v161-red.test.mjs:26:2
+✖ FIX-01: redirected ordinary shooter eliminated advances exactly once (8 players, direction 1, BOT) (0.5119ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  0 !== 1
+  
+      at TestContext.<anonymous> (file:///tmp/v161-red.test.mjs:28:49)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 0,
+    expected: 1,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at ../tmp/v161-red.test.mjs:36:34
+✖ FIX-02: Coffee eliminated recipient (8 players, direction 1, BOT) (0.39059ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  1 !== 2
+  
+      at TestContext.<anonymous> (file:///tmp/v161-red.test.mjs:42:10)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 1,
+    expected: 2,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at ../tmp/v161-red.test.mjs:26:2
+✖ FIX-01: redirected ordinary shooter eliminated advances exactly once (8 players, direction -1, human) (0.43117ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  0 !== 7
+  
+      at TestContext.<anonymous> (file:///tmp/v161-red.test.mjs:28:49)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 0,
+    expected: 7,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at ../tmp/v161-red.test.mjs:36:34
+✖ FIX-02: Coffee eliminated recipient (8 players, direction -1, human) (0.346805ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  1 !== 7
+  
+      at TestContext.<anonymous> (file:///tmp/v161-red.test.mjs:42:10)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 1,
+    expected: 7,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at ../tmp/v161-red.test.mjs:26:2
+✖ FIX-01: redirected ordinary shooter eliminated advances exactly once (8 players, direction -1, BOT) (1.100454ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  0 !== 7
+  
+      at TestContext.<anonymous> (file:///tmp/v161-red.test.mjs:28:49)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 0,
+    expected: 7,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at ../tmp/v161-red.test.mjs:36:34
+✖ FIX-02: Coffee eliminated recipient (8 players, direction -1, BOT) (0.408156ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  1 !== 7
+  
+      at TestContext.<anonymous> (file:///tmp/v161-red.test.mjs:42:10)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 1,
+    expected: 7,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at ../tmp/v161-red.test.mjs:50:1
+✖ Coffee dead stale pointer in restored state is skipped; normal order skips several eliminated seats (0.569726ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  1 !== 3
+  
+      at TestContext.<anonymous> (file:///tmp/v161-red.test.mjs:51:131)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 1,
+    expected: 3,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at ../tmp/v161-red.test.mjs:53:1
+✖ Coffee remains honored when the shooter dies and direction reverses before resolution (0.381617ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  0 !== 4
+  
+      at TestContext.<anonymous> (file:///tmp/v161-red.test.mjs:54:211)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 0,
+    expected: 4,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

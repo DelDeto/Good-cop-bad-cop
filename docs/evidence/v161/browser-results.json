@@ -1,0 +1,15 @@
+{
+  "status": "PASS",
+  "mode": "engine-backed browser fixtures; HTTP APIs intercepted, not Cloudflare deployment",
+  "checks": [
+    "equipment cancel sends no command",
+    "Wire exact private result",
+    "Bribe investigate then swap",
+    "Bribe pending survives reload",
+    "Bribe leader decline consumes",
+    "Bribe timeout reload declines without swap or refund",
+    "reaction reload and vest defence",
+    "desktop and mobile rendering"
+  ],
+  "pageErrors": []
+}

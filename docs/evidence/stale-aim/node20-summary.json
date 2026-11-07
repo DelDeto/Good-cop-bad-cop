@@ -1,0 +1,210 @@
+{
+  "commit": "e9c36f661c4cee28d6204068b90539c70ac5b304",
+  "node": "v20.20.2",
+  "repetitions": 20,
+  "testsPerRun": 126,
+  "totalTests": 2520,
+  "status": "PASS",
+  "results": [
+    {
+      "run": 1,
+      "exitCode": 0,
+      "tests": 126,
+      "passed": 126,
+      "failed": 0,
+      "skipped": 0,
+      "cancelled": 0,
+      "ok": true
+    },
+    {
+      "run": 2,
+      "exitCode": 0,
+      "tests": 126,
+      "passed": 126,
+      "failed": 0,
+      "skipped": 0,
+      "cancelled": 0,
+      "ok": true
+    },
+    {
+      "run": 3,
+      "exitCode": 0,
+      "tests": 126,
+      "passed": 126,
+      "failed": 0,
+      "skipped": 0,
+      "cancelled": 0,
+      "ok": true
+    },
+    {
+      "run": 4,
+      "exitCode": 0,
+      "tests": 126,
+      "passed": 126,
+      "failed": 0,
+      "skipped": 0,
+      "cancelled": 0,
+      "ok": true
+    },
+    {
+      "run": 5,
+      "exitCode": 0,
+      "tests": 126,
+      "passed": 126,
+      "failed": 0,
+      "skipped": 0,
+      "cancelled": 0,
+      "ok": true
+    },
+    {
+      "run": 6,
+      "exitCode": 0,
+      "tests": 126,
+      "passed": 126,
+      "failed": 0,
+      "skipped": 0,
+      "cancelled": 0,
+      "ok": true
+    },
+    {
+      "run": 7,
+      "exitCode": 0,
+      "tests": 126,
+      "passed": 126,
+      "failed": 0,
+      "skipped": 0,
+      "cancelled": 0,
+      "ok": true
+    },
+    {
+      "run": 8,
+      "exitCode": 0,
+      "tests": 126,
+      "passed": 126,
+      "failed": 0,
+      "skipped": 0,
+      "cancelled": 0,
+      "ok": true
+    },
+    {
+      "run": 9,
+      "exitCode": 0,
+      "tests": 126,
+      "passed": 126,
+      "failed": 0,
+      "skipped": 0,
+      "cancelled": 0,
+      "ok": true
+    },
+    {
+      "run": 10,
+      "exitCode": 0,
+      "tests": 126,
+      "passed": 126,
+      "failed": 0,
+      "skipped": 0,
+      "cancelled": 0,
+      "ok": true
+    },
+    {
+      "run": 11,
+      "exitCode": 0,
+      "tests": 126,
+      "passed": 126,
+      "failed": 0,
+      "skipped": 0,
+      "cancelled": 0,
+      "ok": true
+    },
+    {
+      "run": 12,
+      "exitCode": 0,
+      "tests": 126,
+      "passed": 126,
+      "failed": 0,
+      "skipped": 0,
+      "cancelled": 0,
+      "ok": true
+    },
+    {
+      "run": 13,
+      "exitCode": 0,
+      "tests": 126,
+      "passed": 126,
+      "failed": 0,
+      "skipped": 0,
+      "cancelled": 0,
+      "ok": true
+    },
+    {
+      "run": 14,
+      "exitCode": 0,
+      "tests": 126,
+      "passed": 126,
+      "failed": 0,
+      "skipped": 0,
+      "cancelled": 0,
+      "ok": true
+    },
+    {
+      "run": 15,
+      "exitCode": 0,
+      "tests": 126,
+      "passed": 126,
+      "failed": 0,
+      "skipped": 0,
+      "cancelled": 0,
+      "ok": true
+    },
+    {
+      "run": 16,
+      "exitCode": 0,
+      "tests": 126,
+      "passed": 126,
+      "failed": 0,
+      "skipped": 0,
+      "cancelled": 0,
+      "ok": true
+    },
+    {
+      "run": 17,
+      "exitCode": 0,
+      "tests": 126,
+      "passed": 126,
+      "failed": 0,
+      "skipped": 0,
+      "cancelled": 0,
+      "ok": true
+    },
+    {
+      "run": 18,
+      "exitCode": 0,
+      "tests": 126,
+      "passed": 126,
+      "failed": 0,
+      "skipped": 0,
+      "cancelled": 0,
+      "ok": true
+    },
+    {
+      "run": 19,
+      "exitCode": 0,
+      "tests": 126,
+      "passed": 126,
+      "failed": 0,
+      "skipped": 0,
+      "cancelled": 0,
+      "ok": true
+    },
+    {
+      "run": 20,
+      "exitCode": 0,
+      "tests": 126,
+      "passed": 126,
+      "failed": 0,
+      "skipped": 0,
+      "cancelled": 0,
+      "ok": true
+    }
+  ]
+}
