@@ -78,7 +78,7 @@ jobs:
         env:
           PLAYWRIGHT_MODULE: ${{ runner.temp }}/gcbc-production-browser/node_modules/playwright-core/index.mjs
           CHROMIUM_PATH: /usr/bin/google-chrome
-        run: node scripts/production-ui-smoke.mjs
+        run: node scripts/ci-run.mjs node scripts/production-ui-smoke.mjs
       - name: Finalize only after real production browser checks pass
         if: github.ref_type == 'tag'
         env:

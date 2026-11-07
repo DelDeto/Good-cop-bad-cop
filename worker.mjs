@@ -5,6 +5,10 @@ import styles from './assets/style.txt';
 import favicon from './assets/favicon.txt';
 import tableB64 from './assets/table-b64.txt';
 import itemArtB64 from './assets/item-art-b64.txt';
+import portraitsB64 from './assets/portraits-b64.txt';
+import rolesB64 from './assets/roles-b64.txt';
+import cardBackB64 from './assets/card-back-b64.txt';
+import artManifest from './assets/art-manifest.txt';
 
 const encoder = new TextEncoder();
 const code = ()=>{const a=new Uint8Array(3);crypto.getRandomValues(a);return [...a].map(n=>n.toString(16).padStart(2,'0')).join('').toUpperCase();};
@@ -103,6 +107,10 @@ export default {
       if(path==='/favicon.svg')return asset(favicon,'image/svg+xml');
       if(path==='/item-art.webp')return new Response(Uint8Array.from(atob(itemArtB64),c=>c.charCodeAt(0)),{headers:{'Content-Type':'image/webp','Cache-Control':'public,max-age=604800,immutable'}});
       if(path==='/board-texture.webp')return new Response(Uint8Array.from(atob(tableB64),c=>c.charCodeAt(0)),{headers:{'Content-Type':'image/webp','Cache-Control':'public,max-age=604800,immutable'}});
+      if(path==='/portraits.webp')return new Response(Uint8Array.from(atob(portraitsB64),c=>c.charCodeAt(0)),{headers:{'Content-Type':'image/webp','Cache-Control':'public,max-age=604800,immutable'}});
+      if(path==='/roles.webp')return new Response(Uint8Array.from(atob(rolesB64),c=>c.charCodeAt(0)),{headers:{'Content-Type':'image/webp','Cache-Control':'public,max-age=604800,immutable'}});
+      if(path==='/card-back.webp')return new Response(Uint8Array.from(atob(cardBackB64),c=>c.charCodeAt(0)),{headers:{'Content-Type':'image/webp','Cache-Control':'public,max-age=604800,immutable'}});
+      if(path==='/art-manifest.json')return asset(artManifest,'application/json; charset=utf-8');
       if(path==='/api/health')return response({ok:true,version:'1.7.0-responsive-table',service:'diep-vien-so-dach-online'});
     }
     if(!path.startsWith('/api/'))return err('Not found.',404);

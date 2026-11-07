@@ -33,7 +33,7 @@ jobs:
           node-version: ${{ matrix.node }}
       # No external runtime dependencies and no lockfile: npm install is unnecessary.
       - name: Full regressions including privacy and HTTP SSE
-        run: npm test
+        run: node scripts/ci-run.mjs npm test
       - name: Repeat entire regression suite five times (never retry failures away)
         run: node scripts/repeat-tests.mjs 5 /tmp/gcbc-ci-repeat
       - name: Verify generated Cloudflare assets
@@ -69,19 +69,19 @@ jobs:
           PLAYWRIGHT_MODULE: ${{ runner.temp }}/gcbc-browser/node_modules/playwright-core/index.mjs
           CHROMIUM_PATH: /usr/bin/google-chrome
           QA_OUTPUT_DIR: file://${{ runner.temp }}/gcbc-ui-evidence/
-        run: node scripts/qa-v17.mjs
+        run: node scripts/ci-run.mjs node scripts/qa-v17.mjs
       - name: Actual multiplayer and solo server integration
         env:
           PLAYWRIGHT_MODULE: ${{ runner.temp }}/gcbc-browser/node_modules/playwright-core/index.mjs
           CHROMIUM_PATH: /usr/bin/google-chrome
           QA_OUTPUT_DIR: file://${{ runner.temp }}/gcbc-ui-evidence/
-        run: node scripts/qa-v17-real.mjs
+        run: node scripts/ci-run.mjs node scripts/qa-v17-real.mjs
       - name: Rehearse the exact production browser verifier on the local server
         env:
           PLAYWRIGHT_MODULE: ${{ runner.temp }}/gcbc-browser/node_modules/playwright-core/index.mjs
           CHROMIUM_PATH: /usr/bin/google-chrome
           RELEASE_OUTPUT_DIR: ${{ runner.temp }}/gcbc-ui-evidence/rehearsal
-        run: node scripts/qa-production-verifier.mjs
+        run: node scripts/ci-run.mjs node scripts/qa-production-verifier.mjs
       - name: Upload visual QA evidence
         if: always()
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7
