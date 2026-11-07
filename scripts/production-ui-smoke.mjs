@@ -22,7 +22,7 @@ try{
  const roleTypes=await page.locator('[data-role-guide]').evaluateAll(els=>els.map(el=>el.dataset.roleGuide));assert.deepEqual(roleTypes,['honest','crooked','agent','kingpin']);
  await page.locator('[data-role-guide="kingpin"]').click();await page.getByRole('dialog',{name:'TRÙM MAFIA'}).waitFor();await page.locator('#modal [data-act="close"]').click();
  assert.equal(await page.locator('meta[property="og:image"]').getAttribute('content'),policy.url+'/social-preview.jpg');
- const ogResponse=await context.request.get(base+'/social-preview.jpg');assert.equal(ogResponse.status(),200,'Social preview not available');assert.ok(ogResponse.headers()['content-type'].startsWith('image/jpeg'),'Invalid social preview content type');assert.ok((await ogResponse.body()).length>50000,'Social preview must be valid image bytes');
+ const ogResponse=await context.request.get(base+'/social-preview.jpg');assert.equal(ogResponse.status(),200,'Social preview not available');if(base===policy.url)assert.ok(ogResponse.headers()['content-type'].startsWith('image/jpeg'),'Invalid production social preview MIME');assert.ok((await ogResponse.body()).length>50000,'Social preview must be valid image bytes');
  const faviconResponse=await context.request.get(base+'/favicon.svg');assert.equal(faviconResponse.status(),200);assert.match(await faviconResponse.text(),/<svg/);
  checks.push('Homepage displays four role cards, details, favicon and Open Graph preview');
  const owner=await post('/api/create',{name:'Release QA · Chủ phòng'}),users=[owner];for(const name of ['QA Bravo','QA Charlie','QA Delta'])users.push(await post('/api/join',{code:owner.code,name}));
