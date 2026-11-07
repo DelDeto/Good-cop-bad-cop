@@ -2,6 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {bundle,policy,hash,validateTag} from '../scripts/release/package.mjs';
 import {Cloudflare,smoke} from '../scripts/release/cloudflare.mjs';
+import {assetFiles} from '../scripts/asset-map.mjs';
 const sha='a'.repeat(40),binding={name:'GAME_ROOMS',type:'durable_object_namespace',class_name:'GameRoom',namespace_id:policy.expectedNamespace},runtime={compatibility_date:'2025-01-01',compatibility_flags:[],migration_tag:'v1',usage_model:'standard'};
 function fake(){
  let current='old',settings={bindings:[binding]},version={resources:{script_runtime:runtime,bindings:[binding]}};const calls=[];
@@ -18,8 +19,8 @@ function fake(){
  return {cf:new Cloudflare({account:'c'.repeat(32),token:'test-token-never-log',request}),calls,setCurrent:id=>current=id,setSettings:x=>settings=x,setVersion:x=>version=x};
 }
 test('release: package contains exact JavaScript and text module paths; no secret in health metadata',()=>{
- const p=bundle(sha);assert.equal(p.modules.length,18);assert.equal(p.assets.length,16);
- assert.match(p.modules[0].body,/commit:'a{40}'/);assert.equal(p.modules.filter(m=>m.type==='text/plain').length,16);
+ const p=bundle(sha);assert.equal(p.modules.length,assetFiles.length+2);assert.equal(p.assets.length,assetFiles.length);
+ assert.match(p.modules[0].body,/commit:'a{40}'/);assert.equal(p.modules.filter(m=>m.type==='text/plain').length,assetFiles.length);
  for(const m of p.modules.filter(m=>m.type==='text/plain'))assert.ok(m.body.length>0);
  assert.throws(()=>bundle('bad'),/Invalid commit/);
 });
@@ -69,7 +70,7 @@ test('release: Cloudflare errors redact response bodies and token',async()=>{
 test('release: production smoke validates version, commit and exact frontend asset hashes',async()=>{
  const p=bundle(sha);const {read}=await import('../scripts/release/package.mjs');
  const request=async url=>{const path=new URL(url).pathname;return path==='/api/health'?Response.json({ok:true,service:policy.worker,version:p.version,commit:sha}):new Response(read('public/'+(path==='/'?'index.html':path.slice(1))));};
- const result=await smoke(p,{request});assert.equal(result.resources.length,16);
+ const result=await smoke(p,{request});assert.equal(result.resources.length,assetFiles.length);
  await assert.rejects(smoke({...p,sha:'b'.repeat(40)},{request}));
  await assert.rejects(smoke({...p,assets:[{path:'/app.js',sha256:'wrong'}]},{request}),/Asset integrity/);
 });
@@ -82,7 +83,7 @@ test('release: packaged Worker serves exact frontend bytes and build identity',a
  }
  const worker=(await import('data:text/javascript;base64,'+Buffer.from(src).toString('base64'))).default;
  const result=await smoke(p,{request:url=>worker.fetch(new Request(url),{})});
- assert.equal(result.health.commit,sha);assert.equal(result.resources.length,16);
+ assert.equal(result.health.commit,sha);assert.equal(result.resources.length,assetFiles.length);
 });
 test('release: split production traffic is never overwritten',async()=>{
  const cf=new Cloudflare({account:'c'.repeat(32),token:'redacted',request:async()=>Response.json({success:true,result:{deployments:[{versions:[{version_id:'one',percentage:50},{version_id:'two',percentage:50}]}]}})});
