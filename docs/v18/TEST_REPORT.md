@@ -39,3 +39,20 @@ browser results. Actual production screenshots are stored under
 `deployment-state/screenshots/1.8.0/` after success. Any failed activation or browser
 smoke invokes guarded rollback; a rollback is never reported as successful without
 checking active version, namespace/runtime, health and baseline resource hashes.
+
+## Production V1.8.0 and glyph hotfix
+
+V1.8.0 successfully deployed from `17e3243962a647c4aa51076cc8971a9e06a5d136`.
+All release gates and real production browser checks passed:
+https://github.com/DelDeto/Good-cop-bad-cop/actions/runs/42365848146
+
+Deployment: `b388d091-4ef9-48f7-a1d8-e0b3b7231552`; Worker version:
+`0ded55db-bc01-4e97-a097-76e87529ed01`. Post-deploy review of actual screenshots
+found missing optional HUD symbols on the runner without system fallback fonts
+(P2). V1.8.1 bundles two small OFL symbol subsets, checks critical glyph coverage
+and preserves all V1.8.0 artwork/gameplay. Local 152-test suite, 92 layouts and the
+exact production verifier rehearsal pass; final hosted CI is required before
+creating `v1.8.1`. The new package has 18 modules and 16 frontend resources.
+
+The authoritative final release report and actual screenshots are under the
+`automation/deployment-state` evidence branch, using the released version's folder.

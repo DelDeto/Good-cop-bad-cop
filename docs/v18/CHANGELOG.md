@@ -1,3 +1,9 @@
+# V1.8.1
+
+- Bundle two tiny OFL symbol-font subsets and validate critical HUD glyph coverage;
+  fix missing player-detail/weapon markers on machines without system symbol fonts.
+- Preserve V1.8.0 art, layouts, gameplay, privacy and existing Durable Object data.
+
 # V1.8.0
 
 - Original noir character portraits, illustrated identity/equipment cards, engraved

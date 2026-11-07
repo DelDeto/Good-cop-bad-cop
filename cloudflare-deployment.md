@@ -21,8 +21,8 @@ Pushing `feature/v1.8-premium-release` runs `.github/workflows/release.yml`:
 4. Require existing `GAME_ROOMS` → `GameRoom` namespace; do not guess a namespace.
    The namespace ID and migration tag verified on initial setup are pinned in
    `scripts/release/policy.json`; future UI runs refuse namespace/migration drift.
-5. Check current production health and all fourteen frontend resources.
-6. Build all sixteen ES/text modules, compile using pinned official Wrangler
+5. Check current production health and all sixteen frontend resources.
+6. Build all eighteen ES/text modules, compile using pinned official Wrangler
    `deploy --dry-run`. This command never uploads. Preserve the existing migration;
    a compiler warning asking to declare exports is **not** permission to recreate it.
 7. Save sanitized evidence in Actions artifacts/summary and branch
@@ -72,7 +72,7 @@ frontend were verified before deployment; a split rollout is refused.
 
 Before changing traffic, upload an immutable recovery checkpoint to Actions.
 Activate 100%, then verify health/version/SHA and SHA-256 of HTML, JS, CSS, favicon, artwork manifest
-and all five image assets and four local fonts. Retry propagation checks for at most six attempts. Record
+and all five image assets and six local fonts. Retry propagation checks for at most six attempts. Record
 candidate version, deployment ID, commit, URL, baseline and smoke result.
 
 On failure restore the baseline only if this run still owns the active version

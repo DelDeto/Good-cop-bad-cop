@@ -13,5 +13,7 @@ export const assetFiles=[
  ['detective-sans-bold.woff2','font-sans-bold-b64.txt','sansBoldB64','font/woff2',true],
  ['detective-serif-regular.woff2','font-serif-regular-b64.txt','serifRegularB64','font/woff2',true],
  ['detective-serif-bold.woff2','font-serif-bold-b64.txt','serifBoldB64','font/woff2',true],
+ ['detective-symbols.woff2','symbols-b64.txt','symbolsB64','font/woff2',true],
+ ['detective-symbols-two.woff2','symbols-two-b64.txt','symbolsTwoB64','font/woff2',true],
  ['art-manifest.json','art-manifest.txt','artManifest','application/json; charset=utf-8']
 ];

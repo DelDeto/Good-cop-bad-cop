@@ -22,7 +22,9 @@ The five generated image sources remain in `/workspace/generated_images` in this
 session. The committed WebP files are self-contained release assets; no image
 service, remote font, external CDN or generation service is needed at runtime.
 Detective Sans/Serif are renamed Latin/Vietnamese subsets of SIL OFL 1.1 Noto fonts;
-all four regular/bold WOFF2 files are bundled and hash checked. See `fonts/OFL-1.1.txt`.
+all four regular/bold WOFF2 files and two UI-symbol fallback subsets are bundled
+and hash checked. Critical HUD glyph coverage is validated, so controls such as
+the circled information button do not depend on runner/OS fallback fonts. See `fonts/OFL-1.1.txt`.
 Primary characters, card faces, card backs, equipment and table have no icon
 placeholder fallback. Small text/symbol HUD controls are semantic interface
 controls, rather than substitutes for final illustrations.

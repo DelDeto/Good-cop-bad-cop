@@ -1,5 +1,5 @@
 {
-  "version": "1.8.0",
+  "version": "1.8.1",
   "status": "complete",
   "scope": "ui",
   "sourceBranch": "feature/v1.8-premium-release",
@@ -11,6 +11,8 @@
     "originalCharacterPortraits": 8,
     "identityFaces": 4,
     "equipmentIllustrations": 23,
-    "engineAndSchema": "unchanged"
+    "engineAndSchema": "unchanged",
+    "priorProductionRelease": "https://github.com/DelDeto/Good-cop-bad-cop/releases/tag/v1.8.0",
+    "patch": "P2 missing HUD symbols: bundled OFL fallback fonts with critical glyph coverage"
   }
 }

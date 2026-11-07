@@ -18,8 +18,8 @@ function fake(){
  return {cf:new Cloudflare({account:'c'.repeat(32),token:'test-token-never-log',request}),calls,setCurrent:id=>current=id,setSettings:x=>settings=x,setVersion:x=>version=x};
 }
 test('release: package contains exact JavaScript and text module paths; no secret in health metadata',()=>{
- const p=bundle(sha);assert.equal(p.modules.length,16);assert.equal(p.assets.length,14);
- assert.match(p.modules[0].body,/commit:'a{40}'/);assert.equal(p.modules.filter(m=>m.type==='text/plain').length,14);
+ const p=bundle(sha);assert.equal(p.modules.length,18);assert.equal(p.assets.length,16);
+ assert.match(p.modules[0].body,/commit:'a{40}'/);assert.equal(p.modules.filter(m=>m.type==='text/plain').length,16);
  for(const m of p.modules.filter(m=>m.type==='text/plain'))assert.ok(m.body.length>0);
  assert.throws(()=>bundle('bad'),/Invalid commit/);
 });
@@ -69,7 +69,7 @@ test('release: Cloudflare errors redact response bodies and token',async()=>{
 test('release: production smoke validates version, commit and exact frontend asset hashes',async()=>{
  const p=bundle(sha);const {read}=await import('../scripts/release/package.mjs');
  const request=async url=>{const path=new URL(url).pathname;return path==='/api/health'?Response.json({ok:true,service:policy.worker,version:p.version,commit:sha}):new Response(read('public/'+(path==='/'?'index.html':path.slice(1))));};
- const result=await smoke(p,{request});assert.equal(result.resources.length,14);
+ const result=await smoke(p,{request});assert.equal(result.resources.length,16);
  await assert.rejects(smoke({...p,sha:'b'.repeat(40)},{request}));
  await assert.rejects(smoke({...p,assets:[{path:'/app.js',sha256:'wrong'}]},{request}),/Asset integrity/);
 });
@@ -82,16 +82,16 @@ test('release: packaged Worker serves exact frontend bytes and build identity',a
  }
  const worker=(await import('data:text/javascript;base64,'+Buffer.from(src).toString('base64'))).default;
  const result=await smoke(p,{request:url=>worker.fetch(new Request(url),{})});
- assert.equal(result.health.commit,sha);assert.equal(result.resources.length,14);
+ assert.equal(result.health.commit,sha);assert.equal(result.resources.length,16);
 });
 test('release: split production traffic is never overwritten',async()=>{
  const cf=new Cloudflare({account:'c'.repeat(32),token:'redacted',request:async()=>Response.json({success:true,result:{deployments:[{versions:[{version_id:'one',percentage:50},{version_id:'two',percentage:50}]}]}})});
  await assert.rejects(cf.active(),/split rollout/);
 });
 test('release: pre-V1.8 rollback baseline tolerates only explicitly new missing art endpoints',async()=>{
- const p=bundle(sha);const added=new Set(['/portraits.webp','/roles.webp','/card-back.webp','/detective-sans-regular.woff2','/detective-sans-bold.woff2','/detective-serif-regular.woff2','/detective-serif-bold.woff2','/art-manifest.json']);
+ const p=bundle(sha);const added=new Set(['/portraits.webp','/roles.webp','/card-back.webp','/detective-sans-regular.woff2','/detective-sans-bold.woff2','/detective-serif-regular.woff2','/detective-serif-bold.woff2','/detective-symbols.woff2','/detective-symbols-two.woff2','/art-manifest.json']);
  const request=async url=>{const path=new URL(url).pathname;return path==='/api/health'?Response.json({ok:true,service:policy.worker,version:'1.6.1-sprint01'}):added.has(path)?new Response('Not found',{status:404}):new Response('existing deployed asset');};
- const r=await smoke(p,{request,baseline:true});assert.equal(r.resources.filter(a=>a.status===404).length,8);
+ const r=await smoke(p,{request,baseline:true});assert.equal(r.resources.filter(a=>a.status===404).length,10);
  await assert.rejects(smoke(p,{request}));
  await assert.rejects(smoke(p,{baseline:true,request:url=>new URL(url).pathname==='/app.js'?new Response('missing',{status:404}):request(url)}),/HTTP \/app.js/);
 });
