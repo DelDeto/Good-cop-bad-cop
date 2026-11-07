@@ -21,6 +21,8 @@ files, sizes, dimensions, hashes and atlas orders: `public/art-manifest.json`.
 The five generated image sources remain in `/workspace/generated_images` in this
 session. The committed WebP files are self-contained release assets; no image
 service, remote font, external CDN or generation service is needed at runtime.
+Detective Sans/Serif are renamed Latin/Vietnamese subsets of SIL OFL 1.1 Noto fonts;
+all four regular/bold WOFF2 files are bundled and hash checked. See `fonts/OFL-1.1.txt`.
 Primary characters, card faces, card backs, equipment and table have no icon
 placeholder fallback. Small text/symbol HUD controls are semantic interface
 controls, rather than substitutes for final illustrations.
@@ -63,7 +65,8 @@ local until an action is confirmed; no optimistic secret result is generated.
 
 Audit found and fixed: five-player phone deck overlap; atlas neighbours showing
 inside wide equipment previews; stretched illustration proportions; cut card-back
-marks on dense mobile tables; insufficient table height in landscape. Atlas art
+marks on dense mobile tables; insufficient table height in landscape; local/CI system-font differences. Fonts
+are now bundled rather than weakening screenshot comparison thresholds. Atlas art
 now uses nested clipped SVG viewports, preserving proportions without adjacent
 cell bleed. Final card backs use the dedicated illustration.
 

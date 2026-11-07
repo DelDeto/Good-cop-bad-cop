@@ -8,6 +8,10 @@ import itemArtB64 from './assets/item-art-b64.txt';
 import portraitsB64 from './assets/portraits-b64.txt';
 import rolesB64 from './assets/roles-b64.txt';
 import cardBackB64 from './assets/card-back-b64.txt';
+import sansRegularB64 from './assets/font-sans-regular-b64.txt';
+import sansBoldB64 from './assets/font-sans-bold-b64.txt';
+import serifRegularB64 from './assets/font-serif-regular-b64.txt';
+import serifBoldB64 from './assets/font-serif-bold-b64.txt';
 import artManifest from './assets/art-manifest.txt';
 
 const encoder = new TextEncoder();
@@ -110,6 +114,10 @@ export default {
       if(path==='/portraits.webp')return new Response(Uint8Array.from(atob(portraitsB64),c=>c.charCodeAt(0)),{headers:{'Content-Type':'image/webp','Cache-Control':'public,max-age=604800,immutable'}});
       if(path==='/roles.webp')return new Response(Uint8Array.from(atob(rolesB64),c=>c.charCodeAt(0)),{headers:{'Content-Type':'image/webp','Cache-Control':'public,max-age=604800,immutable'}});
       if(path==='/card-back.webp')return new Response(Uint8Array.from(atob(cardBackB64),c=>c.charCodeAt(0)),{headers:{'Content-Type':'image/webp','Cache-Control':'public,max-age=604800,immutable'}});
+      if(path==='/detective-sans-regular.woff2')return new Response(Uint8Array.from(atob(sansRegularB64),c=>c.charCodeAt(0)),{headers:{'Content-Type':'font/woff2','Cache-Control':'public,max-age=604800,immutable'}});
+      if(path==='/detective-sans-bold.woff2')return new Response(Uint8Array.from(atob(sansBoldB64),c=>c.charCodeAt(0)),{headers:{'Content-Type':'font/woff2','Cache-Control':'public,max-age=604800,immutable'}});
+      if(path==='/detective-serif-regular.woff2')return new Response(Uint8Array.from(atob(serifRegularB64),c=>c.charCodeAt(0)),{headers:{'Content-Type':'font/woff2','Cache-Control':'public,max-age=604800,immutable'}});
+      if(path==='/detective-serif-bold.woff2')return new Response(Uint8Array.from(atob(serifBoldB64),c=>c.charCodeAt(0)),{headers:{'Content-Type':'font/woff2','Cache-Control':'public,max-age=604800,immutable'}});
       if(path==='/art-manifest.json')return asset(artManifest,'application/json; charset=utf-8');
       if(path==='/api/health')return response({ok:true,version:'1.7.0-responsive-table',service:'diep-vien-so-dach-online'});
     }

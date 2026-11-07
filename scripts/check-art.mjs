@@ -19,6 +19,8 @@ export function checkArt(){
   if(w!==im.width||h!==im.height||hash(b)!==im.sha256||b.length!==im.bytes)throw Error('Artwork hash/dimension mismatch: '+im.file);
   if(b.length<50000||w<(im.file==='card-back.webp'?800:1200)||h<800||im.items.length!==expected[im.file]||new Set(im.items).size!==im.items.length||im.grid[0]*im.grid[1]<im.items.length)throw Error('Incomplete/final artwork quality gate: '+im.file);
  }
+ if(m.fonts?.length!==4)throw Error('Missing local Latin/Vietnamese fonts');
+ for(const f of m.fonts){const b=read('public/'+f.file);if(b.toString('ascii',0,4)!=='wOF2'||hash(b)!==f.sha256||b.length!==f.bytes)throw Error('Font integrity: '+f.file);}
  const app=read('public/app.js').toString(),ids=Object.keys(JSON.parse('{'+app.match(/const physicalArt=\{([^}]+)\}/)[1].replace(/(\w+):/g,'"$1":')+'}'));
  if(JSON.stringify(ids)!==JSON.stringify(m.images.find(i=>i.file==='item-art.webp').items))throw Error('Equipment artwork order differs from game UI');
  const total=assetFiles.reduce((n,[file])=>n+read('public/'+file).length,0);

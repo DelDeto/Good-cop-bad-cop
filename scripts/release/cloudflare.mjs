@@ -58,7 +58,7 @@ export class Cloudflare {
  }
 }
 export async function smoke(pkg,{request=fetch,baseline=false}={}){
- const get=async path=>{const r=await request(policy.url+path+(path.includes('?')?'&':'?')+'release-smoke='+Date.now(),{cache:'no-store',signal:AbortSignal.timeout(15000)});if(baseline&&['/portraits.webp','/roles.webp','/card-back.webp','/art-manifest.json'].includes(path)&&r.status===404)return r;assert.equal(r.status,200,`HTTP ${path}`);return r;};
+ const get=async path=>{const r=await request(policy.url+path+(path.includes('?')?'&':'?')+'release-smoke='+Date.now(),{cache:'no-store',signal:AbortSignal.timeout(15000)});if(baseline&&['/portraits.webp','/roles.webp','/card-back.webp','/detective-sans-regular.woff2','/detective-sans-bold.woff2','/detective-serif-regular.woff2','/detective-serif-bold.woff2','/art-manifest.json'].includes(path)&&r.status===404)return r;assert.equal(r.status,200,`HTTP ${path}`);return r;};
  const health=await (await get('/api/health')).json();assert.equal(health.ok,true);assert.equal(health.service,policy.worker);
  if(!baseline){assert.equal(health.version,pkg.version);assert.equal(health.commit,pkg.sha);}
  const resources=[];

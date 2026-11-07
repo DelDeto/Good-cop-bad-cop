@@ -108,5 +108,39 @@
         "dossier-back"
       ]
     }
+  ],
+  "fonts": [
+    {
+      "file": "detective-sans-regular.woff2",
+      "family": "Detective Sans",
+      "weight": 400,
+      "source": "Noto Sans Regular; fonts-noto-core / SIL OFL 1.1; Latin/Vietnamese subset, renamed derivative",
+      "bytes": 62452,
+      "sha256": "d63e00d37185b17a382152ebf87c450368dd00c4ab0b8f9cfd2aded0a47bf0cd"
+    },
+    {
+      "file": "detective-sans-bold.woff2",
+      "family": "Detective Sans",
+      "weight": 700,
+      "source": "Noto Sans Bold; fonts-noto-core / SIL OFL 1.1; Latin/Vietnamese subset, renamed derivative",
+      "bytes": 61816,
+      "sha256": "6495f5f60b5c26c051fc1ca2c7d9bf3a801ae0ae5da209881685d9d7918fa350"
+    },
+    {
+      "file": "detective-serif-regular.woff2",
+      "family": "Detective Serif",
+      "weight": 400,
+      "source": "Noto Serif Regular; fonts-noto-core / SIL OFL 1.1; Latin/Vietnamese subset, renamed derivative",
+      "bytes": 63320,
+      "sha256": "e5f9e468107f11087397c1fb469e7e0d477a2389aebe7fb3f318e1565715466b"
+    },
+    {
+      "file": "detective-serif-bold.woff2",
+      "family": "Detective Serif",
+      "weight": 700,
+      "source": "Noto Serif Bold; fonts-noto-core / SIL OFL 1.1; Latin/Vietnamese subset, renamed derivative",
+      "bytes": 65868,
+      "sha256": "69a7f472bd4c55aa6fb2f58d230cbcc67bcb357353e53cdc11f398af8823b721"
+    }
   ]
 }
