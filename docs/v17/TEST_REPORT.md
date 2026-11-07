@@ -18,8 +18,8 @@ Branch: `feature/v1.7-responsive-table`. Base: verified `feature/v1.6-sprint-01`
 | Actual multiplayer and solo | PASS locally | [Actual server results](after/real-server-results.json): separate browser contexts create/join/start four-human room, investigate privately, change turn/reload, solo with 7 hard BOTs and real timer-driven BOT activity. APIs are not intercepted. |
 | Engine / backend preservation | PASS | [Preservation hash](evidence/preservation.json): engine and Node server byte-identical to V1.6.1; Worker/DO behavior unchanged, health release metadata only. No API/payload or role/win changes. |
 | Generated assets | PASS | `npm run assets:check`; package, cache keys and Worker health agree on V1.7.0. |
-| Hosted CI | Pending until branch checks finish | Node 20/22/24 + repeated suites, plus Chromium geometry/gameplay/actual-server job and uploaded screenshots/metrics. [Workflow runs](https://github.com/DelDeto/Good-cop-bad-cop/actions/workflows/sprint01.yml). Do not equate local success with hosted CI. |
-| New V1.7 PR | BLOCKED by environment access until creation succeeds | Intended base is `feature/v1.6-sprint-01`. GitHub API requests return Forbidden; `api.github.com` is absent from enforced egress. Branch publication and PR creation are separate outcomes. |
+| Hosted CI | PASS on branch commit `81ffbb8` | [Run 42333420442](https://github.com/DelDeto/Good-cop-bad-cop/actions/runs/42333420442): Node 20/22/24 matrix + Chromium job all successful; 3.35 MB visual artifact uploaded. [Recorded evidence](evidence/hosted-ci.json). No PR-event check is claimed while PR creation is blocked. |
+| New V1.7 PR | BLOCKED / NOT CREATED | Intended base is `feature/v1.6-sprint-01`. GitHub API requests return Forbidden; `api.github.com` is absent from enforced egress. Branch publication and PR creation are separate outcomes. |
 
 ## Evidence / reproduce
 
@@ -62,3 +62,11 @@ The fixture suite uses a test-only HTTP/SSE server and the unchanged engine with
 Recommend UX review against the provided before/after screenshots and reproducible geometry/scenario evidence. Engineering acceptance additionally requires green hosted branch/PR checks and creation of the V1.7 PR with the correct V1.6.1 base. No claim that the access-blocked PR already exists.
 
 After review: perform an explicitly authorized staging rollout/playtest with 4–8 real clients, network interruptions, responsive keyboard/safe-area cases and the existing rules/Serum gates. Resolve or explicitly accept the pre-existing release gates, then seek explicit authorization for any production rollout. Preserve the existing `GAME_ROOMS` Durable Object binding/namespace, verify release metadata and static cache keys, and retain a rollback version. No rollout is performed by this sprint.
+
+## PR handoff / access blocker
+
+The branch is pushed. An actual `gh pr create --draft --base feature/v1.6-sprint-01 --head feature/v1.7-responsive-table` attempt failed with `Post https://api.github.com/graphql: Forbidden`. Enforced network policy does not allow api.github.com. The environment draft already proposes that domain; it has not been applied to runtime. Do not infer missing Git push credentials: branch publication succeeded.
+
+[Prepared PR description](PR_DRAFT.md) and [correct-base comparison](https://github.com/DelDeto/Good-cop-bad-cop/compare/feature%2Fv1.6-sprint-01...feature%2Fv1.7-responsive-table?expand=1) make the change reviewable. Creating the PR requires applying GitHub API access in environment settings (then rechecking API authorization), or opening the comparison while authenticated in GitHub. This report does not claim that a link to a comparison is an existing PR. PR #1 is untouched.
+
+Delivery is therefore **PARTIAL** despite passing code/QA/branch CI: the external PR-creation step remains blocked. The V1.7 UX implementation and evidence are complete for review; production acceptance is not asserted.

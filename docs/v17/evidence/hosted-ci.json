@@ -1,0 +1,25 @@
+{
+  "commit": "81ffbb8",
+  "event": "push",
+  "url": "https://github.com/DelDeto/Good-cop-bad-cop/actions/runs/42333420442",
+  "evidenceSource": "GitHub HTTPS run summary",
+  "status": "Success",
+  "nodeMatrix": [
+    20,
+    22,
+    24
+  ],
+  "nodeMatrixJobsCompleted": 3,
+  "chromiumJob": "Success (37 seconds)",
+  "visualArtifact": {
+    "name": "v17-chromium-evidence",
+    "size": "3.35 MB",
+    "sha256": "15096e88612940fbd4f027248bd01922d373f6a201a07ec2bbc596d524690d32"
+  },
+  "pullRequestCreated": false,
+  "pullRequestApiAttempt": "Forbidden",
+  "base": "feature/v1.6-sprint-01",
+  "head": "feature/v1.7-responsive-table",
+  "mergePerformed": false,
+  "productionDeploymentPerformed": false
+}
