@@ -4,6 +4,7 @@ export const assetFiles=[
  ['app.js','app.txt','appJS','text/javascript; charset=utf-8'],
  ['style.css','style.txt','styles','text/css; charset=utf-8'],
  ['favicon.svg','favicon.txt','favicon','image/svg+xml'],
+ ['social-preview.jpg','social-preview-b64.txt','socialPreviewB64','image/jpeg',true],
  ['board-texture.webp','table-b64.txt','tableB64','image/webp',true],
  ['item-art.webp','item-art-b64.txt','itemArtB64','image/webp',true],
  ['portraits.webp','portraits-b64.txt','portraitsB64','image/webp',true],

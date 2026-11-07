@@ -3,6 +3,7 @@ import html from './assets/index.txt';
 import appJS from './assets/app.txt';
 import styles from './assets/style.txt';
 import favicon from './assets/favicon.txt';
+import socialPreviewB64 from './assets/social-preview-b64.txt';
 import tableB64 from './assets/table-b64.txt';
 import itemArtB64 from './assets/item-art-b64.txt';
 import portraitsB64 from './assets/portraits-b64.txt';
@@ -111,6 +112,7 @@ export default {
       if(path==='/app.js')return asset(appJS,'text/javascript; charset=utf-8');
       if(path==='/style.css')return asset(styles,'text/css; charset=utf-8');
       if(path==='/favicon.svg')return asset(favicon,'image/svg+xml');
+      if(path==='/social-preview.jpg')return new Response(Uint8Array.from(atob(socialPreviewB64),c=>c.charCodeAt(0)),{headers:{'Content-Type':'image/jpeg','Cache-Control':'public,max-age=604800,immutable','X-Content-Type-Options':'nosniff'}});
       if(path==='/item-art.webp')return new Response(Uint8Array.from(atob(itemArtB64),c=>c.charCodeAt(0)),{headers:{'Content-Type':'image/webp','Cache-Control':'public,max-age=604800,immutable'}});
       if(path==='/board-texture.webp')return new Response(Uint8Array.from(atob(tableB64),c=>c.charCodeAt(0)),{headers:{'Content-Type':'image/webp','Cache-Control':'public,max-age=604800,immutable'}});
       if(path==='/portraits.webp')return new Response(Uint8Array.from(atob(portraitsB64),c=>c.charCodeAt(0)),{headers:{'Content-Type':'image/webp','Cache-Control':'public,max-age=604800,immutable'}});
@@ -123,7 +125,7 @@ export default {
       if(path==='/detective-symbols.woff2')return new Response(Uint8Array.from(atob(symbolsB64),c=>c.charCodeAt(0)),{headers:{'Content-Type':'font/woff2','Cache-Control':'public,max-age=604800,immutable'}});
       if(path==='/detective-symbols-two.woff2')return new Response(Uint8Array.from(atob(symbolsTwoB64),c=>c.charCodeAt(0)),{headers:{'Content-Type':'font/woff2','Cache-Control':'public,max-age=604800,immutable'}});
       if(path==='/art-manifest.json')return asset(artManifest,'application/json; charset=utf-8');
-      if(path==='/api/health')return response({ok:true,version:'1.8.3',service:'diep-vien-so-dach-online'});
+      if(path==='/api/health')return response({ok:true,version:'1.8.4',service:'diep-vien-so-dach-online'});
     }
     if(!path.startsWith('/api/'))return err('Not found.',404);
     let c,op,body=null;
