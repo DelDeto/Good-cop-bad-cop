@@ -1,5 +1,5 @@
 {
-  "version": "1.8.2",
+  "version": "1.8.3",
   "status": "complete",
   "scope": "ui",
   "sourceBranch": "feature/v1.8-premium-release",
@@ -15,8 +15,10 @@
     "equipmentIllustrations": 23,
     "allEquipmentNamesVerified": 23,
     "engineAndSchema": "unchanged",
-    "priorProductionRelease": "https://github.com/DelDeto/Good-cop-bad-cop/releases/tag/v1.8.1",
+    "priorProductionRelease": "https://github.com/DelDeto/Good-cop-bad-cop/releases/tag/v1.8.2",
     "audit": "docs/v182/UX_AUDIT.md",
-    "limitations": "docs/v182/TEST_REPORT.md"
+    "limitations": "docs/v182/TEST_REPORT.md",
+    "hotfix": "P2 portrait/status footer overlap: one CSS rule, negative browser proof, zero-overlap gate in all fixture and production screenshots",
+    "hotfixReport": "docs/v182/PRODUCTION_RELEASE.md"
   }
 }

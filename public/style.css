@@ -322,6 +322,7 @@ svg.equipment-art{width:100%;height:100%;min-height:0;background-color:#d6b27d}
 #game-shell .seat-card .avatar{border:2px solid #d2ae72;border-radius:15px 8px 6px 8px;box-shadow:0 4px 8px #000a,inset 0 0 0 1px #251509;isolation:isolate;max-height:none}
 #game-shell .seat-card .avatar:after{content:'';position:absolute;inset:0;border-radius:inherit;box-shadow:inset 0 0 0 1px #f5dba557,inset 0 -15px 20px #110a0555;pointer-events:none}
 #game-shell .portrait-health{z-index:1;font-size:10px;letter-spacing:.4px;padding:3px 0;background:linear-gradient(transparent,#110b07 30%)}
+#game-shell .seat-card:has(.armstrip:not(:empty)) .portrait-health{display:none}
 .gun-badge{position:absolute;right:2px;top:3px;width:27px;height:23px;border:1px solid #d9b270;background:#21160e;box-shadow:0 2px 5px #0009;border-radius:4px;z-index:2;overflow:hidden}.gun-badge svg.equipment-art{background:#caa66e}
 .wound-badge{position:absolute;top:3px;left:3px;background:#9b3f2d;color:#ffe3c6;min-width:21px;height:21px;font:800 17px/19px 'Detective Sans';border:1px solid #e1a17d;border-radius:50%;z-index:3}
 #game-shell .playerhead .seat{color:#ddbd85;font-size:11px}.seat-info{opacity:.9}#game-shell .seat-turn{font-size:11px;color:#f2d39b}
