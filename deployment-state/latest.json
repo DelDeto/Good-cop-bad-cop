@@ -3,12 +3,12 @@
   "mode": "setup",
   "worker": "diep-vien-so-dach-online",
   "url": "https://diep-vien-so-dach-online.duc-nguyen-ndd127.workers.dev",
-  "sha": "e1a01b69c27932b7739159aae883f41105abc179",
+  "sha": "154c739f48db0775d72ffc5efee57d798161501d",
   "version": "1.7.0",
-  "runUrl": "https://github.com/DelDeto/Good-cop-bad-cop/actions/runs/42341361950",
+  "runUrl": "https://github.com/DelDeto/Good-cop-bad-cop/actions/runs/42365338740",
   "tests": "PASS",
   "dryRun": "PASS",
-  "startedAt": "2026-11-07T05:07:59.619Z",
+  "startedAt": "2026-11-07T10:47:38.992Z",
   "baseline": {
     "id": "d9359700-591f-4197-8663-307df471ff67",
     "shape": {
@@ -57,8 +57,40 @@
       {
         "path": "/item-art.webp",
         "sha256": "0ac4b7f4fc9f1f371ad1912f8605aae3d1f169b05f8619ce513eab1fed08467f"
+      },
+      {
+        "path": "/portraits.webp",
+        "status": 404
+      },
+      {
+        "path": "/roles.webp",
+        "status": 404
+      },
+      {
+        "path": "/card-back.webp",
+        "status": 404
+      },
+      {
+        "path": "/detective-sans-regular.woff2",
+        "status": 404
+      },
+      {
+        "path": "/detective-sans-bold.woff2",
+        "status": 404
+      },
+      {
+        "path": "/detective-serif-regular.woff2",
+        "status": 404
+      },
+      {
+        "path": "/detective-serif-bold.woff2",
+        "status": 404
+      },
+      {
+        "path": "/art-manifest.json",
+        "status": 404
       }
     ]
   },
-  "completedAt": "2026-11-07T05:08:06.827Z"
+  "completedAt": "2026-11-07T10:47:46.756Z"
 }
