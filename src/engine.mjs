@@ -33,6 +33,12 @@ export const EQUIPMENT = [
 const eqMap = Object.fromEntries(EQUIPMENT.map(x=>[x.id,x]));
 const assert=(ok,msg)=>{if(!ok)throw Error(msg);};
 function pushLog(g,msg){g.log.push({at:Date.now(),msg});g.log=g.log.slice(-65);}
+// Elimination is public. Invalidate a lost aim without choosing a replacement.
+function clearInvalidAims(g){
+ let changed=false;
+ for(const p of g.players)if(p.aim!==null&&!g.players[p.aim]?.alive){p.aim=null;changed=true;}
+ return changed;
+}
 function nextAlive(g,i){const n=g.players.length;for(let d=1;d<=n;d++){let j=(i+d*g.direction+n*n)%n;if(g.players[j]?.alive)return j;}return i;}
 // Both ordinary endTurn and elimination of the active player use this path.
 // A dead/stale Coffee recipient never supersedes the normal living successor.
@@ -144,7 +150,7 @@ function resolveShot(g){
   if(victim.hand.length>1){const first=victim.hand.shift();g.discard.push(first);}
   pushLog(g,`💥 ${victim.name} bị thương lần đầu và rút trang bị.`);
  }else{
-  victim.alive=false;
+  victim.alive=false;clearInvalidAims(g);
   if(g.coffeeNext===pend.victim)g.coffeeNext=null;
   victim.gun=false;victim.aim=null;
   victim.hand.splice(0).forEach(c=>g.discard.push(c));
@@ -221,7 +227,7 @@ function executeCommand(g,token,cmd){const p=g.players.find(p=>p.token===token);
  }
  if(g.phase==='aim'){
   if(cmd.type==='chooseAim'){assert(p.gun,'Bạn chưa có súng.');const q=target(g,cmd.target);assert(q!==p,'Không được tự ngắm chính mình.');p.aim=g.players.indexOf(q);pushLog(g,`🎯 ${p.name} đang ngắm ${q.name}.`);return;}
-  if(cmd.type==='endTurn'){assert(!p.gun||p.aim!==null,'Bạn cần ngắm mục tiêu trước khi kết thúc lượt.');p.gunFresh=false;advanceTurn(g,seat);return;}
+  if(cmd.type==='endTurn'){assert(!p.gun||(p.aim!==null&&g.players[p.aim]?.alive),'Bạn cần ngắm mục tiêu sống trước khi kết thúc lượt.');p.gunFresh=false;advanceTurn(g,seat);return;}
  }
  throw Error('Hành động không hợp lệ ở giai đoạn hiện tại.');
 }
@@ -318,7 +324,7 @@ export function needsBotStep(g){if(g.status!=='playing'||!g.players.some(p=>p.bo
  if(g.pending?.kind==='serum')return !!g.players[g.pending.target]?.bot;
  return !!g.players[g.turn]?.bot;
 }
-export function botStep(g){if(resolveTimedBribe(g)||recoverDeadTurn(g))return true;if(!needsBotStep(g))return false;
+export function botStep(g){const repairedAim=clearInvalidAims(g);if(resolveTimedBribe(g)||recoverDeadTurn(g))return true;if(!needsBotStep(g))return repairedAim;
  let bot,move;
  if(g.pending?.kind==='shot'){
   bot=g.players.find((p,i)=>p.bot&&p.alive&&!g.pending.passes.includes(i));move=botShotReaction(g,bot);
@@ -383,4 +389,4 @@ export function resolveTimedBribe(g){
  return true;
 }
 export function pendingDeadline(g){return bribeDeadline(g)??shotDeadline(g);}
-export function resolveTimedPending(g){return resolveTimedBribe(g)||resolveTimedShot(g)||recoverDeadTurn(g);}
+export function resolveTimedPending(g){const resolved=resolveTimedBribe(g)||resolveTimedShot(g)||recoverDeadTurn(g);return clearInvalidAims(g)||resolved;}

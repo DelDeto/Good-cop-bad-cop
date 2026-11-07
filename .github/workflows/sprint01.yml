@@ -18,7 +18,7 @@ jobs:
   regression:
     name: Node ${{ matrix.node }} / regression and privacy
     runs-on: ubuntu-24.04
-    timeout-minutes: 10
+    timeout-minutes: 15
     strategy:
       fail-fast: false
       matrix:
@@ -33,6 +33,8 @@ jobs:
       # No external runtime dependencies and no lockfile: npm install is unnecessary.
       - name: Full regressions including privacy and HTTP SSE
         run: npm test
+      - name: Repeat entire regression suite five times (never retry failures away)
+        run: node scripts/repeat-tests.mjs 5 /tmp/gcbc-ci-repeat
       - name: Verify generated Cloudflare assets
         run: npm run assets:check
       - name: Actual server entrypoint smoke

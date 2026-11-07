@@ -74,3 +74,11 @@ test('reaction table shows public shooter/victim, deadline and only viewer defen
  assert.match(root.innerHTML,/reaction-table/);assert.match(root.innerHTML,/data-countdown/);assert.match(root.innerHTML,/reaction-ready/);assert.match(root.innerHTML,/shot-shooter/);assert.equal(vm.runInContext('interactionState()',context),'REACTION_WINDOW');
  context.fixture.hand=[{id:'bribe',name:'Tiền Bẩn',category:'Thân phận',description:'Điều tra'}];vm.runInContext('render();',context);assert.doesNotMatch(root.innerHTML,/reaction-ready/);
 });
+
+test('shoot fallback is unavailable for a dead/missing aim; living retarget remains interactive',()=>{
+ const g=createRoom('BEE777','Player','owner');setBots(g,'owner',3);startGame(g,'owner');g.players[0].gun=true;g.players[0].aim=1;g.players[1].alive=false;
+ const {context,root,modal}=appFixture();context.fixture=view(g,'owner');vm.runInContext('state=fixture;render();chooseTurn("shoot");handleSeatClick(1);',context);
+ assert.doesNotMatch(root.innerHTML,/data-act="shoot"/);assert.equal(modal._callback,null);assert.equal(vm.runInContext('canShoot()',context),false);
+ vm.runInContext('state.phase="aim";send=x=>lastSent=x;handleSeatClick(2);',context);assert.equal(vm.runInContext('lastSent.type',context),'chooseAim');
+ vm.runInContext('state.phase="action";state.players[0].aim=2;render();',context);assert.match(root.innerHTML,/data-act="shoot"/);vm.runInContext('clearTimeout(window._toast);',context);
+});
