@@ -1,22 +1,17 @@
 {
-  "version": "1.8.4",
+  "version": "1.8.5",
   "status": "complete",
-  "scope": "ui",
+  "scope": "gameplay",
   "sourceBranch": "feature/v1.8-premium-release",
   "evidence": {
-    "implemented": [
-      "Four illustrated role identity cards with tap-to-view modal on homepage",
-      "Noir detective favicon SVG",
-      "1200x630 original social sharing JPEG and Open Graph/Twitter metadata",
-      "Server Worker routes social JPEG and preserves Durable Object and game engine",
-      "Regression, Chromium and local production rehearsal"
+    "change": "V4 official gun count: gunTotal = number of players for 4–8 players, including solo BOT rooms",
+    "unchanged": [
+      "GameRoom Durable Object class and namespace",
+      "Private cards and multiplayer state",
+      "Card deck rules and winning conditions"
     ],
-    "ci": "https://github.com/DelDeto/Good-cop-bad-cop/actions/runs/42381281260",
-    "releasePreflight": "https://github.com/DelDeto/Good-cop-bad-cop/actions/runs/42381281259",
-    "sourceCommit": "f54040af589431a7a12d43b37d589a9c9fbf4633",
-    "artAssets": "original artwork and four existing identity illustrations",
-    "gameplay": "unchanged",
-    "productionBeforeRelease": "1.8.3",
-    "limits": "Social preview display depends on platform crawler caches; use canonical URL for share"
+    "regression": "tests/guns-v4.test.mjs",
+    "rollout": "Manual controlled production rollout after CI, no auto-tag release on UI-only workflow",
+    "existingRooms": "Persisted game gunTotal stays unchanged until a new game starts"
   }
 }

@@ -175,7 +175,7 @@ export function setBots(g,token,count,level='normal'){
  for(let i=0;i<count;i++){const p=blankPlayer(`BOT ${i+1} · ${names[i]}`,`bot:${uid()}`);p.bot=true;p.botLevel=level;g.players.push(p);}
  pushLog(g,`🤖 Đã cài đặt ${count} bot (${level==='hard'?'Khó':'Thường'}).`);
 }
-export function startGame(g,token){assert(token===g.ownerToken,'Chỉ chủ phòng được bắt đầu.');assert(g.players.length>=4&&g.players.length<=8,'Cần từ 4 đến 8 người chơi.');const n=g.players.length;g.status='playing';g.phase='action';g.turn=0;g.direction=1;g.winner=null;g.round=1;g.coffeeNext=null;g.pending=null;g.log=[];g.lastInvestigate=null;g.gunTotal=n>=7?4:n>=5?3:2;g.activeCards=[];
+export function startGame(g,token){assert(token===g.ownerToken,'Chỉ chủ phòng được bắt đầu.');assert(g.players.length>=4&&g.players.length<=8,'Cần từ 4 đến 8 người chơi.');const n=g.players.length;g.status='playing';g.phase='action';g.turn=0;g.direction=1;g.winner=null;g.round=1;g.coffeeNext=null;g.pending=null;g.log=[];g.lastInvestigate=null;g.gunTotal=n;g.activeCards=[];
  const deck=shuffle(EQUIPMENT.map(x=>x.id));g.discard=[];
  // 1 Agent and 1 Kingpin dealt to separate random players, then two more cards for everyone.
  const leaderSeats=shuffle([...Array(n).keys()]).slice(0,2);
