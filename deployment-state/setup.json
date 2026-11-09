@@ -3,14 +3,14 @@
   "mode": "setup",
   "worker": "diep-vien-so-dach-online",
   "url": "https://diep-vien-so-dach-online.duc-nguyen-ndd127.workers.dev",
-  "sha": "cd049f24c8e5d2c26baabfa6420eea9b2142f699",
-  "version": "1.8.4",
-  "runUrl": "https://github.com/DelDeto/Good-cop-bad-cop/actions/runs/42383751103",
+  "sha": "02ac3fedfa716899b411587f01a6bb8eddc729a7",
+  "version": "1.8.5",
+  "runUrl": "https://github.com/DelDeto/Good-cop-bad-cop/actions/runs/42593824552",
   "tests": "PASS",
   "dryRun": "PASS",
-  "startedAt": "2026-11-07T14:55:50.024Z",
+  "startedAt": "2026-11-09T09:31:58.978Z",
   "baseline": {
-    "id": "a91e26a6-018c-4055-8ee7-d6b21b186be1",
+    "id": "f57202fb-0356-4c9f-86a0-39100f5f516c",
     "shape": {
       "binding": {
         "name": "GAME_ROOMS",
@@ -30,30 +30,29 @@
   "baselineSmoke": {
     "health": {
       "ok": true,
-      "version": "1.8.3",
-      "commit": "01f3073bcc13ff8826b0e066dee6b51c25256c1c",
+      "version": "1.8.4",
       "service": "diep-vien-so-dach-online"
     },
     "resources": [
       {
         "path": "/",
-        "sha256": "988dc3e5ca8755e56f75d0595480ccd0ae671f3f74169b6a74848c314e5dd020"
+        "sha256": "239d3b7319471f54f1103019083413becc6e9be89a6f8659173e8ede4bf38ca4"
       },
       {
         "path": "/app.js",
-        "sha256": "f2ecbaa441528afada6efca539f4e863b7fef108722065b186eac626168f3028"
+        "sha256": "0f0dc2908769da3d1967f3151d57cbe1b482bf883c9ac8c26526e21fee437af6"
       },
       {
         "path": "/style.css",
-        "sha256": "6f57e317606c9ec43a547ec2da8a7630c49c8b850ee10c0851ca7e644f8bd116"
+        "sha256": "56342dfbc1f18e42eff65003592e17bc2428af087cfb409412d7ebd69346d017"
       },
       {
         "path": "/favicon.svg",
-        "sha256": "29704f49d7b6a96a3ec952279f28733a19e499ed87b78984dd3fd1198f9bc7ee"
+        "sha256": "0a39b80b5f48f8d973f889582c9a7ce9d5f14c3429725ab3a48b81093ccbebdd"
       },
       {
         "path": "/social-preview.jpg",
-        "status": 404
+        "sha256": "6a243dc67bb8354d8f34bdf2dac6d3d8a7f2475f60022d9d63575aac86bb2004"
       },
       {
         "path": "/board-texture.webp",
@@ -105,5 +104,5 @@
       }
     ]
   },
-  "completedAt": "2026-11-07T14:55:58.373Z"
+  "completedAt": "2026-11-09T09:32:09.289Z"
 }
