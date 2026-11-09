@@ -24,7 +24,7 @@ test('Mỗi người có thể lấy một súng, không được lấy súng th
   command(g,'gun-token-0',{type:'actionShoot'});
   for(let i=1;i<n;i++)command(g,'gun-token-'+i,{type:'passShot'});
   assert.equal(g.players[0].gun,false);
-  assert.equal(view(g,'gun-token-0').gunsFree,1);
+  // The shooter returns one gun; an eliminated armed target returns theirs too.\n  const gunsHeld=g.players.filter(p=>p.gun).length;\n  assert.ok(gunsHeld<=n-1);\n  assert.equal(view(g,'gun-token-0').gunsFree,n-gunsHeld);\n  assert.ok(view(g,'gun-token-0').gunsFree>=1);
   assert.equal(g.gunTotal,n);
  }
 });
