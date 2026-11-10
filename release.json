@@ -1,17 +1,26 @@
 {
-  "version": "1.8.5",
+  "version": "1.9.0",
   "status": "complete",
   "scope": "gameplay",
   "sourceBranch": "feature/v1.8-premium-release",
   "evidence": {
-    "change": "V4 official gun count: gunTotal = number of players for 4–8 players, including solo BOT rooms",
-    "unchanged": [
-      "GameRoom Durable Object class and namespace",
-      "Private cards and multiplayer state",
-      "Card deck rules and winning conditions"
+    "rulesReference": "Good Cop Bad Cop 4th edition equipment publisher card search",
+    "implemented": [
+      "wounded leader token transfers with the leader card during Blackmail and Bribe",
+      "Walkie Talkie can redirect active shot including the shooter themselves",
+      "Truth Serum 4th edition allows owner to select hidden card, avoiding disconnected victim lock",
+      "Surveillance Camera 4th edition persists and grants counter-investigation",
+      "Wire supports independent private choice for owner and avoids recursive trigger loops",
+      "Evidence Bag transfers Equipment to another player and resolves over-limit discard with deadline"
     ],
-    "regression": "tests/guns-v4.test.mjs",
-    "rollout": "Manual controlled production rollout after CI, no auto-tag release on UI-only workflow",
-    "existingRooms": "Persisted game gunTotal stays unchanged until a new game starts"
+    "tests": "tests/v19-equipment.test.mjs; tests/privacy-transport.test.mjs; tests/sprint01.test.mjs; all Node 20/22/24 and Chromium gates required",
+    "compatibility": "Existing rooms retain their current gun count; old pending serum and hand cases may remain until resolved",
+    "openIssues": [
+      "Riot Shield victim's target-choice rights not fully modeled",
+      "Equipment reaction rules do not yet cover all simultaneous declaration scenarios",
+      "23-card Vietnamese deck includes cards from non-base editions; needs individual rules certification"
+    ],
+    "rollout": "Manual controlled release; do not auto-tag UI-only workflow; verify live after green CI",
+    "schema": "No Durable Object binding or migration changes"
   }
 }

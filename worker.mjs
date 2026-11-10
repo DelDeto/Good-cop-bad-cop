@@ -125,7 +125,7 @@ export default {
       if(path==='/detective-symbols.woff2')return new Response(Uint8Array.from(atob(symbolsB64),c=>c.charCodeAt(0)),{headers:{'Content-Type':'font/woff2','Cache-Control':'public,max-age=604800,immutable'}});
       if(path==='/detective-symbols-two.woff2')return new Response(Uint8Array.from(atob(symbolsTwoB64),c=>c.charCodeAt(0)),{headers:{'Content-Type':'font/woff2','Cache-Control':'public,max-age=604800,immutable'}});
       if(path==='/art-manifest.json')return asset(artManifest,'application/json; charset=utf-8');
-      if(path==='/api/health')return response({ok:true,version:'1.8.5',service:'diep-vien-so-dach-online'});
+      if(path==='/api/health')return response({ok:true,version:'1.9.0',service:'diep-vien-so-dach-online'});
     }
     if(!path.startsWith('/api/'))return err('Not found.',404);
     let c,op,body=null;
