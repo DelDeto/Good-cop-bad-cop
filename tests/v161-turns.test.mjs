@@ -48,14 +48,17 @@ test('Coffee remains honored when the shooter dies and direction reverses before
 test('Coffee victim leader dies: existing winning check takes priority over a future extra turn',()=>{
  const g=board(4);g.players[2].wounded=true;g.players[2].hand=['coffee'];act(g,2,{type:'playEquipment'});g.players[0].gun=true;g.players[0].aim=2;act(g,0,{type:'actionShoot'});settle(g);assert.equal(g.status,'finished');assert.match(g.winner,/Mafia thắng/);assert.equal(g.round,1);privacy(g);
 });
-test('Serum audit: offline human choice has no deadline; reconnect is lossless but does not unblock it',t=>{
- const g=board();g.players[0].hand=['serum'];act(g,0,{type:'playEquipment',target:1});const before=structuredClone(g);const snapshot=view(g,g.players[1].token);
- t.mock.timers.enable({apis:['Date'],now:Date.now()+3600000});assert.equal(pendingDeadline(g),null);assert.equal(resolveTimedPending(g),false);assert.deepEqual(view(JSON.parse(JSON.stringify(g)),g.players[1].token),snapshot);assert.deepEqual(g,before);assert.throws(()=>act(g,0,{type:'actionEquip'}));
- assert.deepEqual(g.players[2].known,{});assert.equal(g.players[1].cards.some(c=>c.revealed),false);
- act(g,1,{type:'serumReveal',slot:2});assert.equal(g.pending,null);assert.equal(g.players[1].cards[2].revealed,true);
+test('Fourth-edition Serum does not wait for a disconnected target',t=>{
+ const g=board();g.players[0].hand=['serum'];act(g,0,{type:'playEquipment',target:1,slot:2});const snapshot=view(g,g.players[1].token);
+ assert.equal(g.pending,null);assert.equal(g.players[1].cards[2].revealed,true);
+ t.mock.timers.enable({apis:['Date'],now:Date.now()+3600000});
+ assert.equal(pendingDeadline(g),null);assert.equal(resolveTimedPending(g),false);
+ assert.deepEqual(view(JSON.parse(JSON.stringify(g)),g.players[1].token),snapshot);
+ assert.deepEqual(g.players[2].known,{});
+ assert.throws(()=>act(g,1,{type:'serumReveal',slot:0}));
 });
-test('dead-turn recovery preserves pending Serum and terminal win precedence',()=>{
- const g=board();g.players[0].hand=['serum'];act(g,0,{type:'playEquipment',target:1});g.players[0].alive=false;
- const before=structuredClone(g);assert.equal(resolveTimedPending(g),false);assert.deepEqual(g,before);
+test('dead-turn recovery remains correct after immediate Serum reveal',()=>{
+ const g=board();g.players[0].hand=['serum'];act(g,0,{type:'playEquipment',target:1,slot:0});g.players[0].alive=false;
+ assert.equal(g.pending,null);assert.ok(resolveTimedPending(g));assert.equal(g.turn,1);
  const terminal=board();terminal.players[2].alive=false;terminal.turn=2;assert.ok(resolveTimedPending(terminal));assert.equal(terminal.status,'finished');assert.match(terminal.winner,/Mafia thắng/);assert.equal(terminal.round,1);
 });

@@ -19,7 +19,15 @@ export function runSoloGames(){
    else if(g.pending?.kind==='shot'){
     if(!g.pending.passes.includes(0))command(g,'person',{type:'passShot'});
     else {g.pending.since=Date.now()-25000;assert.equal(resolveTimedShot(g),true);}
+   }else if(g.pending?.kind==='investigation-reaction'){
+    assert.equal(g.pending.owner,0,'Only human may handle this pending response');
+    const target=g.players[g.pending.target],slot=target.cards.findIndex(c=>!c.revealed);
+    command(g,'person',slot>=0?{type:'resolveInvestigationReaction',slot}:{type:'passInvestigationReaction'});
+   }else if(g.pending?.kind==='equipment-discard'){
+    assert.equal(g.pending.owner,0,'Only human may discard off-turn');
+    command(g,'person',{type:'discardHand',index:0});
    }else if(g.pending?.kind==='serum'){
+    // Legacy rooms created before fourth-edition Serum changes.
     assert.equal(g.pending.target,0);
     command(g,'person',{type:'serumReveal',slot:g.players[0].cards.findIndex(c=>!c.revealed)});
    }else{

@@ -21,9 +21,12 @@ test('Worker alarm resolves redirected shot killing BOT shooter and schedules a 
  t.mock.timers.enable({apis:['Date'],now:deadline});await tr.alarm();assert.equal(tr.game.players[0].alive,false);assert.equal(tr.game.turn,1);assert.equal(tr.game.phase,'action');assert.ok(tr.alarmAt>Date.now());
  tr.restart();await tr.alarm();assert.ok(tr.game.players[tr.game.turn].alive);assert.notEqual(tr.game.phase,'action');
 });
-test('Serum pending survives Worker restart without exposure or unexpected reveal; target can resume',async t=>{
- const g=board(4);g.players[0].hand=['serum'];act(g,0,{type:'playEquipment',target:1});const tr=await transport('worker',t,g),before=await reconnect(tr);tr.restart();assert.deepEqual(await reconnect(tr),before);await tr.alarm();assert.equal(tr.game.pending.kind,'serum');assert.ok(tr.game.players[1].cards.every(c=>!c.revealed));
- assert.equal((await post(tr,2,{type:'serumReveal',slot:0})).status,400);assert.equal((await post(tr,1,{type:'serumReveal',slot:0})).status,200);assert.equal(tr.game.pending,null);
+test('Fourth-edition Serum reveals selected card immediately and persists across Worker restart',async t=>{
+ const g=board(4);g.players[0].hand=['serum'];act(g,0,{type:'playEquipment',target:1,slot:2});
+ assert.equal(g.pending,null);assert.equal(g.players[1].cards[2].revealed,true);assert.ok(g.players[1].cards.slice(0,2).every(c=>!c.revealed));
+ const tr=await transport('worker',t,g),before=await reconnect(tr);tr.restart();assert.deepEqual(await reconnect(tr),before);
+ await tr.alarm();assert.equal(tr.game.pending,null);assert.equal(tr.game.players[1].cards[2].revealed,true);
+ assert.equal((await post(tr,1,{type:'serumReveal',slot:0})).status,400);
 });
 for(const kind of ['local','worker'])test(`${kind}: reconnect repairs an old dead active seat exactly once without interrupting pending choices`,async t=>{
  const g=board(4);g.players[0].alive=false;g.phase='aim';g.coffeeNext=0;const tr=await transport(kind,t,g);
