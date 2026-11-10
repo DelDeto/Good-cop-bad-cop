@@ -396,5 +396,5 @@ export function resolveTimedBribe(g){
  pushLog(g,`💵 ${owner.name}: hết thời gian Tiền Bẩn, không hoán đổi.`);
  return true;
 }
-export function pendingDeadline(g){return bribeDeadline(g)??shotDeadline(g)??(g.pending?.kind==='equipment-discard'?g.pending.deadline:null);
+export function pendingDeadline(g){return bribeDeadline(g)??shotDeadline(g)??(g.pending?.kind==='equipment-discard'?g.pending.deadline:null);}
 export function resolveTimedPending(g){let resolved=resolveTimedBribe(g)||resolveTimedShot(g);if(g.pending?.kind==='equipment-discard'&&Date.now()>=(g.pending.deadline??0)){const player=g.players[g.pending.owner];if(player?.hand.length>1){g.discard.push(player.hand.pop());pushLog(g,`⌛ ${player.name}: quá hạn chọn, bỏ lá vừa nhận.`);}g.pending=null;resolved=true;}return clearInvalidAims(g)||resolved||recoverDeadTurn(g); }
