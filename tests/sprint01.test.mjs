@@ -10,6 +10,8 @@ function decide(g,swap,ownSlot=0,owner=0){act(g,owner,{type:'resolveBribe',decis
 test('Wire owner receives exact nonfirst investigation; all other secrets remain private',()=>{
  const g=game();g.players[0].hand=['wire'];act(g,0,{type:'playEquipment',target:1});g.turn=1;
  act(g,1,{type:'actionInvestigate',target:2,slot:2});
+ assert.equal(g.pending?.kind,'investigation-reaction');assert.equal(g.pending.owner,0);
+ act(g,0,{type:'resolveInvestigationReaction',slot:2});
  for(const i of [0,1])assert.deepEqual(Object.keys(view(g,'t'+i).known),[key(g,2,2)]);
  for(const i of [2,3])assert.deepEqual(view(g,'t'+i).known,{});
  assert.equal(g.players[0].known[key(g,2,2)].type,g.players[2].cards[2].type);
@@ -24,8 +26,10 @@ test('Wire does not trigger on unrelated players, invalid investigations or dead
 test('Wire supports multiple owners watching distinct players and equipment investigations',()=>{
  const g=game();g.players[0].hand=['wire'];act(g,0,{type:'playEquipment',target:1});g.players[3].hand=['wire'];act(g,3,{type:'playEquipment',target:2});
  g.players[1].hand=['wiretap'];act(g,1,{type:'playEquipment',target:2,slot:1,target2:3,slot2:2});
+ assert.equal(g.pending?.owner,0);assert.equal(g.pending.target,2);act(g,0,{type:'resolveInvestigationReaction',slot:1});
+ assert.equal(g.pending?.owner,0);assert.equal(g.pending.target,3);act(g,0,{type:'resolveInvestigationReaction',slot:2});
  assert.ok(g.players[0].known[key(g,2,1)]);assert.ok(g.players[0].known[key(g,3,2)]);assert.deepEqual(g.players[3].known,{});
- g.turn=2;act(g,2,{type:'actionInvestigate',target:0,slot:0});assert.ok(g.players[3].known[key(g,0,0)]);assert.equal(g.players[0].known[key(g,0,0)],undefined);
+ g.turn=2;g.phase='action';act(g,2,{type:'actionInvestigate',target:0,slot:0});assert.equal(g.pending?.owner,3);act(g,3,{type:'resolveInvestigationReaction',slot:0});assert.ok(g.players[3].known[key(g,0,0)]);assert.equal(g.players[0].known[key(g,0,0)],undefined);
 });
 test('Bribe ordinary: consume before decision, private result, locked pending, swap clears stale knowledge',()=>{
  const g=beginBribe();const card=g.players[1].cards[2],own=g.players[0].cards[0];
@@ -56,7 +60,7 @@ test('Bribe invalid targets and decisions do not reveal or mutate; stale decisio
 });
 test('BOT watched investigation uses normal Wire privacy; BOT Bribe resolves out of turn without stuck main turn',()=>{
  const g=game();g.players[0].hand=['wire'];act(g,0,{type:'playEquipment',target:1});g.players[1].bot=true;g.turn=1;g.gunTotal=0;
- assert.ok(botStep(g));assert.equal(Object.keys(g.players[0].known).length,1);assert.deepEqual(g.players[3].known,{});
+ assert.ok(botStep(g));assert.equal(g.pending?.kind,'investigation-reaction');assert.equal(g.pending.owner,0);act(g,0,{type:'resolveInvestigationReaction',slot:0});assert.equal(Object.keys(g.players[0].known).length,1);assert.deepEqual(g.players[3].known,{});
  const b=beginBribe('honest',2);b.players[2].bot=true;assert.equal(needsBotStep(b),true);assert.ok(botStep(b));assert.equal(b.pending,null);assert.equal(b.turn,0);
  const human=beginBribe();human.players[human.turn].bot=false;human.players[1].bot=true;assert.equal(needsBotStep(human),false);
 });
@@ -78,6 +82,9 @@ test('Cloudflare assets generated exactly from public source',()=>{
 test('Wire owner may be a BOT and Bribe investigation shares only the watched result',()=>{
  const g=game();g.players[0].hand=['wire'];act(g,0,{type:'playEquipment',target:1});g.players[0].bot=true;
  g.players[1].hand=['bribe'];act(g,1,{type:'playEquipment',target:2,slot:2});
- assert.deepEqual(Object.keys(g.players[0].known),[key(g,2,2)]);assert.deepEqual(g.players[3].known,{});
+ assert.deepEqual(Object.keys(g.players[0].known),[]);assert.deepEqual(g.players[3].known,{});
  assert.deepEqual(view(g,'t0').pending,{kind:'bribe',owner:1});assert.equal(needsBotStep(g),false);
+ act(g,1,{type:'resolveBribe',decisionId:g.pending.decisionId,swap:false});
+ assert.equal(g.pending?.kind,'investigation-reaction');assert.equal(g.pending.owner,0);assert.ok(needsBotStep(g));
+ assert.ok(botStep(g));assert.equal(Object.keys(g.players[0].known).length,1);
 });

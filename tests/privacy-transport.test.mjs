@@ -35,7 +35,13 @@ for(const kind of ['local','worker']){
   await post(tr,0,{type:'actionInvestigate',target:3,slot:0});await post(tr,0,{type:'endTurn'});
   const owner=await event(await tr.request(eventsPath(g,0)));const observer=await event(await tr.request(eventsPath(g,3)));
   assert.equal((await post(tr,1,{type:'actionInvestigate',target:2,slot:2})).status,200);
+  // V1.9 queues an owner-selected Wire investigation instead of mirroring the watched slot immediately.
+  assert.equal(tr.game.pending?.kind,'investigation-reaction');assert.equal(tr.game.pending.owner,0);
   const read=async reader=>JSON.parse(new TextDecoder().decode((await reader.read()).value).slice(6).trim());
+  const pendingOwner=await read(owner.reader),pendingOther=await read(observer.reader);
+  assert.equal(pendingOwner.known[`${tr.game.players[2].id}:2`],undefined);
+  assert.equal(pendingOther.known[`${tr.game.players[2].id}:2`],undefined);
+  assert.equal((await post(tr,0,{type:'resolveInvestigationReaction',slot:2})).status,200);
   const ownerUpdate=await read(owner.reader),otherUpdate=await read(observer.reader);const key=`${tr.game.players[2].id}:2`;
   assert.equal(ownerUpdate.known[key].type,tr.game.players[2].cards[2].type);assert.equal(otherUpdate.known[key],undefined);assert.deepEqual(otherUpdate.privateLog,[]);privacy(ownerUpdate,tr.game,0);privacy(otherUpdate,tr.game,3);await owner.reader.cancel();await observer.reader.cancel();
  });
