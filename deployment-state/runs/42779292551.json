@@ -1,0 +1,108 @@
+{
+  "status": "PASS",
+  "mode": "setup",
+  "worker": "diep-vien-so-dach-online",
+  "url": "https://diep-vien-so-dach-online.duc-nguyen-ndd127.workers.dev",
+  "sha": "9186089ce9cd2faa55df7fc57488875e8559796b",
+  "version": "1.9.0",
+  "runUrl": "https://github.com/DelDeto/Good-cop-bad-cop/actions/runs/42779292551",
+  "tests": "PASS",
+  "dryRun": "PASS",
+  "startedAt": "2026-11-10T08:03:33.290Z",
+  "baseline": {
+    "id": "65596e43-2942-4526-8aaa-72703068a795",
+    "shape": {
+      "binding": {
+        "name": "GAME_ROOMS",
+        "type": "durable_object_namespace",
+        "class_name": "GameRoom",
+        "namespace_id": "1c05e1f7d23844ff8bacc1371847dbff"
+      },
+      "runtime": {
+        "compatibility_date": "2026-11-06",
+        "compatibility_flags": [],
+        "usage_model": "standard",
+        "migration_tag": "v1"
+      }
+    },
+    "fingerprint": "35460802a7d849bb5a22d7da5139a23da84095998e49af56d8f304da5630e2f4"
+  },
+  "baselineSmoke": {
+    "health": {
+      "ok": true,
+      "version": "1.8.5",
+      "service": "diep-vien-so-dach-online"
+    },
+    "resources": [
+      {
+        "path": "/",
+        "sha256": "a25ede1c4a272d9740305c4ce963866cc14aa90d6cd2e33e3fcba9a85d0d19b8"
+      },
+      {
+        "path": "/app.js",
+        "sha256": "db75eed19bd6c40fb676bc9a7cc4347b227511c6bf16d58f1c32dae28439084a"
+      },
+      {
+        "path": "/style.css",
+        "sha256": "56342dfbc1f18e42eff65003592e17bc2428af087cfb409412d7ebd69346d017"
+      },
+      {
+        "path": "/favicon.svg",
+        "sha256": "0a39b80b5f48f8d973f889582c9a7ce9d5f14c3429725ab3a48b81093ccbebdd"
+      },
+      {
+        "path": "/social-preview.jpg",
+        "sha256": "6a243dc67bb8354d8f34bdf2dac6d3d8a7f2475f60022d9d63575aac86bb2004"
+      },
+      {
+        "path": "/board-texture.webp",
+        "sha256": "a61eb74d49456c052b9d0ef5ce8aa1a60ddc3b8ef75a583471da9f3da0d2eecf"
+      },
+      {
+        "path": "/item-art.webp",
+        "sha256": "f1dc5534dd15b10fd2fa3cc023a2ca16fdf28a0611ab277d663a2f4438672208"
+      },
+      {
+        "path": "/portraits.webp",
+        "sha256": "bf8bc9703caf358334fa22b235759b840453b8ecab50545c1d1e671bf628d2fd"
+      },
+      {
+        "path": "/roles.webp",
+        "sha256": "c216f3fde89d02136171bfb6f2e8e1406ba9e94bf4a58e54b84ee2d57a2ce366"
+      },
+      {
+        "path": "/card-back.webp",
+        "sha256": "cb5e50deec353e8b65c3a021e98f62b0109a1e70180c06567bce24a7f07f9fe5"
+      },
+      {
+        "path": "/detective-sans-regular.woff2",
+        "sha256": "cc9da3eced6ef81b4519fbc36974739ddc6235df5aabc272b44fd1feaa5a87f3"
+      },
+      {
+        "path": "/detective-sans-bold.woff2",
+        "sha256": "abeb594f478c7689ec4e0577910188a85d01b473ebaa1a9e02089982ca1ba35c"
+      },
+      {
+        "path": "/detective-serif-regular.woff2",
+        "sha256": "b799897b19ba0bf2116fa9172b24b9b71c3622a61f9d879711e755c81cef4ccf"
+      },
+      {
+        "path": "/detective-serif-bold.woff2",
+        "sha256": "4b6c9c4beaef7290cf3f7e0afbd066e7e71043d70d0615e8996c077a803b7852"
+      },
+      {
+        "path": "/detective-symbols.woff2",
+        "sha256": "1f3f42a70c45c821e49b1b9672b757d1de3536890f1d22a9de525e009f58b421"
+      },
+      {
+        "path": "/detective-symbols-two.woff2",
+        "sha256": "853e5d95f6d4643b9935a37679dca0697cdc7c33627daed05400086a5471197b"
+      },
+      {
+        "path": "/art-manifest.json",
+        "sha256": "8cb1ab60de19ea13016f4063a98b94827e62dd38974aceaea96d237203b3c968"
+      }
+    ]
+  },
+  "completedAt": "2026-11-10T08:03:40.333Z"
+}
