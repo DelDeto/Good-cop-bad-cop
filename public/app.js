@@ -117,7 +117,8 @@ function eligibleSeat(seat){
     if(id==='confiscation')return second?seat!==state.me&&seat!==target&&!q.gun:q.gun;
     if(['wiretap','blackmail'].includes(id))return seat!==state.me&&(!second||seat!==target)&&(!q.effects.disguise||id==='blackmail')&&(id==='blackmail'||q.cards.some(c=>!c.shown));
     if(id==='bribe')return second?seat===state.me:seat!==state.me&&!q.effects.disguise&&q.cards.some(c=>!c.shown);
-    if(['polygraph','serum'].includes(id))return seat!==state.me&&!q.effects.disguise&&q.cards.some(c=>!c.shown);
+    if(id==='serum')return q.cards.some(c=>!c.shown);
+  if(id==='polygraph')return seat!==state.me&&!q.effects.disguise&&q.cards.some(c=>!c.shown);
     if(id==='wire')return !q.effects.wire;
     if(id==='disguise')return !q.effects.disguise;
     if(id==='planted')return !q.effects.planted;
@@ -305,6 +306,7 @@ function playerSlotPrompt(title,opts,cb,extra='',initial=false){const first=Numb
 function useEquipment(){const eq=state.hand[0];if(!eq)return;const id=eq.id;const all=targetOptions(p=>p.alive),others=targetOptions(p=>p.alive&&p.seat!==state.me);const armed=targetOptions(p=>p.alive&&p.gun),wounded=targetOptions(p=>p.alive&&p.wounded);const noGun=targetOptions(p=>p.alive&&!p.gun);const shot=state.pending?.kind==='shot';const plain=['vest','smoke','coffee','camera','database','metal'];if(plain.includes(id))return send({type:'playEquipment'});
  if(id==='shield'){const victim=state.pending?.victim;if(victim===undefined)return notif('Lá này chỉ dùng khi đang bắn.');const opts=targetOptions(p=>p.alive&&p.seat!==victim&&p.seat!==state.pending.shooter);return simpleTarget(eq.name,opts,v=>send({type:'playEquipment',target:v.target}));}
  if(id==='restrain')return simpleTarget(eq.name,targetOptions(p=>p.alive&&p.seat!==state.pending?.victim&&p.seat!==state.pending?.shooter),v=>send({type:'playEquipment',target:v.target}));
+ if(id==='serum')return playerSlotPrompt(eq.name,all.filter(x=>cardOptions(x.v).length),v=>send({type:'playEquipment',...v}));
  if(id==='wiretap'||id==='blackmail'||id==='confiscation'){
   const targets=id==='confiscation'?armed:others;const second=id==='confiscation'?noGun:others;
   if(!targets.length||!second.length)return notif('Chưa có đủ mục tiêu hợp lệ.');

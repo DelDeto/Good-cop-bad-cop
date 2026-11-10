@@ -15,7 +15,7 @@ export const EQUIPMENT = [
  ['taser','Chích Điện','Súng','Chỉ lượt mình: lấy súng của người khác, không được bắn ngay.'],
  ['k9','Chó Nghiệp Vụ','Súng','Buộc một người đang giữ súng phải bỏ súng.'],
  ['medkit','Hộp Cấp Cứu','Hồi phục','Bỏ một dấu bị thương của Đặc vụ hoặc Trùm Mafia.'],
- ['serum','Huyết Thanh Nói Thật','Điều tra','Mục tiêu tự chọn một lá đang úp để lật công khai.'],
+ ['serum','Huyết Thanh Nói Thật','Điều tra','Người dùng chọn trực tiếp một lá danh tính còn úp để lật công khai (bản 4).'],
  ['shield','Khiên Chống Bạo Động','Phòng thủ','Chuyển phát bắn sang người sống bên cạnh nạn nhân.'],
  ['restrain','Lệnh Cách Ly','Súng','Khi bắn: bắt người bắn đổi mục tiêu.'],
  ['walkie','Máy Bộ Đàm','Súng','Tất cả người có súng chuyển hướng ngắm một mục tiêu.'],
@@ -73,6 +73,8 @@ function investigate(g,viewer,victim,slot,source='investigate'){
  if(listener){remember(g,listener,victim,slot);listener.privateLog.push(`🎧 Nghe Lén: bạn đã xem lá ${Number(slot)+1} của ${victim.name}.`);}
  return c;
 }
+function woundedLeaderIds(g){return new Set(g.players.filter(p=>p.wounded).flatMap(p=>p.cards.filter(c=>c.type==='agent'||c.type==='kingpin').map(c=>c.id)));}
+function restoreWounds(g,leaderIds){for(const p of g.players)p.wounded=p.cards.some(c=>leaderIds.has(c.id));}
 function clearKnowledge(g,...affected){const ids=affected.map(p=>p.id);for(const p of g.players){for(const key of Object.keys(p.known))if(ids.some(id=>key.startsWith(id+':')))delete p.known[key];}}
 function equipDraw(g,p){if(!g.deck.length){g.deck=shuffle(g.discard.splice(0));}if(g.deck.length)p.hand.push(g.deck.shift());}
 function playCard(g,p,cmd){assert(p.hand.length===1,'Bạn cần giữ đúng một trang bị trên tay để sử dụng.');const id=p.hand[0];assert(eqMap[id],'Trang bị không xác định.');const self=g.players.indexOf(p);const who=(x)=>target(g,x);const slot=cmd.slot;const shot=g.pending?.kind==='shot';
@@ -95,7 +97,7 @@ function playCard(g,p,cmd){assert(p.hand.length===1,'Bạn cần giữ đúng m�
  case 'taser':assert(!p.gun,'Bạn đã có súng.');a=who(cmd.target);assert(a.gun,'Mục tiêu không giữ súng.');break;
  case 'k9':a=who(cmd.target);assert(a.gun,'Mục tiêu không có súng.');break;
  case 'medkit':a=who(cmd.target);assert(a.wounded&&a.cards.some(c=>c.type==='agent'||c.type==='kingpin'),'Mục tiêu không phải thủ lĩnh đang bị thương.');break;
- case 'serum':a=who(cmd.target);assert(hidden(a).length,'Mục tiêu không còn lá úp.');break;
+ case 'serum':a=who(cmd.target);slotCard(a,cmd.slot,true);break;
  case 'shield':a=who(cmd.target);assert(leftRightAlive(g,g.pending.victim).includes(g.players.indexOf(a)),'Chọn người sống bên cạnh nạn nhân.');break;
  case 'restrain':a=who(cmd.target);assert(g.players.indexOf(a)!==g.pending.shooter&&g.players.indexOf(a)!==g.pending.victim,'Phải đổi sang người khác đang sống.');break;
  case 'walkie':a=who(cmd.target);break;
@@ -122,14 +124,14 @@ function playCard(g,p,cmd){assert(p.hand.length===1,'Bạn cần giữ đúng m�
  case 'taser':a.gun=false;a.aim=null;p.gun=true;p.aim=null;p.gunFresh=true;if(shot&&g.pending.shooter===g.players.indexOf(a)){cancelShot(g);}break;
  case 'k9':a.gun=false;a.aim=null;if(shot&&g.pending.shooter===g.players.indexOf(a)){cancelShot(g);}break;
  case 'medkit':a.wounded=false;break;
- case 'serum':g.pending={kind:'serum',target:g.players.indexOf(a)};break;
+ case 'serum':{const c=slotCard(a,cmd.slot,true);c.revealed=true;pushLog(g,`🧪 ${a.name} công khai lá ${Number(cmd.slot)+1}: ${labels[c.type]}.`);break;}
  case 'shield':g.pending.victim=g.players.indexOf(a);g.pending.passes=[g.pending.shooter];g.pending.since=Date.now();pushLog(g,`🛡️ Phát bắn chuyển sang ${a.name}.`);break;
  case 'restrain':g.pending.victim=g.players.indexOf(a);g.pending.passes=[g.pending.shooter];g.pending.since=Date.now();pushLog(g,`🚫 Người bắn phải chuyển mục tiêu sang ${a.name}.`);break;
- case 'walkie':for(const holder of g.players){if(holder.alive&&holder.gun&&holder!==a)holder.aim=g.players.indexOf(a);}break;
+ case 'walkie':for(const holder of g.players){if(holder.alive&&holder.gun&&holder!==a)holder.aim=g.players.indexOf(a);}if(shot&&g.players[g.pending.shooter]!==a&&g.pending.victim!==g.players.indexOf(a)){g.pending.victim=g.players.indexOf(a);g.pending.passes=[g.pending.shooter];g.pending.since=Date.now();pushLog(g,`📻 Phát bắn chuyển sang ${a.name}.`);}break;
  case 'wiretap':investigate(g,p,a,slot,'equip');investigate(g,p,b,cmd.slot2,'equip');break;
  case 'polygraph':for(let i=0;i<3;i++){if(!a.cards[i].revealed)remember(g,p,a,i);if(!p.cards[i].revealed)remember(g,a,p,i);}break;
  case 'wire':a.effects.wire=p.id;break;
- case 'blackmail':{const i=Number(slot),j=Number(cmd.slot2);[a.cards[i],b.cards[j]]=[b.cards[j],a.cards[i]];clearKnowledge(g,a,b);checkWin(g);break;}
+ case 'blackmail':{const wounds=woundedLeaderIds(g),i=Number(slot),j=Number(cmd.slot2);[a.cards[i],b.cards[j]]=[b.cards[j],a.cards[i]];restoreWounds(g,wounds);clearKnowledge(g,a,b);checkWin(g);break;}
  case 'bribe':{investigate(g,p,a,slot,'equip');g.pending={kind:'bribe',owner:self,target:g.players.indexOf(a),slot:Number(slot),cardId:c.id,decisionId:uid(),deadline:Date.now()+BRIBE_DECISION_MS};break;}
  case 'confiscation':a.gun=false;a.aim=null;b.gun=true;b.aim=null;b.gunFresh=true;if(shot&&g.pending.shooter===g.players.indexOf(a))cancelShot(g);break;
  case 'evidence':p.hand.push(a.hand.shift());break;
@@ -201,7 +203,8 @@ function executeCommand(g,token,cmd){const p=g.players.find(p=>p.token===token);
   if(cmd.swap){
    assert(['honest','crooked'].includes(card.type),'Không thể đổi lá đã điều tra.');
    const own=slotCard(p,cmd.ownSlot),j=Number(cmd.ownSlot);
-   [victim.cards[pend.slot],p.cards[j]]=[own,card];
+   const wounds=woundedLeaderIds(g);
+   [victim.cards[pend.slot],p.cards[j]]=[own,card];restoreWounds(g,wounds);
    clearKnowledge(g,victim,p);
    // The investigator still knows the card they gave away; other memories expire.
    p.known[`${victim.id}:${pend.slot}`]={type:own.type,cardId:own.id};
@@ -290,7 +293,7 @@ function botEquipment(g,bot){if(bot.hand.length!==1)return null;const id=bot.han
  if(id==='taser'&&g.turn===self&&!bot.gun&&armed[0]?.score>=0)return {type:'playEquipment',target:armed[0].i};
  if(id==='walkie'&&armed.length>=2){const enemy=candidates.sort((a,b)=>b.score-a.score)[0];if(enemy&&enemy.score>2)return {type:'playEquipment',target:enemy.i};}
  if(id==='polygraph'&&unknown.length){const t=unknown.sort((a,b)=>b.score-a.score)[0];if(t&&!bot.effects.disguise)return {type:'playEquipment',target:t.i};}
- if(id==='serum'&&unknown.length){const t=choose(unknown);return {type:'playEquipment',target:t.i};}
+ if(id==='serum'&&unknown.length){const t=choose(unknown);return {type:'playEquipment',target:t.i,slot:choose(hidden(t.p))};}
  if(id==='wiretap'&&unknown.length>=2){return {type:'playEquipment',target:unknown[0].i,slot:hidden(unknown[0].p)[0],target2:unknown[1].i,slot2:hidden(unknown[1].p)[0]};}
  if(id==='wire'&&candidates.length){const t=candidates.filter(x=>!x.p.effects.wire).sort((a,b)=>b.score-a.score)[0];if(t)return {type:'playEquipment',target:t.i};}
  if(id==='evidence'){const t=candidates.filter(x=>x.p.hand.length).sort((a,b)=>b.score-a.score)[0];if(t)return {type:'playEquipment',target:t.i};}
