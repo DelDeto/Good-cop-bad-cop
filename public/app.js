@@ -16,6 +16,7 @@ function interactionState(){
  if(confirmation)return confirmation;
  if(state?.pending?.kind==='serum'&&state.pending.target===state.me)return 'SELECT_CARD';
  if(state?.pending?.kind==='equipment-discard'&&state.pending.owner===state.me)return 'SELECT_CARD';
+ if(state?.pending?.kind==='investigation-reaction')return state.pending.owner===state.me?'SELECT_CARD':'RESOLVING';
  if(!state||state.status!=='playing'||state.turn!==state.me)return 'IDLE';
  if(['reveal','discard','serum'].includes(state.pending?.kind))return 'SELECT_CARD';
  if(state.phase==='aim')return state.players[state.me].gun?'CHOOSE_AIM':'TURN_COMPLETE';
@@ -83,6 +84,7 @@ function actions(){
   if(pend?.kind==='bribe')return pend.owner===state.me?`<div class="hint-panel gold">Tiền Bẩn: ${esc(label[state.known[`${state.players[pend.target].id}:${pend.slot}`]?.type])}. ${pend.canSwap?'Chạm lá của bạn để đổi, hoặc chỉ giữ kết quả.':'Lá thủ lĩnh: chỉ giữ kết quả điều tra.'}</div><p>Hết hạn sau <span data-countdown="${pend.deadline}">${Math.max(0,Math.ceil((pend.deadline-Date.now())/1000))}</span> giây: tự động không đổi, trang bị đã dùng.</p>${buttons('Chỉ điều tra / Không đổi','declineBribe','wide')}`:'<div class="hint-panel">Đang chờ chủ Tiền Bẩn quyết định.</div>';
   if(pend?.kind==='serum')return state.me===pend.target?'<div class="hint-panel gold">Chạm một trong ba lá danh tính của bạn để lật công khai.</div>':'<div class="hint-panel">Đang chờ mục tiêu lật bài vì Huyết Thanh Nói Thật.</div>';
   if(pend?.kind==='equipment-discard')return state.me===pend.owner?`<div class="hint-panel gold">Tịch Thu Tang Chứng: chạm lá muốn bỏ (<span data-countdown="${pend.deadline}">…</span>s).</div>`:'<div class="hint-panel">Đang chờ người nhận trang bị bỏ một lá.</div>';
+  if(pend?.kind==='investigation-reaction')return state.me===pend.owner?`<div class="hint-panel gold">${pend.effect==='camera'?'Camera Theo Dõi':'Nghe Lén'}: điều tra một lá úp của ${esc(state.players[pend.target].name)}; còn <b data-countdown="${pend.deadline}">…</b>s.</div>${buttons('🔎 Chọn lá điều tra','reactInvestigate','wide primary')}${buttons('Bỏ qua','passInvestigationReaction','ghost wide')}`:'<div class="hint-panel">Đang chờ chủ hiệu ứng điều tra phụ.</div>';
   if(!own)return `<div class="hint-panel">Đang đến lượt <b>${esc(state.players[state.turn].name)}</b>. Bạn có thể sử dụng trang bị nếu luật cho phép.</div>`;
   if(pend?.kind==='discard')return '<div class="hint-panel gold">Chạm lá trang bị bạn muốn bỏ để giữ đúng một lá.</div>';
   if(pend?.kind==='reveal')return '<div class="hint-panel gold">Chạm một lá danh tính của bạn để lật công khai sau khi lấy súng/trang bị.</div>';
@@ -280,7 +282,7 @@ function inspectEquipment(index){const eq=state.hand[index];if(!eq)return;if(sta
 
 function render(){
  const pend=state?.pending;
- const context=state?JSON.stringify([state.code,state.status,state.turn,state.phase,pend?.kind,pend?.decisionId,pend?.target,pend?.shooter,pend?.victim,pend?.since]):null;
+ const context=state?JSON.stringify([state.code,state.status,state.turn,state.phase,pend?.kind,pend?.decisionId,pend?.target,pend?.owner,pend?.effect,pend?.shooter,pend?.victim,pend?.since]):null;
  if(context!==interactionContext){pick=null;confirmation=null;const m=$('#modal');m.classList.add('hide');m._callback=null;interactionContext=context;}
  if(pick&&(!state?.hand.some(eq=>eq.id===pick.id)||(pick.selected!==undefined&&!state.players[pick.selected]?.alive))){pick=null;confirmation=null;$('#modal').classList.add('hide');$('#modal')._callback=null;}
  if(state?.pending&&!['shot'].includes(state.pending.kind))pick=null;
@@ -301,8 +303,9 @@ function chooseTurn(type){const self=state.me;switch(type){
  case 'chooseAim':return simpleTarget('Chọn mục tiêu ngắm',targetOptions(p=>p.seat!==self&&p.alive),v=>send({type:'chooseAim',target:v.target}));
  case 'chooseReveal':return promptSimple('Lật một lá của bạn',field('Lá phải công khai','slot',myCardOptions(true)),v=>send({type:'chooseReveal',slot:v.slot}));
  case 'serumReveal':return promptSimple('Huyết Thanh Nói Thật',field('Chọn lá để công khai','slot',myCardOptions(true)),v=>send({type:'serumReveal',slot:v.slot}));
+ case 'reactInvestigate':{const p=state.pending;if(p?.kind!=='investigation-reaction'||p.owner!==state.me)return;return promptSimple(p.effect==='camera'?'Camera Theo Dõi':'Nghe Lén',field('Chọn lá đang úp để điều tra','slot',cardOptions(p.target)),v=>send({type:'resolveInvestigationReaction',slot:v.slot}));}
  case 'discardHand':return promptSimple('Giữ một trang bị',field('Chọn lá muốn bỏ','index',state.hand.map((x,i)=>({v:i,t:x.name}))),v=>send({type:'discardHand',index:v.index}));
- case 'endTurn':case 'passShot':case 'forceShot':return send({type});
+ case 'endTurn':case 'passShot':case 'forceShot':case 'passInvestigationReaction':return send({type});
  }}
 function simpleTarget(title,opts,cb){if(!opts.length)return notif('Không có mục tiêu phù hợp.');promptSimple(title,field('Mục tiêu','target',opts),cb);}
 function playerSlotPrompt(title,opts,cb,extra='',initial=false){const first=Number(opts[0].v);const options=cardOptions(first,true);if(!options.length)return notif('Không có lá úp hợp lệ.');const fields=field('Người bị điều tra','target',opts)+field('Chọn lá danh tính','slot',options)+extra;promptSimple(title,fields,cb);const sel=$('#formfields [name="target"]');sel.onchange=()=>{const arr=cardOptions(Number(sel.value),true);const slot=$('#formfields [name="slot"]');slot.innerHTML=arr.map(x=>`<option value="${x.v}">${esc(x.t)}</option>`).join('');};}
