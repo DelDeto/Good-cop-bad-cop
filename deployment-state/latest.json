@@ -3,14 +3,14 @@
   "mode": "setup",
   "worker": "diep-vien-so-dach-online",
   "url": "https://diep-vien-so-dach-online.duc-nguyen-ndd127.workers.dev",
-  "sha": "02ac3fedfa716899b411587f01a6bb8eddc729a7",
-  "version": "1.8.5",
-  "runUrl": "https://github.com/DelDeto/Good-cop-bad-cop/actions/runs/42593824552",
+  "sha": "9186089ce9cd2faa55df7fc57488875e8559796b",
+  "version": "1.9.0",
+  "runUrl": "https://github.com/DelDeto/Good-cop-bad-cop/actions/runs/42779292551",
   "tests": "PASS",
   "dryRun": "PASS",
-  "startedAt": "2026-11-09T09:31:58.978Z",
+  "startedAt": "2026-11-10T08:03:33.290Z",
   "baseline": {
-    "id": "f57202fb-0356-4c9f-86a0-39100f5f516c",
+    "id": "65596e43-2942-4526-8aaa-72703068a795",
     "shape": {
       "binding": {
         "name": "GAME_ROOMS",
@@ -30,17 +30,17 @@
   "baselineSmoke": {
     "health": {
       "ok": true,
-      "version": "1.8.4",
+      "version": "1.8.5",
       "service": "diep-vien-so-dach-online"
     },
     "resources": [
       {
         "path": "/",
-        "sha256": "239d3b7319471f54f1103019083413becc6e9be89a6f8659173e8ede4bf38ca4"
+        "sha256": "a25ede1c4a272d9740305c4ce963866cc14aa90d6cd2e33e3fcba9a85d0d19b8"
       },
       {
         "path": "/app.js",
-        "sha256": "0f0dc2908769da3d1967f3151d57cbe1b482bf883c9ac8c26526e21fee437af6"
+        "sha256": "db75eed19bd6c40fb676bc9a7cc4347b227511c6bf16d58f1c32dae28439084a"
       },
       {
         "path": "/style.css",
@@ -104,5 +104,5 @@
       }
     ]
   },
-  "completedAt": "2026-11-09T09:32:09.289Z"
+  "completedAt": "2026-11-10T08:03:40.333Z"
 }
