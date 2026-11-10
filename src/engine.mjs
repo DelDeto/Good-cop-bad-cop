@@ -154,7 +154,7 @@ function playCard(g,p,cmd){assert(p.hand.length===1,'Bạn cần giữ đúng m�
  case 'serum':{const c=slotCard(a,cmd.slot,true);c.revealed=true;pushLog(g,`🧪 ${a.name} công khai lá ${Number(cmd.slot)+1}: ${labels[c.type]}.`);break;}
  case 'shield':g.pending.victim=g.players.indexOf(a);g.pending.passes=[g.pending.shooter];g.pending.since=Date.now();pushLog(g,`🛡️ Phát bắn chuyển sang ${a.name}.`);break;
  case 'restrain':g.pending.victim=g.players.indexOf(a);g.pending.passes=[g.pending.shooter];g.pending.since=Date.now();pushLog(g,`🚫 Người bắn phải chuyển mục tiêu sang ${a.name}.`);break;
- case 'walkie':for(const holder of g.players){if(holder.alive&&holder.gun&&holder!==a)holder.aim=g.players.indexOf(a);}if(shot&&g.players[g.pending.shooter]!==a&&g.pending.victim!==g.players.indexOf(a)){g.pending.victim=g.players.indexOf(a);g.pending.passes=[g.pending.shooter];g.pending.since=Date.now();pushLog(g,`📻 Phát bắn chuyển sang ${a.name}.`);}break;
+ case 'walkie':for(const holder of g.players){if(holder.alive&&holder.gun)holder.aim=g.players.indexOf(a);}if(shot&&g.pending.victim!==g.players.indexOf(a)){g.pending.victim=g.players.indexOf(a);g.pending.passes=[g.pending.shooter];g.pending.since=Date.now();pushLog(g,`📻 Phát bắn chuyển sang ${a.name}.`);}break;
  case 'wiretap':investigate(g,p,a,slot,'equip');investigate(g,p,b,cmd.slot2,'equip');break;
  case 'polygraph':for(let i=0;i<3;i++){if(!a.cards[i].revealed)investigate(g,p,a,i,'equip');if(!p.cards[i].revealed)investigate(g,a,p,i,'equip');}break;
  case 'wire':a.effects.wire=p.id;break;

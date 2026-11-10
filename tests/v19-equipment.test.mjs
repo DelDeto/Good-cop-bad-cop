@@ -58,3 +58,13 @@ test('Evidence Bag invalid receiver does not mutate state',()=>{
  const g=game(4);g.players[0].hand=['evidence'];const before=structuredClone(g);
  assert.throws(()=>act(g,0,{type:'playEquipment',target:1,target2:0}));assert.deepEqual(g,before);
 });
+test('Walkie Talkie may force a gun holder to aim at themselves, including the shooter mid-shot',()=>{
+ const g=game(4);g.players[0].gun=true;g.players[0].aim=1;g.players[0].gunFresh=false;g.players[3].hand=['walkie'];
+ act(g,0,{type:'actionShoot'});
+ act(g,3,{type:'playEquipment',target:0});
+ assert.equal(g.players[0].aim,0);assert.equal(g.pending.victim,0);
+ assert.deepEqual(g.pending.passes,[0]);
+ for(let i=1;i<4;i++)act(g,i,{type:'passShot'});
+ assert.equal(g.pending,null);assert.equal(g.players[0].gun,false);
+ assert.ok(g.players[0].cards.every(c=>c.revealed));
+});
