@@ -15,6 +15,7 @@ function interactionState(){
  if(pick?.kind==='equipment')return pick.selected===undefined?'EQUIPMENT_TARGET':'EQUIPMENT_SECOND_TARGET';
  if(confirmation)return confirmation;
  if(state?.pending?.kind==='serum'&&state.pending.target===state.me)return 'SELECT_CARD';
+ if(state?.pending?.kind==='equipment-discard'&&state.pending.owner===state.me)return 'SELECT_CARD';
  if(!state||state.status!=='playing'||state.turn!==state.me)return 'IDLE';
  if(['reveal','discard','serum'].includes(state.pending?.kind))return 'SELECT_CARD';
  if(state.phase==='aim')return state.players[state.me].gun?'CHOOSE_AIM':'TURN_COMPLETE';
@@ -81,6 +82,7 @@ function actions(){
   if(pend?.kind==='shot')return `<div class="hint-panel danger">🔫 ${esc(state.players[pend.shooter].name)} đang bắn ${esc(state.players[pend.victim].name)}. Chạm lá trang bị để phản ứng.</div>${!pend.passes.includes(state.me)?buttons('✓ Bỏ qua phản ứng','passShot','wide'):''}${own&&state.me===pend.shooter?buttons('Hoàn tất bắn (sau 15 giây)','forceShot','ghost wide'):''}`;
   if(pend?.kind==='bribe')return pend.owner===state.me?`<div class="hint-panel gold">Tiền Bẩn: ${esc(label[state.known[`${state.players[pend.target].id}:${pend.slot}`]?.type])}. ${pend.canSwap?'Chạm lá của bạn để đổi, hoặc chỉ giữ kết quả.':'Lá thủ lĩnh: chỉ giữ kết quả điều tra.'}</div><p>Hết hạn sau <span data-countdown="${pend.deadline}">${Math.max(0,Math.ceil((pend.deadline-Date.now())/1000))}</span> giây: tự động không đổi, trang bị đã dùng.</p>${buttons('Chỉ điều tra / Không đổi','declineBribe','wide')}`:'<div class="hint-panel">Đang chờ chủ Tiền Bẩn quyết định.</div>';
   if(pend?.kind==='serum')return state.me===pend.target?'<div class="hint-panel gold">Chạm một trong ba lá danh tính của bạn để lật công khai.</div>':'<div class="hint-panel">Đang chờ mục tiêu lật bài vì Huyết Thanh Nói Thật.</div>';
+  if(pend?.kind==='equipment-discard')return state.me===pend.owner?`<div class="hint-panel gold">Tịch Thu Tang Chứng: chạm lá muốn bỏ (<span data-countdown="${pend.deadline}">…</span>s).</div>`:'<div class="hint-panel">Đang chờ người nhận trang bị bỏ một lá.</div>';
   if(!own)return `<div class="hint-panel">Đang đến lượt <b>${esc(state.players[state.turn].name)}</b>. Bạn có thể sử dụng trang bị nếu luật cho phép.</div>`;
   if(pend?.kind==='discard')return '<div class="hint-panel gold">Chạm lá trang bị bạn muốn bỏ để giữ đúng một lá.</div>';
   if(pend?.kind==='reveal')return '<div class="hint-panel gold">Chạm một lá danh tính của bạn để lật công khai sau khi lấy súng/trang bị.</div>';
@@ -111,7 +113,7 @@ function eligibleSeat(seat){
     if(id==='defib')return !q.alive&&seat!==state.me&&q.cards.every(c=>!['agent','kingpin'].includes(c.type));
     if(id==='medkit')return q.wounded;
     if(['k9','taser'].includes(id))return q.gun&&(id!=='taser'||seat!==state.me);
-    if(id==='evidence')return q.handCount>0&&seat!==state.me;
+    if(id==='evidence')return second?seat!==state.me&&seat!==target:seat!==state.me&&q.handCount>0;
     if(id==='restrain')return pend?.kind==='shot'&&seat!==pend.shooter&&seat!==pend.victim;
     if(id==='shield')return pend?.kind==='shot'&&aliveNeighbors(pend.victim).includes(seat);
     if(id==='confiscation')return second?seat!==state.me&&seat!==target&&!q.gun:q.gun;
@@ -138,6 +140,7 @@ function interactionGuide(){
     const message=(['wiretap','blackmail'].includes(id)?(pick.selected===undefined?'Chạm LÁ của người thứ nhất.':'Chạm LÁ của người thứ hai (khác người thứ nhất).'):
      id==='bribe'?'Chạm lá úp của mục tiêu để điều tra.':
      id==='confiscation'?(pick.selected===undefined?'Chạm người có súng.':'Chạm người chưa có súng để chuyển súng.'):
+     id==='evidence'?(pick.selected===undefined?'Chạm người đang có trang bị.':'Chạm người nhận trang bị (khác bạn).'):
      'Chạm avatar của người chơi phù hợp để sử dụng trang bị.');
     return `<div class="pick-banner"><span>🃏 ĐANG DÙNG: <b>${esc(eq?.name||id)}</b><br>${esc(message)}</span><div class="pick-actions">${buttons('Hủy','cancelPick','ghost')}</div></div>`;
   }
@@ -272,7 +275,7 @@ function inspectionSignature(seat){const p=state.players[seat];return JSON.strin
 function inspectSeat(seat){const p=state.players[seat],selectable=eligibleSeat(seat);modal(`#${seat+1} · ${p.name}`,inspectionFields(seat),selectable?'Chọn người này':'Đóng',()=>{if(selectable)handleSeatClick(seat);},'Chạm lá lớn để chọn. Lá úp chưa biết vẫn được giữ bí mật.');$('#modal')._inspection={seat,signature:inspectionSignature(seat)};if(!selectable)$('#modal').querySelector?.('.modalbuttons [data-act="close"]')?.remove?.();}
 function refreshInspection(){const m=$('#modal'),i=m?._inspection;if(!i||!m.querySelector||m.classList.contains('hide'))return;const signature=inspectionSignature(i.seat);if(signature!==i.signature){const fields=m.querySelector('#formfields');if(fields)fields.innerHTML=inspectionFields(i.seat);i.signature=signature;}}
 
-function inspectEquipment(index){const eq=state.hand[index];if(!eq)return;if(state.status==='finished')return showCardDetail(eq.name,eq.description,equipmentArt[eq.id]);if(state.pending?.kind==='discard')return activateEquipment(index);
+function inspectEquipment(index){const eq=state.hand[index];if(!eq)return;if(state.status==='finished')return showCardDetail(eq.name,eq.description,equipmentArt[eq.id]);if(state.pending?.kind==='discard'||(state.pending?.kind==='equipment-discard'&&state.pending.owner===state.me))return activateEquipment(index);
  modal(eq.name,`<div class="equipment-detail">${renderGear(eq,index).replace(/<button[^>]*>/,'<div class="equipment gear-card physical-gear">').replace(/<\/button>$/,'</div>')}</div>`,'Dùng trang bị',()=>{if(state.hand[index]?.id!==eq.id)return notif('Trang bị đã thay đổi. Hãy chọn lại.');if(['vest','smoke','coffee','camera','database','metal'].includes(eq.id))return send({type:'playEquipment'});activateEquipment(index);},'Trang bị của riêng bạn · Máy chủ xác nhận mọi tác dụng.');}
 
 function render(){
@@ -307,11 +310,11 @@ function useEquipment(){const eq=state.hand[0];if(!eq)return;const id=eq.id;cons
  if(id==='shield'){const victim=state.pending?.victim;if(victim===undefined)return notif('Lá này chỉ dùng khi đang bắn.');const opts=targetOptions(p=>p.alive&&p.seat!==victim&&p.seat!==state.pending.shooter);return simpleTarget(eq.name,opts,v=>send({type:'playEquipment',target:v.target}));}
  if(id==='restrain')return simpleTarget(eq.name,targetOptions(p=>p.alive&&p.seat!==state.pending?.victim&&p.seat!==state.pending?.shooter),v=>send({type:'playEquipment',target:v.target}));
  if(id==='serum')return playerSlotPrompt(eq.name,all.filter(x=>cardOptions(x.v).length),v=>send({type:'playEquipment',...v}));
- if(id==='wiretap'||id==='blackmail'||id==='confiscation'){
-  const targets=id==='confiscation'?armed:others;const second=id==='confiscation'?noGun:others;
+ if(id==='wiretap'||id==='blackmail'||id==='confiscation'||id==='evidence'){
+  const targets=id==='confiscation'?armed:id==='evidence'?targetOptions(p=>p.alive&&p.seat!==state.me&&p.handCount):others;const second=id==='confiscation'?noGun:others;
   if(!targets.length||!second.length)return notif('Chưa có đủ mục tiêu hợp lệ.');
-  let fields=field('Mục tiêu 1','target',targets);if(id!=='confiscation')fields+=field('Lá của người thứ nhất','slot',cardOptions(Number(targets[0].v),id==='wiretap'));
-  fields+=field('Mục tiêu 2','target2',second);if(id!=='confiscation')fields+=field('Lá của người thứ hai','slot2',cardOptions(Number(second[0].v),id==='wiretap'));
+  let fields=field('Mục tiêu 1','target',targets);if(!['confiscation','evidence'].includes(id))fields+=field('Lá của người thứ nhất','slot',cardOptions(Number(targets[0].v),id==='wiretap'));
+  fields+=field('Mục tiêu 2','target2',second);if(!['confiscation','evidence'].includes(id))fields+=field('Lá của người thứ hai','slot2',cardOptions(Number(second[0].v),id==='wiretap'));
   return promptSimple(eq.name,fields,v=>send({type:'playEquipment',...v}),eq.description);
  }
  if(id==='bribe'){pick={kind:'equipment',id,stage:'target'};render();return;}
@@ -355,7 +358,7 @@ function handleSeatClick(seat){
     if(!eligibleSeat(seat))return notif('Mục tiêu chưa hợp lệ. Hãy chọn mục tiêu được viền sáng.');
     const id=pick.id;
     if(['wiretap','blackmail','bribe'].includes(id))return notif('Hãy chạm trực tiếp vào lá danh tính của người chơi.');
-    if(id==='confiscation'){
+    if(id==='confiscation'||id==='evidence'){
       if(pick.selected===undefined){pick.selected=seat;render();return;}
       return finishEquipment({target:pick.selected,target2:seat});
     }
@@ -370,7 +373,7 @@ function handleSeatClick(seat){
 function activateEquipment(index=0){
   if(busy)return;
   if(!state?.hand?.[index])return;
-  if(state.pending?.kind==='discard'&&state.turn===state.me){return confirmPlay('Bỏ trang bị',`Bỏ ${state.hand[index].name} và giữ lại lá khác?`,()=>send({type:'discardHand',index}));}
+  if((state.pending?.kind==='discard'&&state.turn===state.me)||(state.pending?.kind==='equipment-discard'&&state.pending.owner===state.me)){return confirmPlay('Bỏ trang bị',`Bỏ ${state.hand[index].name} và giữ lại lá khác?`,()=>send({type:'discardHand',index}));}
   if(state.pending&&state.pending.kind!=='shot')return notif('Hãy hoàn tất lựa chọn đang chờ.');
   const eq=state.hand[index];if(state.hand.length!==1)return notif('Trước tiên hãy bỏ bớt trang bị để chỉ giữ một lá.');
   if(['vest','smoke','coffee','camera','database','metal'].includes(eq.id))return confirmPlay(`Dùng ${eq.name}`,eq.description,()=>send({type:'playEquipment'}));
